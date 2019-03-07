@@ -1,0 +1,10 @@
+plugins:
+  screamphoenix/wave:
+  - size
+  - lgtm
+  - cat
+  - label
+  - dog
+  - trigger
+  - yuks
+  - assign

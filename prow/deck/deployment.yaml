@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: default
+  name: deck
+  labels:
+    app: deck
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: deck
+    spec:
+      serviceAccountName: "deck"
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: deck
+        image: gcr.io/k8s-prow/deck:v20190307-bbad344
+        args:
+        - --tide-url=http://tide.default.svc.cluster.local/
+        - --hook-url=http://hook.default.svc.cluster.local:8888/plugin-help
+        ports:
+          - name: http
+            containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: config

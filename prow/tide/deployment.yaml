@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: default
+  name: tide
+  labels:
+    app: tide
+spec:
+  replicas: 1 # Do not scale up.
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tide
+    spec:
+      serviceAccountName: "tide"
+      containers:
+      - name: tide
+        image: gcr.io/k8s-prow/tide:v20190307-bbad344
+        args:
+        - --dry-run=false
+        ports:
+          - name: http
+            containerPort: 8888
+        volumeMounts:
+        - name: oauth
+          mountPath: /etc/github
+          readOnly: true
+        - name: config
+          mountPath: /etc/config
+          readOnly: true
+      volumes:
+      - name: oauth
+        secret:
+          secretName: oauth-token
+      - name: config
+        configMap:
+          name: config
