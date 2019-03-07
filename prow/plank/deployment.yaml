@@ -20,12 +20,16 @@ spec:
         image: gcr.io/k8s-prow/plank:v20190307-bbad344
         args:
         - --dry-run=false
+        - --job-config-path=/etc/jobs
         volumeMounts:
         - name: oauth
           mountPath: /etc/github
           readOnly: true
         - name: config
           mountPath: /etc/config
+          readOnly: true
+        - name: jobs
+          mountPath: /etc/jobs
           readOnly: true
       volumes:
       - name: oauth
@@ -34,3 +38,6 @@ spec:
       - name: config
         configMap:
           name: config
+      - name: jobs
+        configMap:
+          name: jobs

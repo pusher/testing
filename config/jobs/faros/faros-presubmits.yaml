@@ -1,0 +1,22 @@
+presubmits:
+  pusher/faros:
+  - name: pull-faros-ci
+    max_concurrency: 10
+    path_alias: github.com/pusher/faros
+    agent: kubernetes
+    always_run: true
+    skip_report: false
+    decorate: true
+    spec:
+      containers:
+      - image: quay.io/pusher/golang-ci:latest
+        name: ci
+        command: ["/bin/sh", "-c"]
+        args:
+        - make ci
+        resources:
+          requests:
+            cpu: 1
+            memory: 1Gi
+    trigger: "(?m)^/test ?(\\s+|$)"
+    rerun_command: "/test"
