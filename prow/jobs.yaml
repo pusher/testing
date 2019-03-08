@@ -41,15 +41,16 @@ data:
         decorate: true
         spec:
           containers:
-          - image: ubuntu:bionic
+          - image: quay.io/pusher/golang-ci:latest
             name: verify-config
+            command: ["/bin/bash", "-c"]
             args:
             - make verify-config
             resources:
               requests:
                 cpu: 1
                 memory: 1Gi
-        trigger: "(?m)^/verify config ?(\\s+|$)"
+        trigger: "(?m)^/verify config,?(\\s+|$)"
         rerun_command: "/verify config"
   wave_wave-presubmits.yaml: |
     presubmits:
