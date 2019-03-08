@@ -9,7 +9,7 @@ generate-config:
 verify-config: checkconfig
 	${GOPATH}/bin/checkconfig --config-path=config/config.yaml --job-config-path=config/jobs --plugin-config=config/plugins.yaml
 	make generate-config
-	if [ "$$(git status -s)" != "" ]; then git status; exit 1; fi
+	if [ "$$(git status -s)" != "" ]; then git diff; exit 1; fi
 
 checkconfig:
 	go get k8s.io/test-infra/prow/cmd/checkconfig
