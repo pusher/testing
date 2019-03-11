@@ -20,27 +20,33 @@ spec:
       serviceAccountName: "deck"
       terminationGracePeriodSeconds: 30
       containers:
-      - name: deck
-        image: gcr.io/k8s-prow/deck:v20190307-bbad344
-        args:
-        - --tide-url=http://tide.default.svc.cluster.local/
-        - --hook-url=http://hook.default.svc.cluster.local:8888/plugin-help
-        - --job-config-path=/etc/jobs
-        - --spyglass
-        ports:
-          - name: http
-            containerPort: 8080
-        volumeMounts:
-        - name: config
-          mountPath: /etc/config
-          readOnly: true
-        - name: jobs
-          mountPath: /etc/jobs
-          readOnly: true
+        - name: deck
+          image: gcr.io/k8s-prow/deck:v20190307-bbad344
+          args:
+            - --tide-url=http://tide.default.svc.cluster.local/
+            - --hook-url=http://hook.default.svc.cluster.local:8888/plugin-help
+            - --job-config-path=/etc/jobs
+            - --spyglass
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: jobs
+              mountPath: /etc/jobs
+              readOnly: true
+            - name: extensions
+              mountPath: /static/extensions
+              readOnly: true
       volumes:
-      - name: config
-        configMap:
-          name: config
-      - name: jobs
-        configMap:
-          name: jobs
+        - name: config
+          configMap:
+            name: config
+        - name: jobs
+          configMap:
+            name: jobs
+        - name: extensions
+          configMap:
+            name: extensions

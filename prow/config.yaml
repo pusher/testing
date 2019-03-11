@@ -9,9 +9,9 @@ data:
   config.yaml: |
     plank:
       allow_cancellations: true
-      job_url_prefix: 'https://prow.pusher.com/view/gcs'
-      job_url_template: 'https://prow.pusher.com/view/gcs/pusher-ci-cluster-35535/pr-logs/pull/{{.Spec.Refs.Repo}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}'
-      report_template: '[Full PR test history](https://prow.pusher.com/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}})'
+      job_url_prefix: "https://prow.pusher.com/view/gcs"
+      job_url_template: "https://prow.pusher.com/view/gcs/pusher-ci-cluster-35535/pr-logs/pull/{{.Spec.Refs.Repo}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}"
+      report_template: "[Full PR test history](https://prow.pusher.com/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}})"
 
       default_decoration_config:
         timeout: 7200000000000 # 2h
@@ -32,6 +32,10 @@ data:
       max_pod_age: 1h
 
     deck:
+      branding:
+        logo: "extensions/logo.svg"
+        favicon: "extensions/favicon.ico"
+        header_color: "#300D4F"
       spyglass:
         size_limit: 500000000
         viewers:
