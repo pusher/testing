@@ -142,3 +142,4 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: jobs
+  namespace: default

@@ -60,3 +60,4 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: plugins
+  namespace: default

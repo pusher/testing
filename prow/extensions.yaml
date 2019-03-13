@@ -16,3 +16,4 @@ data:
 kind: ConfigMap
 metadata:
   name: extensions
+  namespace: default

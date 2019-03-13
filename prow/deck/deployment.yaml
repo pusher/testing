@@ -5,6 +5,8 @@ metadata:
   name: deck
   labels:
     app: deck
+  annotations:
+    wave.pusher.com/update-on-config-change: "true"
 spec:
   replicas: 2
   strategy:

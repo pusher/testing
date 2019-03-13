@@ -50,3 +50,4 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: config
+  namespace: default

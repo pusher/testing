@@ -5,6 +5,8 @@ metadata:
   name: hook
   labels:
     app: hook
+  annotations:
+    wave.pusher.com/update-on-config-change: "true"
 spec:
   replicas: 2
   strategy:
