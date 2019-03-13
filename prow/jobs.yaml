@@ -22,7 +22,7 @@ data:
                 name: verify-generate
                 command: ["/bin/sh", "-c"]
                 args:
-                  - touch .env && make prepare-env-1.13 verify-generate
+                  - touch .env && make prepare-env-1.13 && make verify-generate
                 resources:
                   requests:
                     cpu: 1
@@ -43,7 +43,7 @@ data:
                 name: verify-manifests
                 command: ["/bin/sh", "-c"]
                 args:
-                  - touch .env && make prepare-env-1.13 verify-manifests
+                  - touch .env && make prepare-env-1.13 && make verify-manifests
                 resources:
                   requests:
                     cpu: 1
@@ -64,7 +64,7 @@ data:
                 name: lint
                 command: ["/bin/sh", "-c"]
                 args:
-                  - touch .env && make prepare-env-1.13 lint
+                  - touch .env && make prepare-env-1.13 && make lint
                 resources:
                   requests:
                     cpu: 1
@@ -85,7 +85,7 @@ data:
                 name: test-ginkgo
                 command: ["/bin/sh", "-c"]
                 args:
-                  - touch .env && make prepare-env-1.13 test-ginkgo
+                  - touch .env && make prepare-env-1.13 && make test-ginkgo
                 resources:
                   requests:
                     cpu: 1
