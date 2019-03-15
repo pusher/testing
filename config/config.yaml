@@ -37,3 +37,15 @@ deck:
 prowjob_namespace: default
 pod_namespace: default
 log_level: info
+
+presets:
+  - labels:
+      preset-quay-credentials: "true"
+    volumes:
+      - name: credentials
+        secret:
+          secretName: quay-docker-config
+    volumeMounts:
+      - name: credentials
+        mountPath: /home/prow/.docker
+        readOnly: true
