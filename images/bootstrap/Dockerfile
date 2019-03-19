@@ -108,6 +108,13 @@ COPY --from=builder ["/barnacle", "/usr/local/bin/"]
 # END: DOCKER IN DOCKER SETUP
 #
 
+# Run actual from here on out as the prow user
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends sudo && \
+    rm -rf /var/lib/apt/lists/*
+RUN echo "prow ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN useradd -rm -d /home/prow -s /bin/bash -g root -G sudo,docker -u 1000 prow
+USER prow
 
 # note the runner is responsible for making docker in docker function if
 # env DOCKER_IN_DOCKER_ENABLED is set

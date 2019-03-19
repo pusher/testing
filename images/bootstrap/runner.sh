@@ -52,7 +52,7 @@ if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
     echo "Docker in Docker enabled, initializing..."
     printf '=%.0s' {1..80}; echo
     # If we have opted in to docker in docker, start the docker daemon,
-    service docker start
+    sudo service docker start
     # the service can be started but the docker socket not ready, wait for ready
     WAIT_N=0
     MAX_WAIT=5
