@@ -8,54 +8,36 @@ apiVersion: v1
 data:
   plugins.yaml: |
     triggers:
-    - repos:
-      - pusher/testing
-      - pusher/faros
-      - pusher/wave
-      trusted_org: pusher
-      only_org_members: true
-    - repos:
-      - pusher/oauth2_proxy
-      trusted_org: oauth2_proxy
-      only_org_members: true
+      - repos:
+          - pusher/testing
+          - pusher/faros
+          - pusher/wave
+        trusted_org: pusher
+        only_org_members: true
+      - repos:
+          - pusher/oauth2_proxy
+        trusted_org: oauth2_proxy
+        only_org_members: true
 
     plugins:
       pusher/testing:
-      - size
-      - lgtm
-      - cat
-      - label
-      - dog
-      - trigger
-      - yuks
-      - assign
-      pusher/wave:
-      - size
-      - lgtm
-      - cat
-      - label
-      - dog
-      - trigger
-      - yuks
-      - assign
+        - size
+        - lgtm
+        - cat
+        - label
+        - dog
+        - trigger
+        - yuks
+        - assign
       pusher/faros:
-      - size
-      - lgtm
-      - cat
-      - label
-      - dog
-      - trigger
-      - yuks
-      - assign
-      screamphoenix/wave:
-      - size
-      - lgtm
-      - cat
-      - label
-      - dog
-      - trigger
-      - yuks
-      - assign
+        - size
+        - lgtm
+        - cat
+        - label
+        - dog
+        - trigger
+        - yuks
+        - assign
 kind: ConfigMap
 metadata:
   creationTimestamp: null
