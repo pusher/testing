@@ -57,3 +57,18 @@ ENV GOPATH /home/prow/go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
+
+#################################
+###
+### Install tools for go projects
+###
+#################################
+
+RUN go get github.com/pkg/profile
+RUN go get github.com/go-delve/delve/cmd/dlv
+# Install dep for dependencies
+RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+# Install golangci-lint for linting
+RUN curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.15.0
+# Install ginkgo for running tests
+RUN go get github.com/onsi/ginkgo/ginkgo
