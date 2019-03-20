@@ -23,13 +23,13 @@ all: build
 #
 ####
 
-build: builder golang-builder
+build: builder golang-builder kubebuilder-builder
 
-tag-latest: docker-tag-latest-builder docker-tag-latest-golang-builder
+tag-latest: docker-tag-latest-builder docker-tag-latest-golang-builder docker-tag-latest-kubebuilder-builder
 
-push: docker-push-builder docker-push-golang-builder
+push: docker-push-builder docker-push-golang-builder docker-push-kubebuilder-builder
 
-push-latest: docker-push-latest-builder docker-push-latest-golang-builder
+push-latest: docker-push-latest-builder docker-push-latest-golang-builder docker-push-latest-kubebuilder-builder
 
 ####
 #
@@ -40,6 +40,8 @@ push-latest: docker-push-latest-builder docker-push-latest-golang-builder
 builder: docker-build-builder
 
 golang-builder: builder docker-build-golang-builder
+
+kubebuilder-builder: golang-builder docker-build-kubebuilder-builder
 
 ####
 #
