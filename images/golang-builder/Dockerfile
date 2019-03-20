@@ -1,0 +1,59 @@
+# Copyright 2019 Pusher Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#############################################################################
+###
+### GOLANG BUILDER - From quay.io/pusher/builder with Go tooling for building
+###                  Golang based projects
+###
+#############################################################################
+
+ARG VERSION=latest
+FROM quay.io/pusher/builder:${VERSION}
+
+# Switch to root user to perform installation
+USER root
+
+# gcc for cgo
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		g++ \
+		gcc \
+		libc6-dev \
+		make \
+		pkg-config \
+	&& rm -rf /var/lib/apt/lists/*
+
+ENV GOLANG_VERSION 1.12.1
+
+RUN set -eux; \
+	\
+  # this came from the golang dockerfile
+  goRelArch='linux-amd64'; goRelSha256='2a3fdabf665496a0db5f41ec6af7a9b15a49fbe71a85a50ca38b1f13a103aeec' ;\
+	\
+	url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz"; \
+	wget -O go.tgz "$url"; \
+	echo "${goRelSha256} *go.tgz" | sha256sum -c -; \
+	tar -C /usr/local -xzf go.tgz; \
+	rm go.tgz; \
+	\
+	export PATH="/usr/local/go/bin:$PATH"; \
+	go version
+
+# Switch back to prow user for publish
+USER prow
+
+ENV GOPATH /home/prow/go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"

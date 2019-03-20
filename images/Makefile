@@ -17,26 +17,48 @@ TAG ?= $(shell date +v%Y%m%d)-$(shell git describe --tags --always --dirty)
 
 all: build
 
-build: docker-build-builder
+####
+#
+# The following targets are for building all images
+#
+####
 
-tag-latest: docker-tag-latest-builder
+build: builder golang-builder
 
-push: docker-push-builder
+tag-latest: docker-tag-latest-builder docker-tag-latest-golang-builder
 
-push-latest: docker-pusher-latest-builder
+push: docker-push-builder docker-push-golang-builder
+
+push-latest: docker-push-latest-builder docker-push-latest-golang-builder
+
+####
+#
+# Targets for building specific images
+#
+####
+
+builder: docker-build-builder
+
+golang-builder: builder docker-build-golang-builder
+
+####
+#
+# Generic docker related targets
+#
+###
 
 docker-build-%:
-	docker build --pull --build-arg IMAGE_ARG=$(REPO)/$*:$(TAG) -t $(REPO)/$*:$(TAG) $*
+	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(TAG) --build-arg VERSION=$(TAG) -t $(REPO)/$*:$(TAG) $*
 	@echo "\033[36mBuilt $(REPO)/$*:$(TAG)\033[0m"
 
-docker-push-%: docker-build-%
+docker-push-%: %
 	docker push $(REPO)/$*:$(TAG)
 	@echo "\033[36mPushed $(REPO)/$* with tag :$(TAG)\033[0m"
 
-docker-tag-latest-%: docker-build-%
-	docker tag $(REPO)/$*:$(TAG) $(IMG):latest
+docker-tag-latest-%: %
+	docker tag $(REPO)/$*:$(TAG) $(REPO)/$*:latest
 	@echo "\033[36mTagged $(REPO)/$*:$(TAG) with latest\033[0m"
 
-docker-push-latest-%: docker-build-% docker-tag-latest-%
+docker-push-latest-%: % docker-tag-latest-%
 	docker push $(REPO)/$*:latest
 	@echo "\033[36mPushed $(REPO)/$* with tag :latest\033[0m"
