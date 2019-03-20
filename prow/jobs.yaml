@@ -119,6 +119,33 @@ data:
                   privileged: true
           trigger: "(?m)^/build docker,?(\\s+|$)"
           rerun_command: "/build docker"
+  testing_testing-postsubmits.yaml: |
+    postsubmits:
+      pusher/testing:
+        - name: post-testing-build-docker
+          max_concurrency: 10
+          path_alias: github.com/pusher/testing
+          agent: kubernetes
+          branches:
+            - master
+          always_run: true
+          decorate: true
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - image: quay.io/pusher/builder:latest
+                name: build-docker
+                command: ["/usr/local/bin/runner.sh"]
+                args:
+                  - make --directory=images/bootstrap push push-latest
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+                securityContext:
+                  privileged: true
   testing_testing-presubmits.yaml: |
     presubmits:
       pusher/testing:
