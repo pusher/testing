@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ing
+  name: prow
   namespace: default
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -9,18 +9,18 @@ metadata:
     certmanager.k8s.io/cluster-issuer: letsencrypt-production
 spec:
   rules:
-  - host: prow.pusher.com
-    http:
-      paths:
-      - backend:
-          serviceName: deck
-          servicePort: 8080
-        path: /
-      - backend:
-          serviceName: hook
-          servicePort: 8888
-        path: /hook
+    - host: prow.pusher.com
+      http:
+        paths:
+          - backend:
+              serviceName: deck
+              servicePort: 8080
+            path: /
+          - backend:
+              serviceName: hook
+              servicePort: 8888
+            path: /hook
   tls:
-  - hosts:
-    - prow.pusher.com
-    secretName: prow-tls
+    - hosts:
+        - prow.pusher.com
+      secretName: prow-tls

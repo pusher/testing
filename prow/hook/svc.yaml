@@ -7,6 +7,7 @@ spec:
   selector:
     app: hook
   ports:
-  - port: 8888
-    targetPort: 8888
-    name: hook
+    - port: 8888
+      targetPort: 8888
+      name: hook
+  type: ClusterIP
