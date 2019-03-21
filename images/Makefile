@@ -13,7 +13,7 @@
 # limitations under the License.
 
 REPO := quay.io/pusher
-TAG ?= $(shell date +v%Y%m%d)-$(shell git describe --tags --always --dirty)
+VERSION ?= $(shell date +v%Y%m%d)-$(shell git describe --tags --always --dirty)
 
 all: build
 
@@ -25,11 +25,9 @@ all: build
 
 build: builder golang-builder kubebuilder-builder
 
-tag-latest: docker-tag-latest-builder docker-tag-latest-golang-builder docker-tag-latest-kubebuilder-builder
+tag: docker-tag-builder docker-tag-golang-builder docker-tag-kubebuilder-builder
 
 push: docker-push-builder docker-push-golang-builder docker-push-kubebuilder-builder
-
-push-latest: docker-push-latest-builder docker-push-latest-golang-builder docker-push-latest-kubebuilder-builder
 
 ####
 #
@@ -50,17 +48,13 @@ kubebuilder-builder: golang-builder docker-build-kubebuilder-builder
 ###
 
 docker-build-%:
-	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(TAG) --build-arg VERSION=$(TAG) -t $(REPO)/$*:$(TAG) $*
+	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(VERSION) --build-arg VERSION=$(VERSION) -t $(REPO)/$*:$(VERSION) $*
 	@echo "\033[36mBuilt $(REPO)/$*:$(TAG)\033[0m"
 
-docker-push-%: %
-	docker push $(REPO)/$*:$(TAG)
-	@echo "\033[36mPushed $(REPO)/$* with tag :$(TAG)\033[0m"
+TAGS ?= ${VERSION},latest
 
-docker-tag-latest-%: %
-	docker tag $(REPO)/$*:$(TAG) $(REPO)/$*:latest
-	@echo "\033[36mTagged $(REPO)/$*:$(TAG) with latest\033[0m"
+docker-push-%: % docker-tag-%
+	@for tag in {${TAGS},}; do docker push $(REPO)/$*:$${tag}; echo "\033[36mPushed $(REPO)/$*:$${tag}\033[0m"; done
 
-docker-push-latest-%: % docker-tag-latest-%
-	docker push $(REPO)/$*:latest
-	@echo "\033[36mPushed $(REPO)/$* with tag :latest\033[0m"
+docker-tag-%: %
+	@for tag in {${TAGS},}; do docker tag  $(REPO)/$*:$(VERSION) $(REPO)/$*:$${tag}; echo "\033[36mTagged $(REPO)/$*:$(VERSION) as $${tag}\033[0m"; done
