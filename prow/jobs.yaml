@@ -18,7 +18,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: golang:1.12-stretch
+              - image: quay.io/pusher/kubebuilder-builder
                 name: verify-generate
                 command: ["/bin/sh", "-c"]
                 args:
@@ -39,7 +39,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: golang:1.12-stretch
+              - image: quay.io/pusher/kubebuilder-builder
                 name: verify-manifests
                 command: ["/bin/sh", "-c"]
                 args:
@@ -60,7 +60,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: golang:1.12-stretch
+              - image: quay.io/pusher/kubebuilder-builder
                 name: lint
                 command: ["/bin/sh", "-c"]
                 args:
@@ -81,7 +81,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: golang:1.12-stretch
+              - image: quay.io/pusher/kubebuilder-builder
                 name: test-ginkgo
                 command: ["/bin/sh", "-c"]
                 args:
