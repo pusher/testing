@@ -49,12 +49,12 @@ kubebuilder-builder: golang-builder docker-build-kubebuilder-builder
 
 docker-build-%:
 	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(VERSION) --build-arg VERSION=$(VERSION) -t $(REPO)/$*:$(VERSION) $*
-	@echo "\033[36mBuilt $(REPO)/$*:$(TAG)\033[0m"
+	@echo "\033[36mBuilt $(REPO)/$*:$(VERSION)\033[0m"
 
 TAGS ?= ${VERSION},latest
 
 docker-push-%: % docker-tag-%
-	@for tag in {${TAGS},}; do docker push $(REPO)/$*:$${tag}; echo "\033[36mPushed $(REPO)/$*:$${tag}\033[0m"; done
+	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker push $(REPO)/$*:$${tag} && echo "\033[36mPushed $(REPO)/$*:$${tag}\033[0m"; done
 
 docker-tag-%: %
-	@for tag in {${TAGS},}; do docker tag  $(REPO)/$*:$(VERSION) $(REPO)/$*:$${tag}; echo "\033[36mTagged $(REPO)/$*:$(VERSION) as $${tag}\033[0m"; done
+	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker tag  $(REPO)/$*:$(VERSION) $(REPO)/$*:$${tag} && echo "\033[36mTagged $(REPO)/$*:$(VERSION) as $${tag}\033[0m"; done
