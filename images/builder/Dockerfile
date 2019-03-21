@@ -114,7 +114,13 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 RUN echo "prow ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN useradd -rm -d /home/prow -s /bin/bash -g root -G sudo,docker -u 1000 prow
-RUN chown prow:root /workspace
+RUN chown prow:root /workspace \
+    && chmod g+s /workspace \
+    && cd /workspace && umask 0002
+RUN mkdir -p /home/prow/go \
+    && chown prow:root /home/prow/go \
+    && chmod g+s /home/prow/go \
+    && cd /home/prow/go && umask 0002
 USER prow
 
 # note the runner is responsible for making docker in docker function if
