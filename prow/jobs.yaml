@@ -139,7 +139,7 @@ data:
                 name: build-docker
                 command: ["/usr/local/bin/runner.sh"]
                 args:
-                  - make --directory=images/bootstrap push push-latest
+                  - make --directory=images push push-latest
                 resources:
                   requests:
                     cpu: 1
@@ -186,7 +186,7 @@ data:
                 name: build-docker
                 command: ["/usr/local/bin/runner.sh"]
                 args:
-                  - TAG=pull-${PULL_NUMBER}-${PULL_PULL_SHA} make --directory=images/bootstrap push
+                  - TAG=pull-${PULL_NUMBER}-${PULL_PULL_SHA} make --directory=images push
                 resources:
                   requests:
                     cpu: 1
