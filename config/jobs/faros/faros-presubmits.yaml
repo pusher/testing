@@ -76,7 +76,7 @@ presubmits:
             name: test-ginkgo
             command: ["/bin/sh", "-c"]
             args:
-              - touch .env && make prepare-env-1.13 && make test-ginkgo
+              - touch .env && make prepare-env-1.13 && make test
             resources:
               requests:
                 cpu: 1
