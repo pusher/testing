@@ -23,11 +23,11 @@ all: build
 #
 ####
 
-build: builder golang-builder kubebuilder-builder
+build: builder golang-builder kubebuilder-builder clonerefs
 
-tag: docker-tag-builder docker-tag-golang-builder docker-tag-kubebuilder-builder
+tag: docker-tag-builder docker-tag-golang-builder docker-tag-kubebuilder-builder docker-tag-clonerefs
 
-push: docker-push-builder docker-push-golang-builder docker-push-kubebuilder-builder
+push: docker-push-builder docker-push-golang-builder docker-push-kubebuilder-builder docker-push-clonerefs
 
 ####
 #
@@ -40,6 +40,8 @@ builder: docker-build-builder
 golang-builder: builder docker-build-golang-builder
 
 kubebuilder-builder: golang-builder docker-build-kubebuilder-builder
+
+clonerefs: docker-build-clonerefs
 
 ####
 #
