@@ -22,6 +22,10 @@
 ARG VERSION=latest
 FROM quay.io/pusher/golang-builder:${VERSION}
 
+# add env we can debug with the image name:tag
+ARG IMAGE_ARG
+ENV IMAGE=${IMAGE_ARG}
+
 # Install kubebuilder project tools (some of these may already exist)
 ADD Makefile .
 

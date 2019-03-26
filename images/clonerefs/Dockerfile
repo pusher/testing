@@ -20,5 +20,9 @@
 
 FROM gcr.io/k8s-prow/clonerefs:v20190301-2d35634
 
+# add env we can debug with the image name:tag
+ARG IMAGE_ARG
+ENV IMAGE=${IMAGE_ARG}
+
 RUN adduser -S -h /home/prow -s /bin/bash -g root -u 1000 prow
 USER prow

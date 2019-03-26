@@ -22,6 +22,10 @@
 ARG VERSION=latest
 FROM quay.io/pusher/builder:${VERSION}
 
+# add env we can debug with the image name:tag
+ARG IMAGE_ARG
+ENV IMAGE=${IMAGE_ARG}
+
 # Switch to root user to perform installation
 USER root
 
