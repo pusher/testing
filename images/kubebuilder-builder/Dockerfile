@@ -29,9 +29,11 @@ ENV IMAGE=${IMAGE_ARG}
 # Install kubebuilder project tools (some of these may already exist)
 ADD Makefile .
 
-# Switch to root user for installation
-USER root
-RUN mkdir -p \
+RUN sudo mkdir -p \
+		/usr/local/kubebuilder-1.11/bin \
+		/usr/local/kubebuilder-1.12/bin \
+		/usr/local/kubebuilder-1.13/bin \
+		&& sudo chown prow:root \
 		/usr/local/kubebuilder-1.11/bin \
 		/usr/local/kubebuilder-1.12/bin \
 		/usr/local/kubebuilder-1.13/bin
@@ -44,6 +46,3 @@ RUN make \
 		kubebuilder-tools-1.12 \
 		kubebuilder-tools-1.13 \
 		&& rm Makefile
-
-# Switch to prow user for publish
-USER prow

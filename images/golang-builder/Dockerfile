@@ -57,7 +57,13 @@ RUN set -eux; \
 # Switch back to prow user for publish
 USER prow
 
-ENV GOPATH /home/prow/go
+RUN sudo mkdir /go \
+    && sudo chown prow:root /go \
+    && chmod g+s /go
+
+# Install tools globally but owned by prow (if they are installed in
+# /home/prow/go they are overwritten by Prow's code mountpoint)
+ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin"
