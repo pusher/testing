@@ -1,7 +1,7 @@
 ECHO := echo
 
-.PHONY: generate-config
-generate-config:
+.PHONY: config
+config:
 	@ $(ECHO) "\033[36mGenerating Config\033[0m"
 	kubectl create configmap config --from-file=config.yaml=config/config.yaml -n default --dry-run -o yaml > prow/config.yaml
 	kubectl create configmap plugins --from-file=plugins.yaml=config/plugins.yaml -n default --dry-run -o yaml > prow/plugins.yaml
@@ -14,9 +14,9 @@ verify-config: checkconfig
 	@ $(ECHO) "\033[36mVerifying Config\033[0m"
 	${GOPATH}/bin/checkconfig --config-path=config/config.yaml --job-config-path=config/jobs --plugin-config=config/plugins.yaml
 	@ echo # Spacer between output
-	make generate-config
+	make config
 	@ $(ECHO) "\033[36mVerifying Git Status\033[0m"
-	@ if [ "$$(git status -s)" != "" ]; then git diff --color; echo "\033[31;1mERROR: Git Diff found. Please run \`make generate-config\` and commit the result.\033[0m"; exit 1; else echo "\033[32mValid config found\033[0m";fi
+	@ if [ "$$(git status -s)" != "" ]; then git diff --color; echo "\033[31;1mERROR: Git Diff found. Please run \`make config\` and commit the result.\033[0m"; exit 1; else echo "\033[32mValid config found\033[0m";fi
 	@ echo # Produce a new line at the end of each target to help readability
 
 checkconfig:
