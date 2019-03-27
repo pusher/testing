@@ -20,6 +20,10 @@ plugins:
     - trigger
     - yuks
     - assign
+    - branchcleaner
+    - hold
+    - lifecycle
+    - wip
   pusher/faros:
     - size
     - lgtm
@@ -29,6 +33,10 @@ plugins:
     - trigger
     - yuks
     - assign
+    - branchcleaner
+    - hold
+    - lifecycle
+    - wip
   pusher/wave:
     - size
     - lgtm
@@ -38,3 +46,7 @@ plugins:
     - trigger
     - yuks
     - assign
+    - branchcleaner
+    - hold
+    - lifecycle
+    - wip
