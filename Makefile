@@ -10,7 +10,7 @@ config:
 	@ echo # Produce a new line at the end of each target to help readability
 
 .PHONY: verify-config
-verify-config: checkconfig
+verify-config: $(GOPATH)/bin/checkconfig
 	@ $(ECHO) "\033[36mVerifying Config\033[0m"
 	${GOPATH}/bin/checkconfig --config-path=config/config.yaml --job-config-path=config/jobs --plugin-config=config/plugins.yaml
 	@ echo # Spacer between output
@@ -19,7 +19,7 @@ verify-config: checkconfig
 	@ if [ "$$(git status -s)" != "" ]; then git diff --color; echo "\033[31;1mERROR: Git Diff found. Please run \`make config\` and commit the result.\033[0m"; exit 1; else echo "\033[32mValid config found\033[0m";fi
 	@ echo # Produce a new line at the end of each target to help readability
 
-checkconfig:
+$(GOPATH)/bin/checkconfig:
 	@ $(ECHO) "\033[36mInstalling checkconfig\033[0m"
 	go get k8s.io/test-infra/prow/cmd/checkconfig
 	go install k8s.io/test-infra/prow/cmd/checkconfig
