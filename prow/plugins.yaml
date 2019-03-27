@@ -38,6 +38,15 @@ data:
         - trigger
         - yuks
         - assign
+      pusher/wave:
+        - size
+        - lgtm
+        - cat
+        - label
+        - dog
+        - trigger
+        - yuks
+        - assign
 kind: ConfigMap
 metadata:
   creationTimestamp: null
