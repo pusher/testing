@@ -158,7 +158,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/golang-ci:latest
+              - image: quay.io/pusher/kubebuilder-builder:latest
                 name: verify-config
                 command: ["/bin/bash", "-c"]
                 args:
