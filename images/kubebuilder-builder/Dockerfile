@@ -46,3 +46,5 @@ RUN make \
 		kubebuilder-tools-1.12 \
 		kubebuilder-tools-1.13 \
 		&& rm Makefile
+
+ENV PATH=/usr/local/kubebuilder-1.13/bin:$PATH
