@@ -108,7 +108,7 @@ COPY --from=builder ["/barnacle", "/usr/local/bin/"]
 # END: DOCKER IN DOCKER SETUP
 #
 
-# Run actual from here on out as the prow user
+# Run everything from here on out as the prow user
 RUN apt-get update && \
     apt-get install -y --no-install-recommends sudo && \
     rm -rf /var/lib/apt/lists/*
