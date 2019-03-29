@@ -20,7 +20,7 @@ data:
             containers:
               - image: quay.io/pusher/kubebuilder-builder
                 name: verify-generate
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make verify-generate
                 resources:
@@ -41,7 +41,7 @@ data:
             containers:
               - image: quay.io/pusher/kubebuilder-builder
                 name: verify-manifests
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make verify-manifests
                 resources:
@@ -62,7 +62,7 @@ data:
             containers:
               - image: quay.io/pusher/kubebuilder-builder
                 name: lint
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make lint
                 resources:
@@ -83,7 +83,7 @@ data:
             containers:
               - image: quay.io/pusher/kubebuilder-builder
                 name: test-ginkgo
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make test
                 resources:
@@ -106,7 +106,7 @@ data:
             containers:
               - image: quay.io/pusher/builder:latest
                 name: build-docker
-                command: ["/usr/local/bin/runner.sh"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
                   - PUSH_TAGS=${TAGS}
@@ -137,7 +137,7 @@ data:
             containers:
               - image: quay.io/pusher/builder:latest
                 name: build-docker
-                command: ["/usr/local/bin/runner.sh"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - make --directory=images push push-latest
                 resources:
@@ -160,7 +160,7 @@ data:
             containers:
               - image: quay.io/pusher/kubebuilder-builder:latest
                 name: verify-config
-                command: ["/bin/bash", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - make verify-config
                 resources:
@@ -184,7 +184,7 @@ data:
             containers:
               - image: quay.io/pusher/builder:latest
                 name: build-docker
-                command: ["/usr/local/bin/runner.sh"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA} make --directory=images push
                 resources:
@@ -209,7 +209,7 @@ data:
             containers:
               - image: quay.io/pusher/kubebuilder-builder
                 name: verify-generate
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make verify-generate
                 resources:
@@ -230,7 +230,7 @@ data:
             containers:
               - image: quay.io/pusher/kubebuilder-builder
                 name: verify-manifests
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make verify-manifests
                 resources:
@@ -251,7 +251,7 @@ data:
             containers:
               - image: quay.io/pusher/kubebuilder-builder
                 name: lint
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make lint
                 resources:
@@ -272,7 +272,7 @@ data:
             containers:
               - image: quay.io/pusher/kubebuilder-builder
                 name: test-ginkgo
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make test
                 resources:
@@ -295,7 +295,7 @@ data:
             containers:
               - image: quay.io/pusher/builder:latest
                 name: build-docker
-                command: ["/usr/local/bin/runner.sh"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
                   - PUSH_TAGS=${TAGS}

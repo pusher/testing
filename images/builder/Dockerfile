@@ -123,6 +123,6 @@ USER prow
 
 # note the runner is responsible for making docker in docker function if
 # env DOCKER_IN_DOCKER_ENABLED is set
-COPY ["runner.sh","/usr/local/bin/"]
+COPY ["runner","/usr/local/bin/"]
 
-ENTRYPOINT ["/usr/local/bin/runner.sh"]
+ENTRYPOINT ["/usr/local/bin/runner"]

@@ -11,7 +11,7 @@ presubmits:
         containers:
           - image: quay.io/pusher/kubebuilder-builder:latest
             name: verify-config
-            command: ["/bin/bash", "-c"]
+            command: ["/usr/local/bin/runner"]
             args:
               - make verify-config
             resources:
@@ -35,7 +35,7 @@ presubmits:
         containers:
           - image: quay.io/pusher/builder:latest
             name: build-docker
-            command: ["/usr/local/bin/runner.sh"]
+            command: ["/usr/local/bin/runner"]
             args:
               - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA} make --directory=images push
             resources:

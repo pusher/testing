@@ -15,7 +15,7 @@ postsubmits:
         containers:
           - image: quay.io/pusher/builder:latest
             name: build-docker
-            command: ["/usr/local/bin/runner.sh"]
+            command: ["/usr/local/bin/runner"]
             args:
               - make --directory=images push push-latest
             resources:
