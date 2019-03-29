@@ -21,7 +21,6 @@
 FROM golang:1.12 AS builder
 COPY barnacle/* $GOPATH/src/barnacle/
 
-# RUN apt-get install -y --no-install-recommends ca-certificates git
 RUN go get -u github.com/golang/dep/cmd/dep
 WORKDIR $GOPATH/src/barnacle
 RUN dep ensure --vendor-only
