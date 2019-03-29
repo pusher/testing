@@ -89,7 +89,7 @@ export SOURCE_DATE_EPOCH
 
 # actually start bootstrap and the job
 set -o xtrace
-$@
+/bin/bash -c "$@"
 EXIT_VALUE=$?
 set +o xtrace
 
