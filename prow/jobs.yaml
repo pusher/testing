@@ -18,7 +18,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder
+              - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
                 name: verify-generate
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -39,7 +39,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder
+              - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
                 name: verify-manifests
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -60,7 +60,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder
+              - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
                 name: lint
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -81,7 +81,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder
+              - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
                 name: test-ginkgo
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -104,7 +104,7 @@ data:
             preset-dind-enabled: "true"
           spec:
             containers:
-              - image: quay.io/pusher/builder:latest
+              - image: quay.io/pusher/builder:v20190401-6a7e3ff
                 name: build-docker
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -136,7 +136,7 @@ data:
             preset-quay-credentials: "true"
           spec:
             containers:
-              - image: quay.io/pusher/builder:latest
+              - image: quay.io/pusher/builder:v20190401-6a7e3ff
                 name: build-docker
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -159,7 +159,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder:latest
+              - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
                 name: verify-config
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -183,7 +183,7 @@ data:
             preset-quay-credentials: "true"
           spec:
             containers:
-              - image: quay.io/pusher/builder:latest
+              - image: quay.io/pusher/builder:v20190401-6a7e3ff
                 name: build-docker
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -208,7 +208,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder
+              - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
                 name: verify-generate
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -229,7 +229,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder
+              - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
                 name: verify-manifests
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -250,7 +250,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder
+              - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
                 name: lint
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -271,7 +271,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder
+              - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
                 name: test-ginkgo
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -294,7 +294,7 @@ data:
             preset-dind-enabled: "true"
           spec:
             containers:
-              - image: quay.io/pusher/builder:latest
+              - image: quay.io/pusher/builder:v20190401-6a7e3ff
                 name: build-docker
                 command: ["/usr/local/bin/runner"]
                 args:
