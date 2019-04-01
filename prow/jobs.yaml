@@ -140,7 +140,7 @@ data:
                 name: build-docker
                 command: ["/usr/local/bin/runner"]
                 args:
-                  - make --directory=images push push-latest
+                  - make --directory=images push
                 resources:
                   requests:
                     cpu: 1
