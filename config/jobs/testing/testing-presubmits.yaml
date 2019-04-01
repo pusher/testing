@@ -1,22 +1,48 @@
 presubmits:
   pusher/testing:
-  - name: pull-testing-verify-config
-    max_concurrency: 10
-    path_alias: github.com/pusher/testing
-    agent: kubernetes
-    always_run: true
-    skip_report: false
-    decorate: true
-    spec:
-      containers:
-      - image: quay.io/pusher/golang-ci:latest
-        name: verify-config
-        command: ["/bin/bash", "-c"]
-        args:
-        - make verify-config
-        resources:
-          requests:
-            cpu: 1
-            memory: 1Gi
-    trigger: "(?m)^/verify config,?(\\s+|$)"
-    rerun_command: "/verify config"
+    - name: pull-testing-verify-config
+      max_concurrency: 10
+      path_alias: github.com/pusher/testing
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+      spec:
+        containers:
+          - image: quay.io/pusher/kubebuilder-builder:latest
+            name: verify-config
+            command: ["/usr/local/bin/runner"]
+            args:
+              - make verify-config
+            resources:
+              requests:
+                cpu: 1
+                memory: 1Gi
+      trigger: "(?m)^/verify config,?(\\s+|$)"
+      rerun_command: "/verify config"
+
+    - name: pull-testing-build-docker
+      max_concurrency: 10
+      path_alias: github.com/pusher/testing
+      agent: kubernetes
+      run_if_changed: "^(images/.*)"
+      skip_report: false
+      decorate: true
+      labels:
+        preset-dind-enabled: "true"
+        preset-quay-credentials: "true"
+      spec:
+        containers:
+          - image: quay.io/pusher/builder:latest
+            name: build-docker
+            command: ["/usr/local/bin/runner"]
+            args:
+              - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA} make --directory=images push
+            resources:
+              requests:
+                cpu: 1
+                memory: 1Gi
+            securityContext:
+              privileged: true
+      trigger: "(?m)^/build docker,?(\\s+|$)"
+      rerun_command: "/build docker"

@@ -18,9 +18,9 @@ data:
           decorate: true
           spec:
             containers:
-              - image: golang:1.12-stretch
+              - image: quay.io/pusher/kubebuilder-builder
                 name: verify-generate
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make verify-generate
                 resources:
@@ -39,9 +39,9 @@ data:
           decorate: true
           spec:
             containers:
-              - image: golang:1.12-stretch
+              - image: quay.io/pusher/kubebuilder-builder
                 name: verify-manifests
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make verify-manifests
                 resources:
@@ -60,9 +60,9 @@ data:
           decorate: true
           spec:
             containers:
-              - image: golang:1.12-stretch
+              - image: quay.io/pusher/kubebuilder-builder
                 name: lint
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
                   - touch .env && make prepare-env-1.13 && make lint
                 resources:
@@ -81,40 +81,235 @@ data:
           decorate: true
           spec:
             containers:
-              - image: golang:1.12-stretch
+              - image: quay.io/pusher/kubebuilder-builder
                 name: test-ginkgo
-                command: ["/bin/sh", "-c"]
+                command: ["/usr/local/bin/runner"]
                 args:
-                  - touch .env && make prepare-env-1.13 && make test-ginkgo
+                  - touch .env && make prepare-env-1.13 && make test
                 resources:
                   requests:
                     cpu: 1
                     memory: 1Gi
           trigger: "(?m)^/test ginkgo,?(\\s+|$)"
           rerun_command: "/test ginkgo"
+
+        - name: pull-faros-build-docker
+          max_concurrency: 10
+          path_alias: github.com/pusher/faros
+          agent: kubernetes
+          always_run: false
+          skip_report: false
+          decorate: true
+          labels:
+            preset-dind-enabled: "true"
+          spec:
+            containers:
+              - image: quay.io/pusher/builder:latest
+                name: build-docker
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - touch .env; # No config necessary
+                  - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
+                  - PUSH_TAGS=${TAGS}
+                  - make docker-build docker-tag docker-push
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+                securityContext:
+                  privileged: true
+          trigger: "(?m)^/build docker,?(\\s+|$)"
+          rerun_command: "/build docker"
+  testing_testing-postsubmits.yaml: |
+    postsubmits:
+      pusher/testing:
+        - name: post-testing-build-docker
+          max_concurrency: 10
+          path_alias: github.com/pusher/testing
+          agent: kubernetes
+          branches:
+            - master
+          always_run: true
+          decorate: true
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - image: quay.io/pusher/builder:latest
+                name: build-docker
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - make --directory=images push push-latest
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+                securityContext:
+                  privileged: true
   testing_testing-presubmits.yaml: |
     presubmits:
       pusher/testing:
-      - name: pull-testing-verify-config
-        max_concurrency: 10
-        path_alias: github.com/pusher/testing
-        agent: kubernetes
-        always_run: true
-        skip_report: false
-        decorate: true
-        spec:
-          containers:
-          - image: quay.io/pusher/golang-ci:latest
-            name: verify-config
-            command: ["/bin/bash", "-c"]
-            args:
-            - make verify-config
-            resources:
-              requests:
-                cpu: 1
-                memory: 1Gi
-        trigger: "(?m)^/verify config,?(\\s+|$)"
-        rerun_command: "/verify config"
+        - name: pull-testing-verify-config
+          max_concurrency: 10
+          path_alias: github.com/pusher/testing
+          agent: kubernetes
+          always_run: true
+          skip_report: false
+          decorate: true
+          spec:
+            containers:
+              - image: quay.io/pusher/kubebuilder-builder:latest
+                name: verify-config
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - make verify-config
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+          trigger: "(?m)^/verify config,?(\\s+|$)"
+          rerun_command: "/verify config"
+
+        - name: pull-testing-build-docker
+          max_concurrency: 10
+          path_alias: github.com/pusher/testing
+          agent: kubernetes
+          run_if_changed: "^(images/.*)"
+          skip_report: false
+          decorate: true
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - image: quay.io/pusher/builder:latest
+                name: build-docker
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA} make --directory=images push
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+                securityContext:
+                  privileged: true
+          trigger: "(?m)^/build docker,?(\\s+|$)"
+          rerun_command: "/build docker"
+  wave_wave-presubmits.yaml: |
+    presubmits:
+      pusher/wave:
+        - name: pull-wave-verify-generate
+          max_concurrency: 10
+          path_alias: github.com/pusher/wave
+          agent: kubernetes
+          always_run: true
+          skip_report: false
+          decorate: true
+          spec:
+            containers:
+              - image: quay.io/pusher/kubebuilder-builder
+                name: verify-generate
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - touch .env && make prepare-env-1.13 && make verify-generate
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+          trigger: "(?m)^/verify generate,?(\\s+|$)"
+          rerun_command: "/verify generate"
+
+        - name: pull-wave-verify-manifests
+          max_concurrency: 10
+          path_alias: github.com/pusher/wave
+          agent: kubernetes
+          always_run: true
+          skip_report: false
+          decorate: true
+          spec:
+            containers:
+              - image: quay.io/pusher/kubebuilder-builder
+                name: verify-manifests
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - touch .env && make prepare-env-1.13 && make verify-manifests
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+          trigger: "(?m)^/verify manifests,?(\\s+|$)"
+          rerun_command: "/verify manifests"
+
+        - name: pull-wave-lint
+          max_concurrency: 10
+          path_alias: github.com/pusher/wave
+          agent: kubernetes
+          always_run: true
+          skip_report: false
+          decorate: true
+          spec:
+            containers:
+              - image: quay.io/pusher/kubebuilder-builder
+                name: lint
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - touch .env && make prepare-env-1.13 && make lint
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+          trigger: "(?m)^/lint,?(\\s+|$)"
+          rerun_command: "/lint"
+
+        - name: pull-wave-test-ginkgo
+          max_concurrency: 10
+          path_alias: github.com/pusher/wave
+          agent: kubernetes
+          always_run: true
+          skip_report: false
+          decorate: true
+          spec:
+            containers:
+              - image: quay.io/pusher/kubebuilder-builder
+                name: test-ginkgo
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - touch .env && make prepare-env-1.13 && make test
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+          trigger: "(?m)^/test ginkgo,?(\\s+|$)"
+          rerun_command: "/test ginkgo"
+
+        - name: pull-wave-build-docker
+          max_concurrency: 10
+          path_alias: github.com/pusher/wave
+          agent: kubernetes
+          always_run: false
+          skip_report: false
+          decorate: true
+          labels:
+            preset-dind-enabled: "true"
+          spec:
+            containers:
+              - image: quay.io/pusher/builder:latest
+                name: build-docker
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - touch .env; # No config necessary
+                  - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
+                  - PUSH_TAGS=${TAGS}
+                  - make docker-build docker-tag docker-push
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+                securityContext:
+                  privileged: true
+          trigger: "(?m)^/build docker,?(\\s+|$)"
+          rerun_command: "/build docker"
 kind: ConfigMap
 metadata:
   creationTimestamp: null

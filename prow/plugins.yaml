@@ -29,6 +29,10 @@ data:
         - trigger
         - yuks
         - assign
+        - branchcleaner
+        - hold
+        - lifecycle
+        - wip
       pusher/faros:
         - size
         - lgtm
@@ -38,6 +42,23 @@ data:
         - trigger
         - yuks
         - assign
+        - branchcleaner
+        - hold
+        - lifecycle
+        - wip
+      pusher/wave:
+        - size
+        - lgtm
+        - cat
+        - label
+        - dog
+        - trigger
+        - yuks
+        - assign
+        - branchcleaner
+        - hold
+        - lifecycle
+        - wip
 kind: ConfigMap
 metadata:
   creationTimestamp: null

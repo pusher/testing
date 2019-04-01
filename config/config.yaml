@@ -8,7 +8,7 @@ plank:
     timeout: 7200000000000 # 2h
     grace_period: 15000000000 # 15s
     utility_images:
-      clonerefs: "gcr.io/k8s-prow/clonerefs:v20190301-2d35634"
+      clonerefs: "quay.io/pusher/clonerefs:latest"
       initupload: "gcr.io/k8s-prow/initupload:v20190301-2d35634"
       entrypoint: "gcr.io/k8s-prow/entrypoint:v20190301-2d35634"
       sidecar: "gcr.io/k8s-prow/sidecar:v20190301-2d35634"
@@ -49,3 +49,22 @@ presets:
       - name: credentials
         mountPath: /home/prow/.docker
         readOnly: true
+
+  # docker-in-docker (with images/bootstrap) preset
+  # NOTE: using this also requires using that image,
+  # ensuring you run your test under either the ENTRYPOINT or:
+  # /usr/local/bin/runner my-test-command --foo --bar
+  # AND setting the following on your PodSpec:
+  # securityContext:
+  #   privileged: true
+  - labels:
+      preset-dind-enabled: "true"
+    env:
+      - name: DOCKER_IN_DOCKER_ENABLED
+        value: "true"
+    volumes:
+      - name: docker-graph
+        emptyDir: {}
+    volumeMounts:
+      - name: docker-graph
+        mountPath: /docker-graph

@@ -1,8 +1,8 @@
 presubmits:
-  pusher/faros:
-    - name: pull-faros-verify-generate
+  pusher/wave:
+    - name: pull-wave-verify-generate
       max_concurrency: 10
-      path_alias: github.com/pusher/faros
+      path_alias: github.com/pusher/wave
       agent: kubernetes
       always_run: true
       skip_report: false
@@ -21,9 +21,9 @@ presubmits:
       trigger: "(?m)^/verify generate,?(\\s+|$)"
       rerun_command: "/verify generate"
 
-    - name: pull-faros-verify-manifests
+    - name: pull-wave-verify-manifests
       max_concurrency: 10
-      path_alias: github.com/pusher/faros
+      path_alias: github.com/pusher/wave
       agent: kubernetes
       always_run: true
       skip_report: false
@@ -42,9 +42,9 @@ presubmits:
       trigger: "(?m)^/verify manifests,?(\\s+|$)"
       rerun_command: "/verify manifests"
 
-    - name: pull-faros-lint
+    - name: pull-wave-lint
       max_concurrency: 10
-      path_alias: github.com/pusher/faros
+      path_alias: github.com/pusher/wave
       agent: kubernetes
       always_run: true
       skip_report: false
@@ -63,9 +63,9 @@ presubmits:
       trigger: "(?m)^/lint,?(\\s+|$)"
       rerun_command: "/lint"
 
-    - name: pull-faros-test-ginkgo
+    - name: pull-wave-test-ginkgo
       max_concurrency: 10
-      path_alias: github.com/pusher/faros
+      path_alias: github.com/pusher/wave
       agent: kubernetes
       always_run: true
       skip_report: false
@@ -84,9 +84,9 @@ presubmits:
       trigger: "(?m)^/test ginkgo,?(\\s+|$)"
       rerun_command: "/test ginkgo"
 
-    - name: pull-faros-build-docker
+    - name: pull-wave-build-docker
       max_concurrency: 10
-      path_alias: github.com/pusher/faros
+      path_alias: github.com/pusher/wave
       agent: kubernetes
       always_run: false
       skip_report: false
