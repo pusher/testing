@@ -79,8 +79,8 @@ presubmits:
               - touch .env && make prepare-env-1.13 && make test
             resources:
               requests:
-                cpu: 1
-                memory: 1Gi
+                cpu: 3
+                memory: 2Gi
       trigger: "(?m)^/test (?:.*? )?(1.13|all)(?: .*?)?$"
       rerun_command: "/test 1.13"
 
@@ -100,8 +100,8 @@ presubmits:
               - touch .env && make prepare-env-1.12 && SKIP_DRY_RUN_TESTS=true make test
             resources:
               requests:
-                cpu: 1
-                memory: 1Gi
+                cpu: 3
+                memory: 2Gi
       trigger: "(?m)^/test (?:.*? )?(1.12|all)(?: .*?)?$"
       rerun_command: "/test 1.12"
 
@@ -121,8 +121,8 @@ presubmits:
               - touch .env && make prepare-env-1.11 && SKIP_DRY_RUN_TESTS=true make test
             resources:
               requests:
-                cpu: 1
-                memory: 1Gi
+                cpu: 3
+                memory: 2Gi
       trigger: "(?m)^/test (?:.*? )?(1.11|all)(?: .*?)?$"
       rerun_command: "/test 1.11"
 
