@@ -8,7 +8,7 @@ metadata:
   annotations:
     wave.pusher.com/update-on-config-change: "true"
 spec:
-  replicas: 2
+  replicas: 4
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 180
       containers:
       - name: hook
-        image: gcr.io/k8s-prow/hook:v20190307-bbad344
+        image: gcr.io/k8s-prow/hook:v20190403-92775d213
         imagePullPolicy: Always
         args:
         - --dry-run=false
@@ -47,6 +47,19 @@ spec:
         - name: jobs
           mountPath: /etc/jobs
           readOnly: true
+      livenessProbe:
+        httpGet:
+          path: /healthz
+          port: 8081
+        initialDelaySeconds: 3
+        periodSeconds: 3
+      readinessProbe:
+        httpGet:
+          path: /healthz/ready
+          port: 8081
+        initialDelaySeconds: 10
+        periodSeconds: 3
+        timeoutSeconds: 600
       volumes:
       - name: hmac
         secret:

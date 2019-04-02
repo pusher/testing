@@ -8,7 +8,7 @@ metadata:
   annotations:
     wave.pusher.com/update-on-config-change: "true"
 spec:
-  replicas: 2
+  replicas: 3
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: deck
-          image: gcr.io/k8s-prow/deck:v20190307-bbad344
+          image: gcr.io/k8s-prow/deck:v20190403-92775d213
           args:
             - --tide-url=http://tide.default.svc.cluster.local/
             - --hook-url=http://hook.default.svc.cluster.local:8888/plugin-help
@@ -42,6 +42,19 @@ spec:
             - name: extensions
               mountPath: /static/extensions
               readOnly: true
+      livenessProbe:
+        httpGet:
+          path: /healthz
+          port: 8081
+        initialDelaySeconds: 3
+        periodSeconds: 3
+      readinessProbe:
+        httpGet:
+          path: /healthz/ready
+          port: 8081
+        initialDelaySeconds: 10
+        periodSeconds: 3
+        timeoutSeconds: 600
       volumes:
         - name: config
           configMap:

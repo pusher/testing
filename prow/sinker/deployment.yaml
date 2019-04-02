@@ -9,6 +9,11 @@ metadata:
     wave.pusher.com/update-on-config-change: "true"  
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -17,7 +22,7 @@ spec:
       serviceAccountName: "sinker"
       containers:
       - name: sinker
-        image: gcr.io/k8s-prow/sinker:v20190307-bbad344
+        image: gcr.io/k8s-prow/sinker:v20190402-d65ae756e
         args:
         - --job-config-path=/etc/jobs
         volumeMounts:
