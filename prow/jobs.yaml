@@ -106,7 +106,7 @@ data:
                 name: test-ginkgo
                 command: ["/usr/local/bin/runner"]
                 args:
-                  - touch .env && make prepare-env-1.12 && make test
+                  - touch .env && make prepare-env-1.12 && SKIP_DRY_RUN_TESTS=true make test
                 resources:
                   requests:
                     cpu: 1
@@ -127,7 +127,7 @@ data:
                 name: test-ginkgo
                 command: ["/usr/local/bin/runner"]
                 args:
-                  - touch .env && make prepare-env-1.11 && make test
+                  - touch .env && make prepare-env-1.11 && SKIP_DRY_RUN_TESTS=true make test
                 resources:
                   requests:
                     cpu: 1
