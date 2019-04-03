@@ -18,8 +18,8 @@ presubmits:
               requests:
                 cpu: 1
                 memory: 1Gi
-      trigger: "(?m)^/verify generate,?(\\s+|$)"
-      rerun_command: "/verify generate"
+      trigger: "(?m)^/test (?:.*? )?(verify-generate|all)(?: .*?)?$"
+      rerun_command: "/test verify-generate"
 
     - name: pull-faros-verify-manifests
       max_concurrency: 10
@@ -39,8 +39,8 @@ presubmits:
               requests:
                 cpu: 1
                 memory: 1Gi
-      trigger: "(?m)^/verify manifests,?(\\s+|$)"
-      rerun_command: "/verify manifests"
+      trigger: "(?m)^/test (?:.*? )?(verify-manifests|all)(?: .*?)?$"
+      rerun_command: "/test verify-manifests"
 
     - name: pull-faros-lint
       max_concurrency: 10
@@ -60,10 +60,10 @@ presubmits:
               requests:
                 cpu: 1
                 memory: 1Gi
-      trigger: "(?m)^/lint,?(\\s+|$)"
-      rerun_command: "/lint"
+      trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
+      rerun_command: "/test lint"
 
-    - name: pull-faros-test-ginkgo
+    - name: pull-faros-test-1.13
       max_concurrency: 10
       path_alias: github.com/pusher/faros
       agent: kubernetes
@@ -79,10 +79,52 @@ presubmits:
               - touch .env && make prepare-env-1.13 && make test
             resources:
               requests:
-                cpu: 1
-                memory: 1Gi
-      trigger: "(?m)^/test ginkgo,?(\\s+|$)"
-      rerun_command: "/test ginkgo"
+                cpu: 3
+                memory: 2Gi
+      trigger: "(?m)^/test (?:.*? )?(1.13|all)(?: .*?)?$"
+      rerun_command: "/test 1.13"
+
+    - name: pull-faros-test-1.12
+      max_concurrency: 10
+      path_alias: github.com/pusher/faros
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+      spec:
+        containers:
+          - image: quay.io/pusher/kubebuilder-builder
+            name: test-ginkgo
+            command: ["/usr/local/bin/runner"]
+            args:
+              - touch .env && make prepare-env-1.12 && SKIP_DRY_RUN_TESTS=true make test
+            resources:
+              requests:
+                cpu: 3
+                memory: 2Gi
+      trigger: "(?m)^/test (?:.*? )?(1.12|all)(?: .*?)?$"
+      rerun_command: "/test 1.12"
+
+    - name: pull-faros-test-1.11
+      max_concurrency: 10
+      path_alias: github.com/pusher/faros
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+      spec:
+        containers:
+          - image: quay.io/pusher/kubebuilder-builder
+            name: test-ginkgo
+            command: ["/usr/local/bin/runner"]
+            args:
+              - touch .env && make prepare-env-1.11 && SKIP_DRY_RUN_TESTS=true make test
+            resources:
+              requests:
+                cpu: 3
+                memory: 2Gi
+      trigger: "(?m)^/test (?:.*? )?(1.11|all)(?: .*?)?$"
+      rerun_command: "/test 1.11"
 
     - name: pull-faros-build-docker
       max_concurrency: 10
@@ -109,5 +151,5 @@ presubmits:
                 memory: 1Gi
             securityContext:
               privileged: true
-      trigger: "(?m)^/build docker,?(\\s+|$)"
+      trigger: "(?m)^/build (?:.*? )?(docker|all)(?: .*?)?$"
       rerun_command: "/build docker"
