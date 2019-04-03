@@ -1,0 +1,376 @@
+job_template: &job_template
+  branches:
+  - "^pusher-release$"
+  decorate: true
+  decoration_config:
+    utility_images:
+      clonerefs: "gcr.io/k8s-prow/clonerefs:v20181017-d31417a"
+  path_alias: istio.io/istio
+
+istio_container: &istio_container
+  image: gcr.io/istio-testing/istio-builder:v20181008-db31a9fd
+  # Docker in Docker
+  securityContext:
+    privileged: true
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "24Gi"
+      cpu: "7000m"
+
+presubmits:
+
+  pusher/istio:
+
+  - name: istio-unit-tests
+    <<: *job_template
+    context: prow/istio-unit-tests.sh
+    always_run: true
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-unit-tests.sh
+
+
+  - name: istio-integ-local-tests
+    <<: *job_template
+    context: prow/istio-integ-local-tests.sh
+    always_run: true
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-integ-local-tests.sh
+
+
+  - name: istio-presubmit
+    <<: *job_template
+    context: prow/istio-presubmit.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-presubmit.sh
+
+    run_after_success:
+    - name: istio-integ-k8s-tests
+      <<: *job_template
+      optional: true
+      context: prow/istio-integ-k8s-tests.sh
+      max_concurrency: 5
+      always_run: true
+      optional: true
+      labels:
+        preset-root-quay-credentials: "true"
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/istio-integ-k8s-tests.sh
+
+    - name: test-e2e-mixer-no_auth
+      <<: *job_template
+      optional: true
+      skip_report: true
+      context: "prow: test-e2e-mixer-no_auth"
+      max_concurrency: 5
+      labels:
+        preset-root-quay-credentials: "true"
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/test-e2e-mixer-no_auth.sh
+
+    - name: istio-pilot-e2e-envoyv2-v1alpha3
+      <<: *job_template
+      always_run: true
+      context: prow/istio-pilot-e2e-envoyv2-v1alpha3.sh
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/istio-pilot-e2e-envoyv2-v1alpha3.sh
+
+    - name: e2e-mixer-no_auth
+      <<: *job_template
+      always_run: true
+      context: prow/e2e-mixer-no_auth.sh
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-mixer-no_auth.sh
+
+    - name: e2e-dashboard
+      <<: *job_template
+      always_run: true
+      context: prow/e2e-dashboard.sh
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-dashboard.sh
+
+    - name: e2e-bookInfoTests-envoyv2-v1alpha3
+      <<: *job_template
+      always_run: true
+      context: prow/e2e-bookInfoTests-v1alpha3.sh
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-bookInfoTests-envoyv2-v1alpha3.sh
+
+    - name: e2e-bookInfoTests-trustdomain
+      <<: *job_template
+      always_run: true
+      context: prow/e2e-bookInfoTests-trustdomain.sh
+      optional: true
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-bookInfoTests-trustdomain.sh
+
+    - name: e2e-simpleTests
+      <<: *job_template
+      always_run: true
+      context: prow/e2e-simpleTests.sh
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-simpleTests.sh
+
+    - name: istio-pilot-multicluster-e2e
+      <<: *job_template
+      always_run: true
+      context: prow/istio-pilot-multicluster-e2e.sh
+      optional: true
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/istio-pilot-multicluster-e2e.sh
+
+    - name: e2e-simpleTests-cni
+      <<: *job_template
+      always_run: false
+      context: prow/e2e-simpleTests-cni.sh
+      optional: true
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-simpleTests-cni.sh
+        nodeSelector:
+    - name: istio_auth_sds_e2e
+      <<: *job_template
+      always_run: true
+      context: prow/e2e_pilotv2_auth_sds.sh
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e_pilotv2_auth_sds.sh
+
+    - name: release-test
+      <<: *job_template
+      always_run: true
+      context: prow/release-test.sh
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/release-test.sh
+
+
+
+postsubmits:
+
+  pusher/istio:
+  - name: istio-integ-local-tests
+    <<: *job_template
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-integ-local-tests.sh
+
+  - name: istio-postsubmit
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-postsubmit.sh
+
+    run_after_success:
+    - name: istio-integ-k8s-tests
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/istio-integ-k8s-tests.sh
+
+    - name: e2e-simpleTests
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-simpleTests.sh
+
+    - name: e2e-simpleTests-non-mcp
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-simpleTests-non-mcp.sh
+
+    - name: e2e-bookInfoTests-envoyv2-v1alpha3
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-bookInfoTests-envoyv2-v1alpha3.sh
+
+    - name: istio-pilot-e2e-envoyv2-v1alpha3
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/istio-pilot-e2e-envoyv2-v1alpha3.sh
+
+    - name: istio-pilot-e2e-envoyv2-v1alpha3-k8s-latest
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/istio-pilot-e2e-envoyv2-v1alpha3-k8s-latest.sh
+
+    - name: e2e-bookInfoTests-envoyv2-v1alpha3-non-mcp
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-bookInfoTests-envoyv2-v1alpha3-non-mcp.sh
+
+    - name: e2e-mixer-no_auth
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-mixer-no_auth.sh
+
+    - name: e2e-dashboard
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e-dashboard.sh
+
+    - name: istio_auth_sds_e2e
+      <<: *job_template
+      labels:
+        preset-root-quay-credentials: "true"
+      max_concurrency: 5
+      spec:
+        containers:
+        - <<: *istio_container
+          command:
+          - entrypoint
+          - prow/e2e_pilotv2_auth_sds.sh
