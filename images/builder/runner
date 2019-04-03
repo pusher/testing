@@ -87,9 +87,12 @@ fi
 SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct || true)
 export SOURCE_DATE_EPOCH
 
+# Convert args to a single string
+args=$(IFS=" "; echo $@)
+
 # actually start bootstrap and the job
 set -o xtrace
-/bin/bash -c "$(local IFS=\" \"; echo $@)"
+/bin/bash -c "$args"
 EXIT_VALUE=$?
 set +o xtrace
 
