@@ -80,7 +80,7 @@ presubmits:
           - <<: *container_template_large
             args:
               - touch .env && make prepare-env-1.13 && make test
-      trigger: "(?m)^/test (?:.*? )?(1.13|all)(?: .*?)?$"
+      trigger: "(?m)^/test (?:.*? )?(1\\.13|all)(?: .*?)?$"
       rerun_command: "/test 1.13"
 
     - name: pull-faros-test-1.12
@@ -90,7 +90,7 @@ presubmits:
           - <<: *container_template_large
             args:
               - touch .env && make prepare-env-1.12 && SKIP_DRY_RUN_TESTS=true make test
-      trigger: "(?m)^/test (?:.*? )?(1.12|all)(?: .*?)?$"
+      trigger: "(?m)^/test (?:.*? )?(1\\.12|all)(?: .*?)?$"
       rerun_command: "/test 1.12"
 
     - name: pull-faros-test-1.11
@@ -104,7 +104,7 @@ presubmits:
               requests:
                 cpu: 3
                 memory: 2Gi
-      trigger: "(?m)^/test (?:.*? )?(1.11|all)(?: .*?)?$"
+      trigger: "(?m)^/test (?:.*? )?(1\\.11|all)(?: .*?)?$"
       rerun_command: "/test 1.11"
 
     - name: pull-faros-build-docker
