@@ -6,6 +6,49 @@
 
 apiVersion: v1
 data:
+  faros_faros-postsubmits.yaml: |
+    job_template: &job_template
+      max_concurrency: 10
+      path_alias: github.com/pusher/faros
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+      branches:
+        - master
+
+    container_template: &container_template
+      image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
+      name: runner
+      command: ["/usr/local/bin/runner"]
+
+    container_template_large: &container_template_large
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 4
+          memory: 4Gi
+        limits:
+          cpu: 8
+          memory: 8Gi
+
+    postsubmits:
+      pusher/faros:
+        - name: post-faros-build-docker
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - <<: *container_template_large
+                args:
+                  - touch .env; # No config necessary
+                  - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
+                  - PUSH_TAGS=${TAGS}
+                  - make docker-build docker-tag docker-push
+                securityContext:
+                  privileged: true
   faros_faros-presubmits.yaml: |
     job_template: &job_template
       max_concurrency: 10
@@ -587,6 +630,49 @@ data:
                   privileged: true
           trigger: "(?m)^/build docker,?(\\s+|$)"
           rerun_command: "/build docker"
+  wave_wave-postsubmits.yaml: |
+    job_template: &job_template
+      max_concurrency: 10
+      path_alias: github.com/pusher/wave
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+      branches:
+        - master
+
+    container_template: &container_template
+      image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
+      name: runner
+      command: ["/usr/local/bin/runner"]
+
+    container_template_large: &container_template_large
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 4
+          memory: 4Gi
+        limits:
+          cpu: 8
+          memory: 8Gi
+
+    postsubmits:
+      pusher/wave:
+        - name: post-wave-build-docker
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - <<: *container_template_large
+                args:
+                  - touch .env; # No config necessary
+                  - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
+                  - PUSH_TAGS=${TAGS}
+                  - make docker-build docker-tag docker-push
+                securityContext:
+                  privileged: true
   wave_wave-presubmits.yaml: |
     job_template: &job_template
       max_concurrency: 10
