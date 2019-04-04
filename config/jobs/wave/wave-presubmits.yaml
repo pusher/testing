@@ -63,6 +63,16 @@ presubmits:
       trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
       rerun_command: "/test lint"
 
+    - name: pull-wave-build
+      <<: *job_template
+      spec:
+        containers:
+          - <<: *container_template_small
+            args:
+              - touch .env && make prepare-env-1.13 && make build
+      trigger: "(?m)^/test (?:.*? )?(build|all)(?:.*? )?$"
+      rerun_command: "/test build"
+
     - name: pull-wave-test-1.13
       <<: *job_template
       spec:
