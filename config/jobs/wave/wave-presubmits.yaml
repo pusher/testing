@@ -1,113 +1,112 @@
+job_template: &job_template
+  max_concurrency: 10
+  path_alias: github.com/pusher/wave
+  agent: kubernetes
+  always_run: true
+  skip_report: false
+  decorate: true
+
+container_template: &container_template
+  image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
+  name: runner
+  command: ["/usr/local/bin/runner"]
+
+container_template_small: &container_template_small
+  <<: *container_template
+  resources:
+    requests:
+      cpu: 1
+      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 2Gi
+
+container_template_large: &container_template_large
+  <<: *container_template
+  resources:
+    requests:
+      cpu: 4
+      memory: 4Gi
+    limits:
+      cpu: 8
+      memory: 8Gi
+
 presubmits:
   pusher/wave:
     - name: pull-wave-verify-generate
-      max_concurrency: 10
-      path_alias: github.com/pusher/wave
-      agent: kubernetes
-      always_run: true
-      skip_report: false
-      decorate: true
+      <<: *job_template
       spec:
         containers:
-          - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
-            name: verify-generate
-            command: ["/usr/local/bin/runner"]
+          - <<: *container_template_small
             args:
               - touch .env && make prepare-env-1.13 && make verify-generate
-            resources:
-              requests:
-                cpu: 1
-                memory: 1Gi
-      trigger: "(?m)^/verify generate,?(\\s+|$)"
-      rerun_command: "/verify generate"
+      trigger: "(?m)^/test (?:.*? )?(verify-generate|all)(?: .*?)?$"
+      rerun_command: "/test verify-generate"
 
     - name: pull-wave-verify-manifests
-      max_concurrency: 10
-      path_alias: github.com/pusher/wave
-      agent: kubernetes
-      always_run: true
-      skip_report: false
-      decorate: true
+      <<: *job_template
       spec:
         containers:
-          - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
-            name: verify-manifests
-            command: ["/usr/local/bin/runner"]
+          - <<: *container_template_small
             args:
               - touch .env && make prepare-env-1.13 && make verify-manifests
-            resources:
-              requests:
-                cpu: 1
-                memory: 1Gi
-      trigger: "(?m)^/verify manifests,?(\\s+|$)"
-      rerun_command: "/verify manifests"
+      trigger: "(?m)^/test (?:.*? )?(verify-manifests|all)(?: .*?)?$"
+      rerun_command: "/test verify-manifests"
 
     - name: pull-wave-lint
-      max_concurrency: 10
-      path_alias: github.com/pusher/wave
-      agent: kubernetes
-      always_run: true
-      skip_report: false
-      decorate: true
+      <<: *job_template
       spec:
         containers:
-          - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
-            name: lint
-            command: ["/usr/local/bin/runner"]
+          - <<: *container_template_small
             args:
               - touch .env && make prepare-env-1.13 && make lint
-            resources:
-              requests:
-                cpu: 1
-                memory: 1Gi
-      trigger: "(?m)^/lint,?(\\s+|$)"
-      rerun_command: "/lint"
+      trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
+      rerun_command: "/test lint"
 
-    - name: pull-wave-test-ginkgo
-      max_concurrency: 10
-      path_alias: github.com/pusher/wave
-      agent: kubernetes
-      always_run: true
-      skip_report: false
-      decorate: true
+    - name: pull-wave-test-1.13
+      <<: *job_template
       spec:
         containers:
-          - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
-            name: test-ginkgo
-            command: ["/usr/local/bin/runner"]
+          - <<: *container_template_large
             args:
               - touch .env && make prepare-env-1.13 && make test
-            resources:
-              requests:
-                cpu: 1
-                memory: 1Gi
-      trigger: "(?m)^/test ginkgo,?(\\s+|$)"
-      rerun_command: "/test ginkgo"
+      trigger: "(?m)^/test (?:.*? )?(1.13|all)(?: .*?)?$"
+      rerun_command: "/test 1.13"
+
+    - name: pull-wave-test-1.12
+      <<: *job_template
+      spec:
+        containers:
+          - <<: *container_template_large
+            args:
+              - touch .env && make prepare-env-1.12 && make test
+      trigger: "(?m)^/test (?:.*? )?(1.12|all)(?: .*?)?$"
+      rerun_command: "/test 1.12"
+
+    - name: pull-wave-test-1.11
+      <<: *job_template
+      spec:
+        containers:
+          - <<: *container_template_large
+            args:
+              - touch .env && make prepare-env-1.11 && make test
+      trigger: "(?m)^/test (?:.*? )?(1.11|all)(?: .*?)?$"
+      rerun_command: "/test 1.11"
 
     - name: pull-wave-build-docker
-      max_concurrency: 10
-      path_alias: github.com/pusher/wave
-      agent: kubernetes
+      <<: *job_template
       always_run: false
-      skip_report: false
-      decorate: true
       labels:
         preset-dind-enabled: "true"
       spec:
         containers:
-          - image: quay.io/pusher/builder:v20190401-6a7e3ff
-            name: build-docker
-            command: ["/usr/local/bin/runner"]
+          - <<: *container_template_large
             args:
               - touch .env; # No config necessary
               - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
               - PUSH_TAGS=${TAGS}
               - make docker-build docker-tag docker-push
-            resources:
-              requests:
-                cpu: 1
-                memory: 1Gi
             securityContext:
               privileged: true
-      trigger: "(?m)^/build docker,?(\\s+|$)"
+      trigger: "(?m)^/build (?:.*? )?(docker|all)(?: .*?)?$"
       rerun_command: "/build docker"
