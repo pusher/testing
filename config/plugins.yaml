@@ -3,6 +3,7 @@ triggers:
       - pusher/testing
       - pusher/faros
       - pusher/wave
+      - pusher/istio
     trusted_org: pusher
     only_org_members: true
   - repos:
@@ -38,6 +39,19 @@ plugins:
     - lifecycle
     - wip
   pusher/wave:
+    - size
+    - lgtm
+    - cat
+    - label
+    - dog
+    - trigger
+    - yuks
+    - assign
+    - branchcleaner
+    - hold
+    - lifecycle
+    - wip
+  pusher/istio:
     - size
     - lgtm
     - cat

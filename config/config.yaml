@@ -40,6 +40,33 @@ log_level: info
 
 presets:
   - labels:
+    preset-service-account: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/service-account/service-account.json
+      - name: CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE
+        value: /etc/service-account/service-account.json
+    volumeMounts:
+      - name: service
+        mountPath: /etc/service-account
+        readOnly: true
+    volumes:
+      - name: service
+        secret:
+          secretName: prow-gcs
+
+  - labels:
+      preset-root-quay-credentials: "true"
+    volumes:
+      - name: credentials
+        secret:
+          secretName: quay-docker-config
+    volumeMounts:
+      - name: credentials
+        mountPath: /root/.docker
+        readOnly: true
+
+  - labels:
       preset-quay-credentials: "true"
     volumes:
       - name: credentials
