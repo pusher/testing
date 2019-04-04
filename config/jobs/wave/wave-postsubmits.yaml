@@ -7,6 +7,8 @@ job_template: &job_template
   decorate: true
   branches:
     - master
+    # Abuse Prow to make it run on tag pushes like v1.2.3 and v1.2.3-rc1
+    - ^v?\d+\.\d+\.\d+(-rc\d+)?$
 
 container_template: &container_template
   image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
