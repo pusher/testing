@@ -121,6 +121,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -697,6 +698,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
