@@ -61,9 +61,9 @@ presubmits:
         preset-quay-credentials: "true"
       spec:
         containers:
-          - <<: *container_template_large
+          - <<: *container_template
             args:
-              - ./configure
+              - ./configure;
               - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
               - PUSH_TAGS=${TAGS}
               - make docker-build docker-tag docker-push

@@ -574,16 +574,6 @@ data:
       name: runner
       command: ["/usr/local/bin/runner"]
 
-    container_template_large: &container_template_large
-      <<: *container_template
-      resources:
-        requests:
-          cpu: 4
-          memory: 4Gi
-        limits:
-          cpu: 8
-          memory: 8Gi
-
     postsubmits:
       pusher/faros:
         - name: post-prom-rule-reloader-build-docker
@@ -593,7 +583,7 @@ data:
             preset-quay-credentials: "true"
           spec:
             containers:
-              - <<: *container_template_large
+              - <<: *container_template
                 args:
                   - touch .env; # No config necessary
                   - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
@@ -633,7 +623,7 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - ./configure && make vet lint
+                  - ./configure && make fmt vet lint
           trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
           rerun_command: "/test lint"
 
@@ -665,9 +655,9 @@ data:
             preset-quay-credentials: "true"
           spec:
             containers:
-              - <<: *container_template_large
+              - <<: *container_template
                 args:
-                  - ./configure
+                  - ./configure;
                   - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
                   - PUSH_TAGS=${TAGS}
                   - make docker-build docker-tag docker-push
