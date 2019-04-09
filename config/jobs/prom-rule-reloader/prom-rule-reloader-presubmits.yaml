@@ -29,7 +29,7 @@ presubmits:
         containers:
           - <<: *container_template_small
             args:
-              - ./configure && make vet lint
+              - ./configure && make fmt vet lint
       trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
       rerun_command: "/test lint"
 

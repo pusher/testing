@@ -556,6 +556,125 @@ data:
               command:
               - entrypoint
               - prow/e2e_pilotv2_auth_sds.sh
+  prom-rule-reloader_prom-rule-reloader-postsubmits.yaml: |
+    job_template: &job_template
+      max_concurrency: 10
+      path_alias: github.com/pusher/prom-rule-reloader
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+      branches:
+        - master
+        # Abuse Prow to make it run on tag pushes like v1.2.3 and v1.2.3-rc1
+        - ^v?\d+\.\d+\.\d+(-rc\d+)?$
+
+    container_template: &container_template
+      image: quay.io/pusher/golang-builder:v20190404-3ebb4c5
+      name: runner
+      command: ["/usr/local/bin/runner"]
+
+    container_template_large: &container_template_large
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 4
+          memory: 4Gi
+        limits:
+          cpu: 8
+          memory: 8Gi
+
+    postsubmits:
+      pusher/faros:
+        - name: post-prom-rule-reloader-build-docker
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - <<: *container_template_large
+                args:
+                  - touch .env; # No config necessary
+                  - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
+                  - PUSH_TAGS=${TAGS}
+                  - touch .env && make docker-build docker-tag docker-push
+                securityContext:
+                  privileged: true
+  prom-rule-reloader_prom-rule-reloader-presubmits.yaml: |
+    job_template: &job_template
+      max_concurrency: 10
+      path_alias: github.com/pusher/prom-rule-reloader
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+
+    container_template: &container_template
+      image: quay.io/pusher/golang-builder:v20190404-3ebb4c5
+      name: runner
+      command: ["/usr/local/bin/runner"]
+
+    container_template_small: &container_template_small
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 1
+          memory: 1Gi
+        limits:
+          cpu: 2
+          memory: 2Gi
+
+    presubmits:
+      pusher/prom-rule-reloader:
+        - name: pull-prom-rule-reloader-lint
+          <<: *job_template
+          spec:
+            containers:
+              - <<: *container_template_small
+                args:
+                  - ./configure && make vet lint
+          trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
+          rerun_command: "/test lint"
+
+        - name: pull-prom-rule-reloader-build
+          <<: *job_template
+          spec:
+            containers:
+              - <<: *container_template_small
+                args:
+                  - ./configure && make build
+          trigger: "(?m)^/test (?:.*? )?(build|all)(?:.*? )?$"
+          rerun_command: "/test build"
+
+        - name: pull-prom-rule-reloader-tests
+          <<: *job_template
+          spec:
+            containers:
+              - <<: *container_template_small
+                args:
+                  - ./configure && make test
+          trigger: "(?m)^/test (?:.*? )?(tests|all)(?: .*?)?$"
+          rerun_command: "/test tests"
+
+        - name: pull-prom-rule-reloader-build-docker
+          <<: *job_template
+          always_run: false
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - <<: *container_template_large
+                args:
+                  - ./configure
+                  - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
+                  - PUSH_TAGS=${TAGS}
+                  - make docker-build docker-tag docker-push
+                securityContext:
+                  privileged: true
+          trigger: "(?m)^/build (?:.*? )?(docker|all)(?: .*?)?$"
+          rerun_command: "/build docker"
   testing_testing-postsubmits.yaml: |
     postsubmits:
       pusher/testing:

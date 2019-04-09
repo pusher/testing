@@ -13,6 +13,7 @@ data:
           - pusher/faros
           - pusher/wave
           - pusher/istio
+          - pusher/prom-rule-reloader
         trusted_org: pusher
         only_org_members: true
       - repos:
@@ -39,6 +40,7 @@ data:
       pusher/faros: *default_plugins
       pusher/wave: *default_plugins
       pusher/istio: *default_plugins
+      pusher/prom-rule-reloader: *default_plugins
 kind: ConfigMap
 metadata:
   creationTimestamp: null
