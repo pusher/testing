@@ -11,56 +11,22 @@ triggers:
     trusted_org: oauth2_proxy
     only_org_members: true
 
+default_plugins: &default_plugins
+- size
+- lgtm
+- cat
+- label
+- dog
+- trigger
+- yuks
+- assign
+- branchcleaner
+- hold
+- lifecycle
+- wip
+
 plugins:
-  pusher/testing:
-    - size
-    - lgtm
-    - cat
-    - label
-    - dog
-    - trigger
-    - yuks
-    - assign
-    - branchcleaner
-    - hold
-    - lifecycle
-    - wip
-  pusher/faros:
-    - size
-    - lgtm
-    - cat
-    - label
-    - dog
-    - trigger
-    - yuks
-    - assign
-    - branchcleaner
-    - hold
-    - lifecycle
-    - wip
-  pusher/wave:
-    - size
-    - lgtm
-    - cat
-    - label
-    - dog
-    - trigger
-    - yuks
-    - assign
-    - branchcleaner
-    - hold
-    - lifecycle
-    - wip
-  pusher/istio:
-    - size
-    - lgtm
-    - cat
-    - label
-    - dog
-    - trigger
-    - yuks
-    - assign
-    - branchcleaner
-    - hold
-    - lifecycle
-    - wip
+  pusher/testing: *default_plugins
+  pusher/faros: *default_plugins
+  pusher/wave: *default_plugins
+  pusher/istio: *default_plugins
