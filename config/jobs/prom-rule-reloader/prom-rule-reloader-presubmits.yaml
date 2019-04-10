@@ -21,6 +21,16 @@ container_template_small: &container_template_small
       cpu: 2
       memory: 2Gi
 
+container_template_large: &container_template_large
+  <<: *container_template
+  resources:
+    requests:
+      cpu: 4
+      memory: 4Gi
+    limits:
+      cpu: 8
+      memory: 8Gi
+
 presubmits:
   pusher/prom-rule-reloader:
     - name: pull-prom-rule-reloader-lint
@@ -61,7 +71,7 @@ presubmits:
         preset-quay-credentials: "true"
       spec:
         containers:
-          - <<: *container_template
+          - <<: *container_template_large
             args:
               - ./configure;
               - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}

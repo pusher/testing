@@ -574,8 +574,18 @@ data:
       name: runner
       command: ["/usr/local/bin/runner"]
 
+    container_template_large: &container_template_large
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 4
+          memory: 4Gi
+        limits:
+          cpu: 8
+          memory: 8Gi
+
     postsubmits:
-      pusher/faros:
+      pusher/prom-rule-reloader:
         - name: post-prom-rule-reloader-build-docker
           <<: *job_template
           labels:
@@ -583,7 +593,7 @@ data:
             preset-quay-credentials: "true"
           spec:
             containers:
-              - <<: *container_template
+              - <<: *container_template_large
                 args:
                   - touch .env; # No config necessary
                   - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
@@ -614,6 +624,16 @@ data:
         limits:
           cpu: 2
           memory: 2Gi
+
+    container_template_large: &container_template_large
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 4
+          memory: 4Gi
+        limits:
+          cpu: 8
+          memory: 8Gi
 
     presubmits:
       pusher/prom-rule-reloader:
@@ -655,7 +675,7 @@ data:
             preset-quay-credentials: "true"
           spec:
             containers:
-              - <<: *container_template
+              - <<: *container_template_large
                 args:
                   - ./configure;
                   - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
