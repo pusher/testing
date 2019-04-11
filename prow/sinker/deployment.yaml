@@ -17,9 +17,10 @@ spec:
       serviceAccountName: "sinker"
       containers:
       - name: sinker
-        image: gcr.io/k8s-prow/sinker:v20190307-bbad344
+        image: gcr.io/k8s-prow/sinker:v20190409-ef11deceb
         args:
         - --job-config-path=/etc/jobs
+        - --dry-run=false
         volumeMounts:
         - name: config
           mountPath: /etc/config
