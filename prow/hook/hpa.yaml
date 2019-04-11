@@ -2,6 +2,7 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: hook
+  namespace: default
   labels:
     app: hook
 spec:

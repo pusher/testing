@@ -19,7 +19,7 @@ spec:
       serviceAccountName: "plank"
       containers:
       - name: plank
-        image: gcr.io/k8s-prow/plank:v20190402-d65ae756e
+        image: gcr.io/k8s-prow/plank:v20190409-ef11deceb
         args:
         - --dry-run=false
         - --job-config-path=/etc/jobs

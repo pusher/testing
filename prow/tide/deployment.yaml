@@ -19,7 +19,7 @@ spec:
       serviceAccountName: "tide"
       containers:
       - name: tide
-        image: gcr.io/k8s-prow/tide:v20190307-bbad344
+        image: gcr.io/k8s-prow/tide:v20190409-ef11deceb
         args:
         - --dry-run=false
         - --job-config-path=/etc/jobs
