@@ -34,7 +34,7 @@ data:
     deck:
       branding:
         logo: "/static/extensions/logo.svg"
-        favicon: "/static/extensions/favicon.ico"
+        favicon: "extensions/favicon.ico"
         header_color: "#300D4F"
       spyglass:
         size_limit: 500000000
