@@ -179,6 +179,51 @@ data:
                   privileged: true
           trigger: "(?m)^/build (?:.*? )?(docker|all)(?: .*?)?$"
           rerun_command: "/build docker"
+  git-store_git-store-presubmits.yaml: |
+    job_template: &job_template
+      max_concurrency: 10
+      path_alias: github.com/pusher/git-store
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+
+    container_template: &container_template
+      image: quay.io/pusher/golang-builder:v20190404-3ebb4c5
+      name: runner
+      command: ["/usr/local/bin/runner"]
+
+    container_template_small: &container_template_small
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 1
+          memory: 1Gi
+        limits:
+          cpu: 2
+          memory: 2Gi
+
+    presubmits:
+      pusher/git-store:
+        - name: pull-git-store-lint
+          <<: *job_template
+          spec:
+            containers:
+              - <<: *container_template_small
+                args:
+                  - ./configure && make fmt vet lint
+          trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
+          rerun_command: "/test lint"
+
+        - name: pull-git-store-test
+          <<: *job_template
+          spec:
+            containers:
+              - <<: *container_template_small
+                args:
+                  - ./configure && make test
+          trigger: "(?m)^/test (?:.*? )?(tests|all)(?: .*?)?$"
+          rerun_command: "/test tests"
   istio_istio.pusher-release.yaml: |
     job_template: &job_template
       branches:
