@@ -7,7 +7,7 @@ job_template: &job_template
   decorate: true
 
 container_template: &container_template
-  image: quay.io/pusher/python-builder
+  image: quay.io/pusher/python-builder:pull-17
   name: runner
   command: ["/usr/local/bin/runner"]
 
