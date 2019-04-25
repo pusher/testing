@@ -1,10 +1,11 @@
 triggers:
   - repos:
-      - pusher/testing
       - pusher/faros
-      - pusher/wave
       - pusher/istio
+      - pusher/k8s-spot-rescheduler
       - pusher/prom-rule-reloader
+      - pusher/testing
+      - pusher/wave
     trusted_org: pusher
     only_org_members: true
   - repos:
@@ -27,8 +28,9 @@ default_plugins: &default_plugins
 - wip
 
 plugins:
-  pusher/testing: *default_plugins
   pusher/faros: *default_plugins
-  pusher/wave: *default_plugins
   pusher/istio: *default_plugins
+  pusher/k8s-spot-rescheduler: *default_plugins
   pusher/prom-rule-reloader: *default_plugins
+  pusher/testing: *default_plugins
+  pusher/wave: *default_plugins
