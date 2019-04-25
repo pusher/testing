@@ -14,6 +14,7 @@ data:
           - pusher/istio
           - pusher/k8s-spot-price-monitor
           - pusher/k8s-spot-rescheduler
+          - pusher/k8s-spot-termination-handler
           - pusher/prom-rule-reloader
           - pusher/testing
           - pusher/wave
@@ -44,6 +45,7 @@ data:
       pusher/istio: *default_plugins
       pusher/k8s-spot-price-monitor: *default_plugins
       pusher/k8s-spot-rescheduler: *default_plugins
+      pusher/k8s-spot-termination-handler: *default_plugins
       pusher/prom-rule-reloader: *default_plugins
       pusher/testing: *default_plugins
       pusher/wave: *default_plugins
