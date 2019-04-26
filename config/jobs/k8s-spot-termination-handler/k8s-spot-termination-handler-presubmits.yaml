@@ -1,0 +1,62 @@
+job_template: &job_template
+  max_concurrency: 10
+  path_alias: github.com/pusher/k8s-spot-termination-handler
+  agent: kubernetes
+  always_run: true
+  skip_report: false
+  decorate: true
+
+container_template: &container_template
+  image: quay.io/pusher/python-builder:pull-17
+  name: runner
+  command: ["/usr/local/bin/runner"]
+
+container_template_small: &container_template_small
+  <<: *container_template
+  resources:
+    requests:
+      cpu: 1
+      memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 2Gi
+
+container_template_large: &container_template_large
+  <<: *container_template
+  resources:
+    requests:
+      cpu: 4
+      memory: 4Gi
+    limits:
+      cpu: 8
+      memory: 8Gi
+
+presubmits:
+  pusher/k8s-spot-termination-handler:
+    - name: pull-k8s-spot-termination-handler-lint
+      <<: *job_template
+      spec:
+        containers:
+          - <<: *container_template_small
+            args:
+              - make lint
+      trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
+      rerun_command: "/test lint"
+
+    - name: pull-k8s-spot-termination-handler-build-docker
+      <<: *job_template
+      always_run: false
+      labels:
+        preset-dind-enabled: "true"
+        preset-quay-credentials: "true"
+      spec:
+        containers:
+          - <<: *container_template_large
+            args:
+              - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
+              - PUSH_TAGS=${TAGS}
+              - make docker-push
+            securityContext:
+              privileged: true
+      trigger: "(?m)^/build (?:.*? )?(docker|all)(?: .*?)?$"
+      rerun_command: "/build docker"
