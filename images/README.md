@@ -47,3 +47,13 @@ The Kubebuilder builder contains the following:
   - kube-apiserver
   - kubectl
   - kubebuilder
+
+## Python Builder
+
+The Python builder (`quay.io/pusher/python-builder`) is for testing Python based
+projects within Prow.
+
+The Python builder contains the following:
+- Everything in the base builder image
+- Python 3.7.3
+- Pip 19.1
