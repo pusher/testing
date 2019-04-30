@@ -104,6 +104,34 @@ data:
         volumeMounts:
           - name: docker-graph
             mountPath: /docker-graph
+
+    tide:
+      pr_status_base_url: https://prow.pusher.com/pr
+      squash_label: tide/squash
+      rebase: tide/rebase
+      queries:
+      - repos:
+        - pusher/faros
+        - pusher/git-store
+        - pusher/istio
+        - pusher/k8s-spot-price-monitor
+        - pusher/k8s-spot-rescheduler
+        - pusher/k8s-spot-termination-handler
+        - pusher/prom-rule-reloader
+        - pusher/testing
+        - pusher/wave
+        labels:
+        - lgtm
+        - approved
+        missingLabels:
+        - needs-ok-to-test
+        - do-not-merge
+        - do-not-merge/blocked-paths
+        - do-not-merge/cherry-pick-not-approved
+        - do-not-merge/hold
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/work-in-progress
+        - needs-rebase
 kind: ConfigMap
 metadata:
   creationTimestamp: null
