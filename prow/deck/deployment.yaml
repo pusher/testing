@@ -28,6 +28,7 @@ spec:
             - --hook-url=http://hook.default.svc.cluster.local:8888/plugin-help
             - --job-config-path=/etc/jobs
             - --spyglass=true
+            - --oauth-url=/github-login
           ports:
             - name: http
               containerPort: 8080
@@ -40,6 +41,12 @@ spec:
               readOnly: true
             - name: extensions
               mountPath: /static/extensions
+              readOnly: true
+            - name: oauth-config
+              mountPath: /etc/github
+              readOnly: true
+            - name: cookie-secret
+              mountPath: /etc/cookie
               readOnly: true
       livenessProbe:
         httpGet:
@@ -64,3 +71,9 @@ spec:
         - name: extensions
           configMap:
             name: extensions
+        - name: oauth-config
+          secret:
+              secretName: github-oauth-config
+        - name: cookie-secret
+          secret:
+              secretName: cookie-secret
