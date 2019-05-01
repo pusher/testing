@@ -39,6 +39,11 @@ data:
     - lifecycle
     - wip
 
+    default_external_plugins: &default_external_plugins
+    - name: needs-rebase
+      events:
+      - pull_request
+
     plugins:
       pusher/faros: *default_plugins
       pusher/git-store: *default_plugins
@@ -49,6 +54,17 @@ data:
       pusher/prom-rule-reloader: *default_plugins
       pusher/testing: *default_plugins
       pusher/wave: *default_plugins
+
+    external_plugins:
+      pusher/faros: *default_external_plugins
+      pusher/git-store: *default_external_plugins
+      pusher/istio: *default_external_plugins
+      pusher/k8s-spot-price-monitor: *default_external_plugins
+      pusher/k8s-spot-rescheduler: *default_external_plugins
+      pusher/k8s-spot-termination-handler: *default_external_plugins
+      pusher/prom-rule-reloader: *default_external_plugins
+      pusher/testing: *default_external_plugins
+      pusher/wave: *default_external_plugins
 kind: ConfigMap
 metadata:
   creationTimestamp: null
