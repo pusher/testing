@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: default
+  name: needs-rebase
+  labels:
+    app: needs-rebase
+  annotations:
+    wave.pusher.com/update-on-config-change: "true"
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: needs-rebase
+    spec:
+      terminationGracePeriodSeconds: 180
+      containers:
+      - name: needs-rebase
+        image: gcr.io/k8s-prow/needs-rebase:v20190427-d915cc4f7
+        imagePullPolicy: Always
+        args:
+        - --dry-run=false
+        ports:
+          - name: http
+            containerPort: 8888
+        volumeMounts:
+        - name: hmac
+          mountPath: /etc/webhook
+          readOnly: true
+        - name: oauth
+          mountPath: /etc/github
+          readOnly: true
+        - name: plugins
+          mountPath: /etc/plugins
+          readOnly: true
+      volumes:
+      - name: hmac
+        secret:
+          secretName: hmac-token
+      - name: oauth
+        secret:
+          secretName: oauth-token
+      - name: plugins
+        configMap:
+          name: plugins
