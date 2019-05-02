@@ -73,6 +73,11 @@ if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
     echo "Done setting up docker in docker."
 fi
 
+# Authenticate to Snyk if the token is set
+if [[ -n ""${SNYK_TOKEN:-}"" ]]  && which snyk &> /dev/null; then
+  snyk auth "${SNYK_TOKEN}"
+fi
+
 # disable error exit so we can run post-command cleanup
 set +o errexit
 
