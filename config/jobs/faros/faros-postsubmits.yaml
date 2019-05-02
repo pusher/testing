@@ -32,13 +32,14 @@ postsubmits:
       labels:
         preset-dind-enabled: "true"
         preset-quay-credentials: "true"
+        preset-snyk-token: "true"
       spec:
         containers:
           - <<: *container_template_large
             args:
-              - touch .env; # No config necessary
+              - touch .env && make prepare-env-1.13;
               - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
               - PUSH_TAGS=${TAGS}
-              - make docker-build docker-tag docker-push
+              - make docker-build docker-scan docker-tag docker-push
             securityContext:
               privileged: true

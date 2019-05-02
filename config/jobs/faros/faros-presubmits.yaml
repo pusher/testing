@@ -73,6 +73,18 @@ presubmits:
       trigger: "(?m)^/test (?:.*? )?(build|all)(?:.*? )?$"
       rerun_command: "/test build"
 
+    - name: pull-faros-scan
+      <<: *job_template
+      labels:
+        preset-snyk-token: "true"
+      spec:
+        containers:
+          - <<: *container_template_small
+            args:
+              - touch .env && make prepare-env-1.13 && make scan
+      trigger: "(?m)^/test (?:.*? )?(scan|all)(?:.*? )?$"
+      rerun_command: "/test scan"
+
     - name: pull-faros-test-1.13
       <<: *job_template
       spec:
@@ -113,6 +125,7 @@ presubmits:
       labels:
         preset-dind-enabled: "true"
         preset-quay-credentials: "true"
+        preset-snyk-token: "true"
       spec:
         containers:
           - <<: *container_template_large
@@ -120,7 +133,7 @@ presubmits:
               - touch .env; # No config necessary
               - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
               - PUSH_TAGS=${TAGS}
-              - make docker-build docker-tag docker-push
+              - make docker-build docker-scan docker-tag docker-push
             securityContext:
               privileged: true
       trigger: "(?m)^/build (?:.*? )?(docker|all)(?: .*?)?$"
