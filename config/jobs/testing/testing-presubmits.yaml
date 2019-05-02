@@ -9,7 +9,7 @@ presubmits:
       decorate: true
       spec:
         containers:
-          - image: quay.io/pusher/kubebuilder-builder:v20190401-6a7e3ff
+          - image: quay.io/pusher/kubebuilder-builder:v20190429-631af2f
             name: verify-config
             command: ["/usr/local/bin/runner"]
             args:
@@ -33,7 +33,7 @@ presubmits:
         preset-quay-credentials: "true"
       spec:
         containers:
-          - image: quay.io/pusher/builder:v20190401-6a7e3ff
+          - image: quay.io/pusher/builder:v20190429-631af2f
             name: build-docker
             command: ["/usr/local/bin/runner"]
             args:
