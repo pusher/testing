@@ -41,14 +41,15 @@ data:
           labels:
             preset-dind-enabled: "true"
             preset-quay-credentials: "true"
+            preset-snyk-token: "true"
           spec:
             containers:
               - <<: *container_template_large
                 args:
-                  - touch .env; # No config necessary
+                  - touch .env && make prepare-env-1.13;
                   - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
                   - PUSH_TAGS=${TAGS}
-                  - make docker-build docker-tag docker-push
+                  - make docker-build docker-scan docker-tag docker-push
                 securityContext:
                   privileged: true
   faros_faros-presubmits.yaml: |
@@ -127,6 +128,18 @@ data:
           trigger: "(?m)^/test (?:.*? )?(build|all)(?:.*? )?$"
           rerun_command: "/test build"
 
+        - name: pull-faros-scan
+          <<: *job_template
+          labels:
+            preset-snyk-token: "true"
+          spec:
+            containers:
+              - <<: *container_template_small
+                args:
+                  - touch .env && make prepare-env-1.13 && make scan
+          trigger: "(?m)^/test (?:.*? )?(scan|all)(?:.*? )?$"
+          rerun_command: "/test scan"
+
         - name: pull-faros-test-1.13
           <<: *job_template
           spec:
@@ -167,6 +180,7 @@ data:
           labels:
             preset-dind-enabled: "true"
             preset-quay-credentials: "true"
+            preset-snyk-token: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -174,7 +188,7 @@ data:
                   - touch .env; # No config necessary
                   - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
                   - PUSH_TAGS=${TAGS}
-                  - make docker-build docker-tag docker-push
+                  - make docker-build docker-scan docker-tag docker-push
                 securityContext:
                   privileged: true
           trigger: "(?m)^/build (?:.*? )?(docker|all)(?: .*?)?$"

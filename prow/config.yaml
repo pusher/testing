@@ -104,6 +104,15 @@ data:
         volumeMounts:
           - name: docker-graph
             mountPath: /docker-graph
+
+      - labels:
+          preset-snyk-token: "true"
+        env:
+          - name: SNYK_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: snyk-api-token
+                key: token
 kind: ConfigMap
 metadata:
   creationTimestamp: null
