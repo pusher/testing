@@ -1,4 +1,4 @@
-#/env/bin/bash
+#!/usr/bin/env bash
 
 config=""
 for f in $(ls config/jobs/*/*.yaml); do
