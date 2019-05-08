@@ -24,7 +24,13 @@ echo "${CYAN}Updating images to tag '$TAG'${NC}"
 
 for f in $(ls config/jobs/*/*.yaml config/README.md); do
   echo "Updating $f"
-  sed -i '' -E "s|$image_regex|quay.io/pusher/\1builder:$TAG|g" $f
+  r="s|$image_regex|quay.io/pusher/\1builder:$TAG|g"
+  # Hack to make Linux and Mac sed work in-place
+  if [[ $(uname) == "Darwin" ]]; then
+    sed -E -i '' $r $f
+  else
+    sed -E -i $r $f
+  fi
   echo "${GREEN}Updated $f${NC}"
 done
 
