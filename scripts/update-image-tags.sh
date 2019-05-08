@@ -20,7 +20,7 @@ fi
 
 echo "${CYAN}Updating images to tag '$TAG'${NC}"
 
-for f in $(ls config/jobs/*/*.yaml); do
+for f in $(ls config/jobs/*/*.yaml config/README.md); do
   echo "Updating $f"
   sed -i '' -E "s|$image_regex|quay.io/pusher/\1builder:$TAG|g" $f
   echo "${GREEN}Updated $f${NC}"
