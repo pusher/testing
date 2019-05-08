@@ -107,6 +107,24 @@ COPY --from=builder ["/barnacle", "/usr/local/bin/"]
 # END: DOCKER IN DOCKER SETUP
 #
 
+#
+# BEGIN: SNYK SECURITY SCANNER SETUP
+#
+
+# install nodejs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# install the snyk binary
+RUN npm install -g snyk
+
+#
+# END: SNYK SECURITY SCANNER SETUP
+#
+
 # Run everything from here on out as the prow user
 RUN apt-get update && \
     apt-get install -y --no-install-recommends sudo && \
