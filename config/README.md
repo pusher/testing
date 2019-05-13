@@ -36,3 +36,41 @@ repositories managed by Prow.
 
 **Note**: All files within this folder and its subfolders must be uniquely named
 due to a limitation in how Prow consumes the configuration files.
+
+## Job Builder Images
+
+Since most jobs should use one of the builder images from the [images](../images)
+folder, the image tag for these images should stay the same, eg:
+
+```
+quay.io/pusher/builder:v20190508-da87df0
+```
+
+Image tags are currently checked in CI and will be enforced to the version in
+the example above.
+
+### Updating the image version
+
+To update the image version, replace the `IMAGE` argument in the root level
+[Makefile](../Makefile) with the desired version.
+
+Then run `make update-image-tags config` from the root of the repository to
+update all jobs using a builder image and update the generated configuration,
+then commit the result.
+
+```bash
+$ sed -i '' -E 's|^IMAGE \?= (.*)|IMAGE \?= <NEW_VERSION>|' Makefile
+$ make update-image-tags config
+$ git add .
+$ git commit -m "Update image tags to <NEW_VERSION>"
+```
+
+## Pinning an image version
+
+If for any reason you need to pin a builder image to a previous build;
+Add a comment after the image tag explaining why the image is pinned and the
+version update enforcement will ignore this line.
+
+```
+quay.io/pusher/builder:pinned # Pinned as an example to disable updater.
+```

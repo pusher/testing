@@ -1138,6 +1138,27 @@ data:
           trigger: "(?m)^/verify config,?(\\s+|$)"
           rerun_command: "/verify config"
 
+        - name: pull-testing-verify-image-tags
+          max_concurrency: 10
+          path_alias: github.com/pusher/testing
+          agent: kubernetes
+          always_run: true
+          skip_report: false
+          decorate: true
+          spec:
+            containers:
+              - image: quay.io/pusher/kubebuilder-builder:v20190508-da87df0
+                name: verify-image-tags
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - make verify-image-tags
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+          trigger: "(?m)^/verify image-tags,?(\\s+|$)"
+          rerun_command: "/verify image-tags"
+
         - name: pull-testing-build-docker
           max_concurrency: 10
           path_alias: github.com/pusher/testing
