@@ -26,3 +26,6 @@ ENV IMAGE=${IMAGE_ARG}
 
 RUN adduser -S -h /home/prow -s /bin/bash -g root -u 1000 prow
 USER prow
+
+# Ensure .ssh folder exists so known_hosts file can be written
+RUN mkdir -p /home/prow/.ssh
