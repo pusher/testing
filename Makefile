@@ -31,11 +31,11 @@ check-image-tags:
 	scripts/check-image-tags.sh
 	@ echo # Produce a new line at the end of each target to help readability
 
-IMAGE ?= v20190508-da87df0
+TAG ?= v20190508-da87df0
 .PHONY:
 update-image-tags:
 	@ $(ECHO) "\033[36;1mUpdating image tags\033[0m"
-	scripts/update-image-tags.sh $(IMAGE)
+	scripts/update-image-tags.sh $(TAG)
 	@ echo # Produce a new line at the end of each target to help readability
 
 
