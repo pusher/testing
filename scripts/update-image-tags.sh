@@ -36,6 +36,6 @@ done
 
 for f in $(ls config/jobs/*/*.yaml); do
   while read -r line; do
-    if [[ ! -z $line ]]; then echo -w "${YELLOW}[WARNING] Pinned Image in '$f':${NC} ${line#'image: '}"; fi
+    if [[ ! -z $line ]]; then echo -e "${YELLOW}[WARNING] Pinned Image in '$f':${NC} ${line#'image: '}"; fi
   done <<< $(grep -E $pinned_image_regex $f)
 done
