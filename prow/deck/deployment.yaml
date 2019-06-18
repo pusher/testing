@@ -28,6 +28,7 @@ spec:
             - --hook-url=http://hook.default.svc.cluster.local:8888/plugin-help
             - --job-config-path=/etc/jobs
             - --spyglass=true
+            - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
           ports:
             - name: http
               containerPort: 8080
@@ -40,6 +41,9 @@ spec:
               readOnly: true
             - name: extensions
               mountPath: /static/extensions
+              readOnly: true
+            - name: gcs-credentials
+              mountPath: /etc/gcs-credentials
               readOnly: true
       livenessProbe:
         httpGet:
@@ -64,3 +68,6 @@ spec:
         - name: extensions
           configMap:
             name: extensions
+        - name: gcs-credentials
+          secret:
+            secretName: prow-gcs
