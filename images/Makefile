@@ -54,7 +54,10 @@ clonerefs: docker-build-clonerefs
 ###
 
 docker-build-%:
-	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(VERSION) --build-arg VERSION=$(VERSION) -t $(REPO)/$*:$(VERSION) $*
+	# Use `-` to ignore the exit code from the pull below.
+	# If we can't pull we just have no cache to start from.
+	- docker pull $(REPO)/$*:$(VERSION)
+	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(VERSION) --build-arg VERSION=$(VERSION) --cache-from $(REPO)/$*:$(VERSION) -t $(REPO)/$*:$(VERSION) $*
 	@echo "\033[36mBuilt $(REPO)/$*:$(VERSION)\033[0m"
 
 TAGS ?= ${VERSION},latest

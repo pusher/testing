@@ -58,7 +58,9 @@ presubmits:
             name: build-docker
             command: ["/usr/local/bin/runner"]
             args:
-              - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA} make --directory=images push
+              - VERSION=pull-${PULL_NUMBER}
+              - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
+              - make --directory=images push
             resources:
               requests:
                 cpu: 1
