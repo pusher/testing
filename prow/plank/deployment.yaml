@@ -6,7 +6,7 @@ metadata:
   labels:
     app: plank
   annotations:
-    wave.pusher.com/update-on-config-change: "true"  
+    wave.pusher.com/update-on-config-change: "true"
 spec:
   replicas: 1 # Do not scale up.
   strategy:
@@ -19,7 +19,7 @@ spec:
       serviceAccountName: "plank"
       containers:
       - name: plank
-        image: gcr.io/k8s-prow/plank:v20190409-ef11deceb
+        image: gcr.io/k8s-prow/plank:v20190615-f3db6c682
         args:
         - --dry-run=false
         - --job-config-path=/etc/jobs
