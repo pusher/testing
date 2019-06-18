@@ -49,7 +49,7 @@ data:
 
     presets:
       - labels:
-        preset-service-account: "true"
+          preset-service-account: "true"
         env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /etc/service-account/service-account.json
