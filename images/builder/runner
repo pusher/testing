@@ -73,6 +73,12 @@ if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
     echo "Done setting up docker in docker."
 fi
 
+# Authenticate docker with GCP if a service account file is provided
+export GCR_REGION=${GCR_REGION:-eu.gcr.io}
+if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" && ! -z ${DOCKER_GCR_CREDENTIAL_JSON} ]]; then
+  cat ${DOCKER_GCR_CREDENTIAL_JSON} | docker login -u _json_key --password-stdin https://$GCR_REGION
+fi
+
 # Authenticate to Snyk if the token is set
 if [[ -n ""${SNYK_TOKEN:-}"" ]]  && which snyk &> /dev/null; then
   snyk auth "${SNYK_TOKEN}"
