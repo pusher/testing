@@ -14,8 +14,8 @@
 
 #############################################################################
 ###
-### ADMIN BUILDER - From quay.io/pusher/builder with Kubectl, AWS and GCLOUD
-###                 CLIs
+### ADMIN BUILDER - From quay.io/pusher/builder with Kubectl, AWS, GCLOUD and
+###                 Terraform CLIs
 ###
 #############################################################################
 
@@ -44,6 +44,12 @@ RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
 		&& google-cloud-sdk/install.sh
 ENV PATH=/workspace/google-cloud-sdk/bin:${PATH}
 RUN gcloud --version
+
+# Install Terraform CLI & check it was installed
+ARG TF_VERSION="0.12.2"
+RUN curl https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip -o terraform_${TF_VERSION}_linux_amd64.zip \
+ && unzip terraform_${TF_VERSION}_linux_amd64.zip -d /usr/local/bin \
+ && terraform --version
 
 # Switch back to prow user for publish
 USER prow
