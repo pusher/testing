@@ -19,7 +19,7 @@ golangci-lint:
 .PHONY: kustomize
 kustomize:
 	@ if [ ! $$(which kustomize) ]; then \
-	 	go get -u sigs.k8s.io/kustomize; \
+	 	go get -u sigs.k8s.io/kustomize/cmd/kustomize; \
 	fi
 
 .PHONY: kubebuilder-tools-1.13
