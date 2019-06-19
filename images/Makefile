@@ -23,11 +23,11 @@ all: build
 #
 ####
 
-build: builder golang-builder kubebuilder-builder clonerefs python-builder
+build: builder golang-builder kubebuilder-builder clonerefs python-builder admin-builder
 
-tag: docker-tag-builder docker-tag-golang-builder docker-tag-kubebuilder-builder docker-tag-clonerefs docker-tag-python-builder
+tag: docker-tag-builder docker-tag-golang-builder docker-tag-kubebuilder-builder docker-tag-clonerefs docker-tag-python-builder docker-tag-admin-builder
 
-push: docker-push-builder docker-push-golang-builder docker-push-kubebuilder-builder docker-push-clonerefs docker-push-python-builder
+push: docker-push-builder docker-push-golang-builder docker-push-kubebuilder-builder docker-push-clonerefs docker-push-python-builder docker-push-admin-builder
 
 ####
 #
@@ -43,6 +43,8 @@ kubebuilder-builder: golang-builder docker-build-kubebuilder-builder
 
 python-builder: builder docker-build-python-builder
 
+admin-builder: python-builder docker-build-admin-builder
+
 clonerefs: docker-build-clonerefs
 
 ####
@@ -52,7 +54,10 @@ clonerefs: docker-build-clonerefs
 ###
 
 docker-build-%:
-	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(VERSION) --build-arg VERSION=$(VERSION) -t $(REPO)/$*:$(VERSION) $*
+	# Use `-` to ignore the exit code from the pull below.
+	# If we can't pull we just have no cache to start from.
+	- docker pull $(REPO)/$*:$(VERSION)
+	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(VERSION) --build-arg VERSION=$(VERSION) --cache-from $(REPO)/$*:$(VERSION) -t $(REPO)/$*:$(VERSION) $*
 	@echo "\033[36mBuilt $(REPO)/$*:$(VERSION)\033[0m"
 
 TAGS ?= ${VERSION},latest
