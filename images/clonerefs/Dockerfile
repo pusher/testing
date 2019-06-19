@@ -18,7 +18,7 @@
 ###
 ###############################################################################
 
-FROM gcr.io/k8s-prow/clonerefs:v20190301-2d35634
+FROM gcr.io/k8s-prow/clonerefs:v20190615-f3db6c682
 
 # add env we can debug with the image name:tag
 ARG IMAGE_ARG
