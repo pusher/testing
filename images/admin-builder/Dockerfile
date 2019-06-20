@@ -46,7 +46,7 @@ ENV PATH=/workspace/google-cloud-sdk/bin:${PATH}
 RUN gcloud --version
 
 # Install Terraform CLI & check it was installed
-ARG TF_VERSION="0.12.2"
+ARG TF_VERSION="0.11.14"
 RUN curl https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip -o terraform_${TF_VERSION}_linux_amd64.zip \
  && unzip terraform_${TF_VERSION}_linux_amd64.zip -d /usr/local/bin \
  && terraform --version
