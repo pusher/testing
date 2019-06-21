@@ -84,6 +84,13 @@ if [[ -n ""${SNYK_TOKEN:-}"" ]]  && which snyk &> /dev/null; then
   snyk auth "${SNYK_TOKEN}"
 fi
 
+# Get the GitHub SSH identity into the known_hosts file
+export GITHUB_SSH_KEYSCAN=${GITHUB_SSH_KEYSCAN:-false}
+if [[ "${GITHUB_SSH_KEYSCAN}" == "true" ]]; then
+  mkdir -p ~/.ssh
+  ssh-keyscan github.com >> ~/.ssh/known_hosts
+fi
+
 # disable error exit so we can run post-command cleanup
 set +o errexit
 
