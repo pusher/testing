@@ -1,5 +1,7 @@
 ECHO := echo
 
+all: verify-config verify-image-tags
+
 .PHONY: config
 config:
 	@ $(ECHO) "\033[36mGenerating Config\033[0m"
