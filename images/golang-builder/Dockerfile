@@ -79,7 +79,7 @@ RUN go get github.com/go-delve/delve/cmd/dlv
 # Install dep for dependencies
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 # Install golangci-lint for linting
-RUN curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.17.1
+RUN curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.15.0
 # Install ginkgo for running tests
 RUN go get github.com/onsi/ginkgo/ginkgo
 
