@@ -26,6 +26,9 @@ WORKDIR $GOPATH/src/barnacle
 RUN dep ensure --vendor-only
 RUN go build -o /barnacle $GOPATH/src/barnacle
 
+# Add the AWS credential helper
+RUN go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login
+
 ##################################################
 ###
 ### Builder image including Docker-In-Docker setup
@@ -102,6 +105,9 @@ RUN mkdir /docker-graph
 
 # add custom docker cleanup binary
 COPY --from=builder ["/barnacle", "/usr/local/bin/"]
+
+# add ecr login help
+COPY --from=builder ["/go/bin/docker-credential-ecr-login", "/usr/local/bin/"]
 
 #
 # END: DOCKER IN DOCKER SETUP
