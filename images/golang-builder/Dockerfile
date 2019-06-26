@@ -82,3 +82,13 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 RUN curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.15.0
 # Install ginkgo for running tests
 RUN go get github.com/onsi/ginkgo/ginkgo
+
+# Install more lint and code generation tools
+RUN go get golang.org/x/tools/cmd/goimports \
+    && go get github.com/kisielk/errcheck \
+    && go get github.com/gordonklaus/ineffassign \
+    && go get github.com/fzipp/gocyclo \
+    && go get honnef.co/go/tools/... \
+    && go get golang.org/x/lint/golint \
+    && go get gopkg.in/golang/mock.v1/gomock \
+    && go get gopkg.in/golang/mock.v1/mockgen
