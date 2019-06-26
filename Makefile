@@ -29,20 +29,20 @@ $(GOPATH)/bin/checkconfig:
 
 .PHONY:
 check-image-tags:
-	@ $(ECHO) "\033[36;1mChecking image tags\033[0m"
+	@ $(ECHO) "\033[36m\033[1mChecking image tags\033[0m"
 	scripts/check-image-tags.sh
 	@ echo # Produce a new line at the end of each target to help readability
 
 TAG ?= v20190508-da87df0
 .PHONY:
 update-image-tags:
-	@ $(ECHO) "\033[36;1mUpdating image tags\033[0m"
+	@ $(ECHO) "\033[36m\033[1mUpdating image tags\033[0m"
 	scripts/update-image-tags.sh $(TAG)
 	@ echo # Produce a new line at the end of each target to help readability
 
 
 .PHONY:
 verify-image-tags: update-image-tags check-image-tags
-	@ $(ECHO) "\033[36mVerifying Git Status\033[0m"
-	@ if [ "$$(git status -s)" != "" ]; then git diff --color; echo "\033[31;1mERROR: Git Diff found. Please run \`make update-image-tags\` and commit the result.\033[0m"; exit 1; else echo "\033[32mAll image tags verified\033[0m";fi
+	@ $(ECHO) "\033[36m\033[1mVerifying Git Status\033[0m"
+	@ if [ "$$(git status -s)" != "" ]; then git diff --color; echo "\033[31m\033[1mERROR: Git Diff found. Please run \`make update-image-tags\` and commit the result.\033[0m"; exit 1; else echo "\033[32mAll image tags verified\033[0m";fi
 	@ echo # Produce a new line at the end of each target to help readability

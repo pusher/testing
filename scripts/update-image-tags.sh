@@ -2,10 +2,11 @@
 
 set -euo pipefail
 
+BOLD="\033[1m"
 RED="\033[31m"
 GREEN="\033[32m"
-YELLOW="\033[33;1m"
-CYAN="\033[36;1m"
+YELLOW="\033[33m"
+CYAN="\033[36m"
 NC="\033[0m"
 
 # A tag name must be valid ASCII and may contain lowercase and uppercase letters,
@@ -20,7 +21,7 @@ if [[ -z $TAG ]]; then
   exit 1
 fi
 
-echo -e "${CYAN}Updating images to tag '$TAG'${NC}"
+echo -e "${CYAN}${BOLD}Updating images to tag '$TAG'${NC}"
 
 for f in $(ls config/jobs/*/*.yaml config/README.md); do
   echo -e "Updating $f"
@@ -36,6 +37,6 @@ done
 
 for f in $(ls config/jobs/*/*.yaml); do
   while read -r line; do
-    if [[ ! -z $line ]]; then echo -e "${YELLOW}[WARNING] Pinned Image in '$f':${NC} ${line#'image: '}"; fi
+    if [[ ! -z $line ]]; then echo -e "${YELLOW}${BOLD}[WARNING] Pinned Image in '$f':${NC} ${line#'image: '}"; fi
   done <<< $(grep -E $pinned_image_regex $f)
 done

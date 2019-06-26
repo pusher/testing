@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
+BOLD="\033[1m"
 RED="\033[31m"
 GREEN="\033[32m"
-CYAN="\033[36;1m"
+CYAN="\033[36m"
 NC="\033[0m"
 
 failed=false
@@ -12,7 +13,7 @@ failed=false
 image_regex='^(.+)/(.+)/(.+):([a-zA-Z0-9\._-]+)(.*)'
 
 for f in $(ls config/jobs/*/*.yaml); do
-  echo -e "${CYAN}Processing $f${NC}"
+  echo -e "${CYAN}${BOLD}Processing $f${NC}"
   while read -r image; do
     image=$(echo -e $image | sed 's|.*image:||')
     registry=$(echo -e $image | sed -E "s|$image_regex|\1|")
