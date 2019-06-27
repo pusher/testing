@@ -47,6 +47,11 @@ data:
     pod_namespace: default
     log_level: info
 
+    github_reporter:
+      job_types_to_report:
+      - presubmit
+      - postsubmit
+
     presets:
       - labels:
           preset-service-account: "true"
