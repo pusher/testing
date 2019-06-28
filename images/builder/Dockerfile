@@ -58,6 +58,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openssh-client \
     pkg-config \
     procps \
+    python \
+    python3 \
+    python-pip \
+    python3-pip \
     rsync \
     unzip \
     wget \
