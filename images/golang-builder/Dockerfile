@@ -12,6 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ARG VERSION=latest
+
+#######################################################################
+###
+### GOLANG Pre-BUILDER - For building any go binaries needed in later steps
+###
+#######################################################################
+
+FROM golang:1.12 AS builder
+COPY wrapper/* $GOPATH/src/wrapper/
+
+ENV GO111MODULE=on
+WORKDIR $GOPATH/src/wrapper
+RUN go build -o /wrapper $GOPATH/src/wrapper
+
+
 #############################################################################
 ###
 ### GOLANG BUILDER - From quay.io/pusher/builder with Go tooling for building
@@ -19,7 +35,6 @@
 ###
 #############################################################################
 
-ARG VERSION=latest
 FROM quay.io/pusher/builder:${VERSION}
 
 # add env we can debug with the image name:tag
@@ -92,3 +107,6 @@ RUN go get golang.org/x/tools/cmd/goimports \
     && go get golang.org/x/lint/golint \
     && go get gopkg.in/golang/mock.v1/gomock \
     && go get gopkg.in/golang/mock.v1/mockgen
+
+# Copy the go wrapper to /home/prow/.local/bin/go/
+COPY --from=builder /wrapper /home/prow/.local/go/bin/go
