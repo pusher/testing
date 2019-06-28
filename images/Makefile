@@ -43,7 +43,7 @@ kubebuilder-builder: golang-builder docker-build-kubebuilder-builder
 
 python-builder: builder docker-build-python-builder
 
-admin-builder: python-builder docker-build-admin-builder
+admin-builder: builder docker-build-admin-builder
 
 clonerefs: docker-build-clonerefs
 
