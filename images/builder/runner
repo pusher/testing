@@ -101,6 +101,12 @@ if [[ -n "${GOOGLE_APPLICATION_CREDENTIALS:-}" ]] && which gcloud &> /dev/null; 
   gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}" || true
 fi
 
+export GOLANG_JUNIT=${GOLANG_JUNIT:-false}
+if [[ "${GOLANG_JUNIT}" == "true" ]]; then
+  export PATH=/home/prow/.local/go/bin:${PATH}
+  export GO_WRAPPER_JUNIT_PATH=${ARTIFACTS}/junit.xml
+fi
+
 # Use a reproducible build date based on the most recent git commit timestamp.
 SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct || true)
 export SOURCE_DATE_EPOCH
