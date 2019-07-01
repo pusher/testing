@@ -20,7 +20,7 @@
 #############################################################################
 
 ARG VERSION=latest
-FROM quay.io/pusher/python-builder:${VERSION}
+FROM quay.io/pusher/builder:${VERSION}
 
 # add env we can debug with the image name:tag
 ARG IMAGE_ARG

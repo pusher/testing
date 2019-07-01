@@ -46,6 +46,9 @@ ENV WORKSPACE=/workspace \
 ARG IMAGE_ARG
 ENV IMAGE=${IMAGE_ARG}
 
+# Add the testing repository so we can get newer Python versions (> 3.5)
+RUN echo 'deb http://ftp.de.debian.org/debian testing main' >> /etc/apt/sources.list
+
 # common util tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -58,6 +61,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openssh-client \
     pkg-config \
     procps \
+    python \
+    python3 \
+    python-pip \
+    python3-pip \
+    python-setuptools \
+    python3-setuptools \
     rsync \
     unzip \
     wget \
