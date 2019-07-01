@@ -41,6 +41,8 @@ RUN apt-get update && apt-get install -y \
 		python3 \
 		python-pip \
 		python3-pip \
+		python-setuptools \
+		python3-setuptools \
 	&& rm -rf /var/lib/apt/lists/*
 
 #####################################
@@ -50,7 +52,7 @@ RUN apt-get update && apt-get install -y \
 #####################################
 
 # Tools for linting
-RUN pip install setuptools flake8 pylint
+RUN pip install flake8 pylint
 RUN pip3 install flake8 pylint
 
 
