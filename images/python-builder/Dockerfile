@@ -50,7 +50,8 @@ RUN apt-get update && apt-get install -y \
 #####################################
 
 # Tools for linting
-RUN pip install flake8 pylint
+RUN pip install setuptools flake8 pylint
+RUN pip3 install flake8 pylint
 
 
 # Switch back to prow user for publish
