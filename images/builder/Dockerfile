@@ -62,6 +62,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python-pip \
     python3-pip \
+    python-setuptools \
+    python3-setuptools \
     rsync \
     unzip \
     wget \
