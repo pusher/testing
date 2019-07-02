@@ -7,6 +7,7 @@ triggers:
       - pusher/k8s-spot-rescheduler
       - pusher/k8s-spot-termination-handler
       - pusher/prom-rule-reloader
+      - pusher/quack
       - pusher/testing
       - pusher/wave
     trusted_org: pusher
@@ -43,6 +44,7 @@ plugins:
   pusher/k8s-spot-rescheduler: *default_plugins
   pusher/k8s-spot-termination-handler: *default_plugins
   pusher/prom-rule-reloader: *default_plugins
+  pusher/quack: *default_plugins
   pusher/testing: *default_plugins
   pusher/wave: *default_plugins
 
@@ -54,5 +56,6 @@ external_plugins:
   pusher/k8s-spot-rescheduler: *default_external_plugins
   pusher/k8s-spot-termination-handler: *default_external_plugins
   pusher/prom-rule-reloader: *default_external_plugins
+  pusher/quack: *default_external_plugins
   pusher/testing: *default_external_plugins
   pusher/wave: *default_external_plugins
