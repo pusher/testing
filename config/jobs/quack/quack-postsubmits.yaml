@@ -36,9 +36,8 @@ postsubmits:
         containers:
           - <<: *container_template_large
             args:
-              - touch .env; # No config necessary
               - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
               - PUSH_TAGS=${TAGS}
-              - touch .env && make docker-build docker-tag docker-push
+              - ./configure && make docker-build docker-tag docker-push
             securityContext:
               privileged: true
