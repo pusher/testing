@@ -104,7 +104,7 @@ fi
 export GOLANG_JUNIT=${GOLANG_JUNIT:-false}
 if [[ "${GOLANG_JUNIT}" == "true" ]]; then
   export PATH=/home/prow/.local/go/bin:${PATH}
-  export GO_WRAPPER_JUNIT_PATH=${ARTIFACTS}/junit.xml
+  export GO_WRAPPER_JUNIT_PATH=${ARTIFACTS}
 fi
 
 # Use a reproducible build date based on the most recent git commit timestamp.

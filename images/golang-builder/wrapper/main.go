@@ -7,8 +7,10 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path"
 	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/jstemmer/go-junit-report/formatter"
 	"github.com/jstemmer/go-junit-report/parser"
 )
@@ -94,17 +96,10 @@ func runWithJunit(realGo, junitPath string, args ...string) {
 	cmd.Stderr = &writerCopier{out: os.Stderr, copy: junitBuffer}
 
 	// Execute the command
-	err := cmd.Run()
-
-	// If theres an error, exit with the correct code if possible
-	if err != nil {
-		log.Printf("Error executing command: %v", err)
-		exitError, ok := err.(*exec.ExitError)
-		if !ok {
-			os.Exit(1)
-		} else {
-			os.Exit(exitError.ExitCode())
-		}
+	runErr := cmd.Run()
+	if runErr != nil {
+		// Don't exit yet as we still want to attempt to parse the test output
+		log.Printf("Error executing command: %v", runErr)
 	}
 
 	// Parse the go test result into a report
@@ -114,7 +109,7 @@ func runWithJunit(realGo, junitPath string, args ...string) {
 		os.Exit(1)
 	}
 
-	outFile, err := os.Create(junitPath)
+	outFile, err := os.Create(getJUnitFileName(junitPath))
 	if err != nil {
 		log.Printf("Error opening file %s: %v", junitPath, err)
 		os.Exit(1)
@@ -126,6 +121,16 @@ func runWithJunit(realGo, junitPath string, args ...string) {
 	if err != nil {
 		fmt.Printf("Error writing XML: %s\n", err)
 		os.Exit(1)
+	}
+
+	// If theres an error running the command, exit with the correct code if possible
+	if runErr != nil {
+		exitError, ok := runErr.(*exec.ExitError)
+		if !ok {
+			os.Exit(1)
+		} else {
+			os.Exit(exitError.ExitCode())
+		}
 	}
 
 	// No error so exit 0
@@ -160,4 +165,17 @@ func contains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+// getJUnitFileName returns the next available file name for files in the given
+// directory with the naming pattern of junit_<UUID>.xml where <UUID> is a
+// unique UUID
+func getJUnitFileName(dir string) string {
+	for {
+		fileName := path.Join(dir, fmt.Sprintf("junit_%s.xml", uuid.New().String()))
+		_, err := os.Stat(fileName)
+		if os.IsNotExist(err) {
+			return fileName
+		}
+	}
 }
