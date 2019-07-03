@@ -94,17 +94,10 @@ func runWithJunit(realGo, junitPath string, args ...string) {
 	cmd.Stderr = &writerCopier{out: os.Stderr, copy: junitBuffer}
 
 	// Execute the command
-	err := cmd.Run()
-
-	// If theres an error, exit with the correct code if possible
-	if err != nil {
-		log.Printf("Error executing command: %v", err)
-		exitError, ok := err.(*exec.ExitError)
-		if !ok {
-			os.Exit(1)
-		} else {
-			os.Exit(exitError.ExitCode())
-		}
+	runErr := cmd.Run()
+	if runErr != nil {
+		// Don't exit yet as we still want to attempt to parse the test output
+		log.Printf("Error executing command: %v", runErr)
 	}
 
 	// Parse the go test result into a report
@@ -126,6 +119,16 @@ func runWithJunit(realGo, junitPath string, args ...string) {
 	if err != nil {
 		fmt.Printf("Error writing XML: %s\n", err)
 		os.Exit(1)
+	}
+
+	// If theres an error running the command, exit with the correct code if possible
+	if runErr != nil {
+		exitError, ok := runErr.(*exec.ExitError)
+		if !ok {
+			os.Exit(1)
+		} else {
+			os.Exit(exitError.ExitCode())
+		}
 	}
 
 	// No error so exit 0
