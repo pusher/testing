@@ -10,6 +10,7 @@ import (
 	"path"
 	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/jstemmer/go-junit-report/formatter"
 	"github.com/jstemmer/go-junit-report/parser"
 )
@@ -167,16 +168,14 @@ func contains(s []string, e string) bool {
 }
 
 // getJUnitFileName returns the next available file name for files in the given
-// directory with the naming pattern of junit_<x>.xml where <x> is an increasing
-// integer
+// directory with the naming pattern of junit_<UUID>.xml where <UUID> is a
+// unique UUID
 func getJUnitFileName(dir string) string {
-	i := 0
 	for {
-		fileName := path.Join(dir, fmt.Sprintf("junit_%d.xml", i))
+		fileName := path.Join(dir, fmt.Sprintf("junit_%s.xml", uuid.New().String()))
 		_, err := os.Stat(fileName)
 		if os.IsNotExist(err) {
 			return fileName
 		}
-		i++
 	}
 }

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 	"testing"
 
 	"github.com/bmizerany/assert"
@@ -14,13 +16,22 @@ func TestGetJUNitFileName(t *testing.T) {
 	assert.Equal(t, nil, err, "Expected to be able to create a temp directory")
 	defer os.RemoveAll(tmp)
 
-	// tmp should be empty, so first file should be indexed 0
-	assert.Equal(t, path.Join(tmp, "junit_0.xml"), getJUnitFileName(tmp), "With an empty directory, expected filename is junit_0.xml")
+	// tmp should be empty, so first file should definitely be uniquely named
+	fileName := getJUnitFileName(tmp)
+	_, err = os.Stat(fileName)
+	assert.Equal(t, true, os.IsNotExist(err), fmt.Sprintf("With an empty directory, expected file (%s) to not exist", fileName))
 
-	f, err := os.Create(path.Join(tmp, "junit_0.xml"))
+	// Make sure the file starts with <tmp>/junit and ends with .xml
+	assert.Equal(t, true, strings.HasPrefix(fileName, path.Join(tmp, "junit")), "Expected filename to start with 'junit'")
+	assert.Equal(t, true, strings.HasSuffix(fileName, ".xml"), "Expected filename to end with '.xml'")
+
+	f, err := os.Create(fileName)
 	assert.Equal(t, nil, err, "Expected to be able to create a file in the temp directory")
 	f.Close()
 
-	// tmp should contain junit_0.xml, so next file should be indexed 1
-	assert.Equal(t, path.Join(tmp, "junit_1.xml"), getJUnitFileName(tmp), "With one file in the directory, expected filename is junit_1.xml")
+	// tmp should contain a file, so next file should have a different name
+	fileName2 := getJUnitFileName(tmp)
+	assert.NotEqual(t, fileName, fileName2, "Expected result of getJUnitFileName to be unique")
+	_, err = os.Stat(fileName2)
+	assert.Equal(t, true, os.IsNotExist(err), fmt.Sprintf("Expected file (%s) to not exist", fileName))
 }
