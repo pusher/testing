@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path"
 	"strconv"
 
 	"github.com/jstemmer/go-junit-report/formatter"
@@ -107,7 +108,7 @@ func runWithJunit(realGo, junitPath string, args ...string) {
 		os.Exit(1)
 	}
 
-	outFile, err := os.Create(junitPath)
+	outFile, err := os.Create(getJUnitFileName(junitPath))
 	if err != nil {
 		log.Printf("Error opening file %s: %v", junitPath, err)
 		os.Exit(1)
@@ -163,4 +164,19 @@ func contains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+// getJUnitFileName returns the next available file name for files in the given
+// directory with the naming pattern of junit_<x>.xml where <x> is an increasing
+// integer
+func getJUnitFileName(dir string) string {
+	i := 0
+	for {
+		fileName := path.Join(dir, fmt.Sprintf("junit_%d.xml", i))
+		_, err := os.Stat(fileName)
+		if os.IsNotExist(err) {
+			return fileName
+		}
+		i++
+	}
 }
