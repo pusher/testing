@@ -55,6 +55,8 @@ presubmits:
 
     - name: pull-prom-rule-reloader-tests
       <<: *job_template
+      labels:
+        preset-golang-junit: "true"
       spec:
         containers:
           - <<: *container_template_small

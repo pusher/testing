@@ -35,6 +35,8 @@ presubmits:
 
     - name: pull-git-store-test
       <<: *job_template
+      labels:
+        preset-golang-junit: "true"
       spec:
         containers:
           - <<: *container_template_small
