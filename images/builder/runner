@@ -89,6 +89,8 @@ export GITHUB_SSH_KEYSCAN=${GITHUB_SSH_KEYSCAN:-false}
 if [[ "${GITHUB_SSH_KEYSCAN}" == "true" ]]; then
   mkdir -p ~/.ssh
   ssh-keyscan github.com >> ~/.ssh/known_hosts
+  # Force use of SSH cloning from GitHub
+  git config --global url."git@github.com:".insteadOf "https://github.com/"
 fi
 
 # disable error exit so we can run post-command cleanup
