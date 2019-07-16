@@ -24,5 +24,9 @@ FROM gcr.io/k8s-prow/clonerefs:v20190615-f3db6c682
 ARG IMAGE_ARG
 ENV IMAGE=${IMAGE_ARG}
 
+RUN mv /clonerefs /prow-clonerefs
+COPY clonerefs /clonerefs
+RUN chmod +x /clonerefs
+
 RUN adduser -S -h /home/prow -s /bin/bash -g root -u 1000 prow
 USER prow
