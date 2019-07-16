@@ -54,12 +54,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		pkg-config \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GOLANG_VERSION 1.12.1
+ENV GOLANG_VERSION 1.12.7
 
 RUN set -eux; \
 	\
   # this came from the golang dockerfile
-  goRelArch='linux-amd64'; goRelSha256='2a3fdabf665496a0db5f41ec6af7a9b15a49fbe71a85a50ca38b1f13a103aeec' ;\
+  goRelArch='linux-amd64'; goRelSha256='66d83bfb5a9ede000e33c6579a91a29e6b101829ad41fffb5c5bb6c900e109d9' ;\
 	\
 	url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz"; \
 	wget -q -O go.tgz "$url"; \
