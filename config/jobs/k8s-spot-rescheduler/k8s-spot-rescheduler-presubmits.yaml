@@ -55,6 +55,8 @@ presubmits:
 
     - name: pull-k8s-spot-rescheduler-tests
       <<: *job_template
+      labels:
+        preset-golang-junit: "true"
       spec:
         containers:
           - <<: *container_template_small

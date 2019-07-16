@@ -109,3 +109,9 @@ presets:
           secretKeyRef:
             name: snyk-api-token
             key: token
+
+  - labels:
+      preset-golang-junit: "true"
+    env:
+      - name: GOLANG_JUNIT
+        value: "true"

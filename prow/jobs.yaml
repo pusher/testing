@@ -231,6 +231,8 @@ data:
 
         - name: pull-git-store-test
           <<: *job_template
+          labels:
+            preset-golang-junit: "true"
           spec:
             containers:
               - <<: *container_template_small
@@ -825,6 +827,8 @@ data:
 
         - name: pull-k8s-spot-rescheduler-tests
           <<: *job_template
+          labels:
+            preset-golang-junit: "true"
           spec:
             containers:
               - <<: *container_template_small
@@ -1061,6 +1065,8 @@ data:
 
         - name: pull-prom-rule-reloader-tests
           <<: *job_template
+          labels:
+            preset-golang-junit: "true"
           spec:
             containers:
               - <<: *container_template_small
@@ -1189,6 +1195,8 @@ data:
 
         - name: pull-quack-tests
           <<: *job_template
+          labels:
+            preset-golang-junit: "true"
           spec:
             containers:
               - <<: *container_template_small
