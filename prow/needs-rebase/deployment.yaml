@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: default
@@ -8,18 +8,42 @@ metadata:
   annotations:
     wave.pusher.com/update-on-config-change: "true"
 spec:
+  minReadySeconds: 10
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 2
       maxUnavailable: 0
-  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: needs-rebase
   template:
     metadata:
       labels:
         app: needs-rebase
     spec:
       terminationGracePeriodSeconds: 180
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - needs-rebase
+              topologyKey: kubernetes.io/hostname
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - needs-rebase
+              topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
       - name: needs-rebase
         image: gcr.io/k8s-prow/needs-rebase:v20190615-f3db6c682
@@ -29,6 +53,10 @@ spec:
         ports:
           - name: http
             containerPort: 8888
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 100m
         volumeMounts:
         - name: hmac
           mountPath: /etc/webhook

@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: default
@@ -9,6 +9,9 @@ metadata:
     wave.pusher.com/update-on-config-change: "true"  
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: sinker
   template:
     metadata:
       labels:
