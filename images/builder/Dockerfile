@@ -118,6 +118,9 @@ COPY --from=builder ["/barnacle", "/usr/local/bin/"]
 # add ecr login help
 COPY --from=builder ["/go/bin/docker-credential-ecr-login", "/usr/local/bin/"]
 
+# Install docker-compose
+RUN pip install 'docker-compose>=1.24.0,<1.25.0'
+
 #
 # END: DOCKER IN DOCKER SETUP
 #
