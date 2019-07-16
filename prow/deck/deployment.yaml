@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: default
@@ -8,12 +8,15 @@ metadata:
   annotations:
     wave.pusher.com/update-on-config-change: "true"
 spec:
+  minReadySeconds: 10
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 2
       maxUnavailable: 0
-  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: deck
   template:
     metadata:
       labels:
@@ -21,6 +24,27 @@ spec:
     spec:
       serviceAccountName: "deck"
       terminationGracePeriodSeconds: 30
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - deck
+              topologyKey: kubernetes.io/hostname
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - deck
+              topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
         - name: deck
           image: gcr.io/k8s-prow/deck:v20190615-f3db6c682
@@ -33,6 +57,10 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
           volumeMounts:
             - name: config
               mountPath: /etc/config
@@ -46,19 +74,19 @@ spec:
             - name: gcs-credentials
               mountPath: /etc/gcs-credentials
               readOnly: true
-      livenessProbe:
-        httpGet:
-          path: /healthz
-          port: 8081
-        initialDelaySeconds: 3
-        periodSeconds: 3
-      readinessProbe:
-        httpGet:
-          path: /healthz/ready
-          port: 8081
-        initialDelaySeconds: 10
-        periodSeconds: 3
-        timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 3
       volumes:
         - name: config
           configMap:
