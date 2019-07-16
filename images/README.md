@@ -28,7 +28,7 @@ based projects within Prow.
 
 The Golang builder contains the following:
 - Everything in the base builder image
-- Golang 1.12.1
+- Golang 1.12.7
 - [profile](github.com/pkg/profile)
 - [delve](github.com/go-delve/delve)
 - [dep](github.com/golang/dep)
