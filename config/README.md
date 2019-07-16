@@ -44,7 +44,7 @@ Since most jobs should use one of the builder images from the [images](../images
 folder, the image tag for these images should stay the same, eg:
 
 ```
-quay.io/pusher/builder:v20190508-da87df0
+quay.io/pusher/builder:v20190716-842415b
 ```
 
 Image tags are currently checked in CI and will be enforced to the version in

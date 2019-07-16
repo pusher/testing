@@ -13,7 +13,7 @@ postsubmits:
         preset-quay-credentials: "true"
       spec:
         containers:
-          - image: quay.io/pusher/builder:v20190508-da87df0
+          - image: quay.io/pusher/builder:v20190716-842415b
             name: build-docker
             command: ["/usr/local/bin/runner"]
             args:
