@@ -55,5 +55,6 @@ projects within Prow.
 
 The Python builder contains the following:
 - Everything in the base builder image
-- Python 3.7.3
+- python 2.7.13 (under `python2`)
+- Python 3.7.3 (under `python`)
 - Pip 19.1
