@@ -54,6 +54,7 @@ spec:
             - --job-config-path=/etc/jobs
             - --spyglass=true
             - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
+            - --rerun-creates-job=true
             - --oauth-url=/github-login
           ports:
             - name: http
