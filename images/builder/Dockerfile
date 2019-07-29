@@ -149,7 +149,7 @@ RUN npm install -g snyk
 RUN apt-get update && \
     apt-get install -y --no-install-recommends sudo && \
     rm -rf /var/lib/apt/lists/*
-RUN echo "prow ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "prow ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/prow && chmod 0440 /etc/sudoers.d/prow
 RUN useradd -rm -d /home/prow -s /bin/bash -g root -G sudo,docker -u 1000 prow
 RUN chown prow:root /workspace \
     && chmod g+s /workspace
