@@ -60,6 +60,16 @@ data:
             name: junit
           required_files:
           - artifacts/junit.*\.xml
+      rerun_auth_config:
+        authorized_users:
+          - BenPope
+          - gargath
+          - JoelSpeed
+          - mthssdrbrg
+          - samuelyallop-pusher
+          - sata
+          - theobarberbany
+          - topliceanu
 
     prowjob_namespace: default
     pod_namespace: default
