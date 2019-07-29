@@ -47,13 +47,15 @@ spec:
               topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
         - name: deck
-          image: gcr.io/k8s-prow/deck:v20190615-f3db6c682
+          image: gcr.io/k8s-prow/deck:v20190726-3b3e19a13
           args:
             - --tide-url=http://tide.default.svc.cluster.local/
             - --hook-url=http://hook.default.svc.cluster.local:8888/plugin-help
             - --job-config-path=/etc/jobs
             - --spyglass=true
             - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
+            - --rerun-creates-job=true
+            - --oauth-url=/github-login
           ports:
             - name: http
               containerPort: 8080
@@ -73,6 +75,12 @@ spec:
               readOnly: true
             - name: gcs-credentials
               mountPath: /etc/gcs-credentials
+              readOnly: true
+            - name: cookie-secret
+              mountPath: /etc/cookie
+              readOnly: true
+            - name: oauth-config
+              mountPath: /etc/github
               readOnly: true
           livenessProbe:
             httpGet:
@@ -100,3 +108,9 @@ spec:
         - name: gcs-credentials
           secret:
             secretName: prow-gcs
+        - name: cookie-secret
+          secret:
+            secretName: cookie-secret
+        - name: oauth-config
+          secret:
+            secretName: github-oauth-config
