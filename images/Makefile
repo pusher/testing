@@ -13,7 +13,11 @@
 # limitations under the License.
 
 REPO := quay.io/pusher
-VERSION ?= $(shell date +v%Y%m%d)-$(shell git describe --tags --always --dirty)
+
+# Set the version parameter if it is unset or empty
+ifeq ($(VERSION),)
+VERSION := $(shell date +v%Y%m%d)-$(shell git describe --tags --always --dirty)
+endif
 
 all: build
 
@@ -60,10 +64,12 @@ docker-build-%:
 	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(VERSION) --build-arg VERSION=$(VERSION) --cache-from $(REPO)/$*:$(VERSION) -t $(REPO)/$*:$(VERSION) $*
 	@echo "\033[36mBuilt $(REPO)/$*:$(VERSION)\033[0m"
 
-TAGS ?= ${VERSION},latest
-
-docker-push-%: % docker-tag-%
+# Set the tags parameter if it is unset or empty
+ifeq ($(TAGS),)
+TAGS := ${VERSION},latest
+endif
+docker-push-%: docker-build-% docker-tag-%
 	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker push $(REPO)/$*:$${tag} && echo "\033[36mPushed $(REPO)/$*:$${tag}\033[0m"; done
 
-docker-tag-%: %
+docker-tag-%: docker-build-%
 	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker tag  $(REPO)/$*:$(VERSION) $(REPO)/$*:$${tag} && echo "\033[36mTagged $(REPO)/$*:$(VERSION) as $${tag}\033[0m"; done
