@@ -69,3 +69,22 @@ presubmits:
               privileged: true
       trigger: "(?m)^/build docker,?(\\s+|$)"
       rerun_command: "/build docker"
+
+    - name: pull-testing-build-docker-pipeline
+      max_concurrency: 10
+      path_alias: github.com/pusher/testing
+      agent: tekton-pipeline
+      run_if_changed: "^(images/.*)"
+      skip_report: false
+      labels:
+        preset-dind-enabled: "true"
+        preset-quay-credentials: "true"
+      pipeline_run_spec:
+          pipelineRef:
+            name: testing-pull-builder-images
+          resources:
+          - name: testing
+            resourceRef:
+              name: PROW_IMPLICIT_GIT_REF
+      trigger: "(?m)^/build docker-pipeline,?(\\s+|$)"
+      rerun_command: "/build docker-pipeline"

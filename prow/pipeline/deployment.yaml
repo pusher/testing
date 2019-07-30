@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: prow-pipeline
+  labels:
+    app: prow-pipeline
+  annotations:
+    wave.pusher.com/update-on-config-change: "true"
+spec:
+  replicas: 1 # Do not scale up.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: prow-pipeline
+  template:
+    metadata:
+      labels:
+        app: prow-pipeline
+    spec:
+      serviceAccountName: prow-pipeline
+      containers:
+      - name: pipeline
+        image: gcr.io/k8s-prow/pipeline:v20190717-ee3256c78
+        args:
+        - --config=/etc/prow-config/config.yaml
+        volumeMounts:
+        - mountPath: /etc/prow-config
+          name: prow-config
+          readOnly: true
+      volumes:
+      - name: prow-config
+        configMap:
+          name: config

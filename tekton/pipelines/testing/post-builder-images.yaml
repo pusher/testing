@@ -1,0 +1,102 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: testing-post-builder-images
+spec:
+  resources:
+  - name: testing
+    type: git
+  tasks:
+  - name: build-builder
+    taskRef:
+      name: testing-build-image
+    resources:
+      inputs:
+      - name: testing
+        resource: testing
+    params:
+    - name: image
+      value: builder
+    - name: DOCKER_IN_DOCKER_ENABLED
+      value: "true"
+    - name: VERSION
+    - name: TAGS
+
+  - name: build-golang-builder
+    runAfter: [build-builder]
+    taskRef:
+      name: testing-build-image
+    resources:
+      inputs:
+      - name: testing
+        resource: testing
+    params:
+    - name: image
+      value: golang-builder
+    - name: DOCKER_IN_DOCKER_ENABLED
+      value: "true"
+    - name: VERSION
+    - name: TAGS
+
+  - name: build-kubebuilder-builder
+    runAfter: [build-golang-builder]
+    taskRef:
+      name: testing-build-image
+    resources:
+      inputs:
+      - name: testing
+        resource: testing
+    params:
+    - name: image
+      value: kubebuilder-builder
+    - name: DOCKER_IN_DOCKER_ENABLED
+      value: "true"
+    - name: VERSION
+    - name: TAGS
+
+  - name: build-python-builder
+    runAfter: [build-builder]
+    taskRef:
+      name: testing-build-image
+    resources:
+      inputs:
+      - name: testing
+        resource: testing
+    params:
+    - name: image
+      value: python-builder
+    - name: DOCKER_IN_DOCKER_ENABLED
+      value: "true"
+    - name: VERSION
+    - name: TAGS
+
+  - name: build-admin-builder
+    runAfter: [build-builder]
+    taskRef:
+      name: testing-build-image
+    resources:
+      inputs:
+      - name: testing
+        resource: testing
+    params:
+    - name: image
+      value: admin-builder
+    - name: DOCKER_IN_DOCKER_ENABLED
+      value: "true"
+    - name: VERSION
+    - name: TAGS
+
+  - name: build-clonerefs
+    taskRef:
+      name: testing-build-image
+    resources:
+      inputs:
+      - name: testing
+        resource: testing
+    params:
+    - name: image
+      value: clonerefs
+    - name: DOCKER_IN_DOCKER_ENABLED
+      value: "true"
+    - name: VERSION
+    - name: TAGS

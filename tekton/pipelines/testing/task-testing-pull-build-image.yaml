@@ -1,0 +1,53 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: testing-build-image
+spec:
+  inputs:
+    resources:
+    - name: testing
+      type: git
+    params:
+    - name: image
+      description: Which builder image to build
+    - name: DOCKER_IN_DOCKER_ENABLED
+      description: Should Docker be started within the container
+      defaultValue: "false"
+    - name: VERSION
+      description: version string for images being built
+      default: ""
+    - name: TAGS
+      description: image tags to push
+      default: ""
+  steps:
+  - name: test
+    image: quay.io/pusher/builder:v20190716-842415b
+    workingDir: /workspace/testing
+    command: ["/usr/local/bin/runner"]
+    env:
+    - name: DOCKER_IN_DOCKER_ENABLED
+      value: ${inputs.params.DOCKER_IN_DOCKER_ENABLED}
+    - name: HOME
+      value: /home/prow
+    args:
+    - VERSION=${inputs.params.VERSION}
+    - TAGS=${inputs.params.TAGS}
+    - make
+    - --directory=images
+    - docker-build-${inputs.params.image}
+    - docker-tag-${inputs.params.image}
+    - docker-push-${inputs.params.image}
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - name: docker-graph
+        mountPath: /docker-graph
+      - name: credentials
+        mountPath: /home/prow/.docker
+        readOnly: true
+  volumes:
+    - name: docker-graph
+      emptyDir: {}
+    - name: credentials
+      secret:
+        secretName: quay-docker-config
