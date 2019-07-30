@@ -23,12 +23,12 @@ cleanup_binfmt_misc() {
     # TODO(bentheelder): if this logic is moved out and made more general
     # we need to check that the host actually has binfmt_misc support first.
     if [ ! -f /proc/sys/fs/binfmt_misc/status ]; then
-        mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+        sudo mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
     fi
     # https://www.kernel.org/doc/html/v4.13/admin-guide/binfmt-misc.html
     # You can remove one entry or all entries by echoing -1
     # to /proc/.../the_name or /proc/sys/fs/binfmt_misc/status.
-    echo -1 >/proc/sys/fs/binfmt_misc/status
+    echo -1 | sudo tee /proc/sys/fs/binfmt_misc/status > /dev/null
     # list entries
     ls -al /proc/sys/fs/binfmt_misc
 }
