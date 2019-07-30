@@ -11,7 +11,7 @@ job_template: &job_template
     - ^v?\d+\.\d+\.\d+(-rc\d+)?$
 
 container_template: &container_template
-  image: quay.io/pusher/python-builder:v20190716-842415b
+  image: quay.io/pusher/python-builder:v20190730-3bc1149
   name: runner
   command: ["/usr/local/bin/runner"]
 
