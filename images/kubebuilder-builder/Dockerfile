@@ -33,10 +33,12 @@ RUN sudo mkdir -p \
 		/usr/local/kubebuilder-1.11/bin \
 		/usr/local/kubebuilder-1.12/bin \
 		/usr/local/kubebuilder-1.13/bin \
+		/usr/local/kubebuilder-1.14/bin \
 		&& sudo chown prow:root \
 		/usr/local/kubebuilder-1.11/bin \
 		/usr/local/kubebuilder-1.12/bin \
-		/usr/local/kubebuilder-1.13/bin
+		/usr/local/kubebuilder-1.13/bin \
+		/usr/local/kubebuilder-1.14/bin
 RUN make \
 		dep \
 		ginkgo-cli \
@@ -45,6 +47,7 @@ RUN make \
 		kubebuilder-tools-1.11 \
 		kubebuilder-tools-1.12 \
 		kubebuilder-tools-1.13 \
+		kubebuilder-tools-1.14 \
 		&& rm Makefile
 
-ENV PATH=/usr/local/kubebuilder-1.13/bin:$PATH
+ENV PATH=/usr/local/kubebuilder-1.14/bin:$PATH
