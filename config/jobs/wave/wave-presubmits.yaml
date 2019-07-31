@@ -73,6 +73,16 @@ presubmits:
       trigger: "(?m)^/test (?:.*? )?(build|all)(?:.*? )?$"
       rerun_command: "/test build"
 
+    - name: pull-wave-test-1.14
+      <<: *job_template
+      spec:
+        containers:
+          - <<: *container_template_large
+            args:
+              - touch .env && make prepare-env-1.14 && make test
+      trigger: "(?m)^/test (?:.*? )?(1\\.14|all)(?: .*?)?$"
+      rerun_command: "/test 1.14"
+
     - name: pull-wave-test-1.13
       <<: *job_template
       spec:
@@ -92,16 +102,6 @@ presubmits:
               - touch .env && make prepare-env-1.12 && make test
       trigger: "(?m)^/test (?:.*? )?(1\\.12|all)(?: .*?)?$"
       rerun_command: "/test 1.12"
-
-    - name: pull-wave-test-1.11
-      <<: *job_template
-      spec:
-        containers:
-          - <<: *container_template_large
-            args:
-              - touch .env && make prepare-env-1.11 && make test
-      trigger: "(?m)^/test (?:.*? )?(1\\.11|all)(?: .*?)?$"
-      rerun_command: "/test 1.11"
 
     - name: pull-wave-build-docker
       <<: *job_template
