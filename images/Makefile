@@ -58,10 +58,7 @@ clonerefs: docker-build-clonerefs
 ###
 
 docker-build-%:
-	# Use `-` to ignore the exit code from the pull below.
-	# If we can't pull we just have no cache to start from.
-	- docker pull $(REPO)/$*:$(VERSION)
-	docker build --build-arg IMAGE_ARG=$(REPO)/$*:$(VERSION) --build-arg VERSION=$(VERSION) --cache-from $(REPO)/$*:$(VERSION) -t $(REPO)/$*:$(VERSION) $*
+	./docker-build.sh --version=$(VERSION) --build-root=$*
 	@echo "\033[36mBuilt $(REPO)/$*:$(VERSION)\033[0m"
 
 # Set the tags parameter if it is unset or empty
@@ -69,6 +66,8 @@ ifeq ($(TAGS),)
 TAGS := ${VERSION},latest
 endif
 docker-push-%: docker-build-% docker-tag-%
+	./push-stages.sh --build-root=$*
+	@echo "\033[36mPushing $(REPO)/$*:$(VERSION)\033[0m"
 	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker push $(REPO)/$*:$${tag} && echo "\033[36mPushed $(REPO)/$*:$${tag}\033[0m"; done
 
 docker-tag-%: docker-build-%
