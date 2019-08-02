@@ -20,7 +20,7 @@ data:
         - ^v?\d+\.\d+\.\d+(-rc\d+)?$
 
     container_template: &container_template
-      image: quay.io/pusher/kubebuilder-builder:v20190730-3bc1149
+      image: quay.io/pusher/kubebuilder-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -62,7 +62,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/kubebuilder-builder:v20190730-3bc1149
+      image: quay.io/pusher/kubebuilder-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -203,7 +203,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/golang-builder:v20190730-3bc1149
+      image: quay.io/pusher/golang-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -631,7 +631,7 @@ data:
         - ^v?\d+\.\d+\.\d+(-rc\d+)?$
 
     container_template: &container_template
-      image: quay.io/pusher/python-builder:v20190730-3bc1149
+      image: quay.io/pusher/python-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -671,7 +671,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/python-builder:v20190730-3bc1149
+      image: quay.io/pusher/python-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -738,7 +738,7 @@ data:
         - ^v?\d+\.\d+\.\d+(-rc\d+)?$
 
     container_template: &container_template
-      image: quay.io/pusher/golang-builder:v20190730-3bc1149
+      image: quay.io/pusher/golang-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -779,7 +779,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/golang-builder:v20190730-3bc1149
+      image: quay.io/pusher/golang-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -869,7 +869,7 @@ data:
         - ^v?\d+\.\d+\.\d+(-rc\d+)?$
 
     container_template: &container_template
-      image: quay.io/pusher/python-builder:v20190730-3bc1149
+      image: quay.io/pusher/python-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -909,7 +909,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/python-builder:v20190730-3bc1149
+      image: quay.io/pusher/python-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -976,7 +976,7 @@ data:
         - ^v?\d+\.\d+\.\d+(-rc\d+)?$
 
     container_template: &container_template
-      image: quay.io/pusher/golang-builder:v20190730-3bc1149
+      image: quay.io/pusher/golang-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -1017,7 +1017,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/golang-builder:v20190730-3bc1149
+      image: quay.io/pusher/golang-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -1107,7 +1107,7 @@ data:
         - ^v?\d+\.\d+\.\d+(-rc\d+)?$
 
     container_template: &container_template
-      image: quay.io/pusher/golang-builder:v20190730-3bc1149
+      image: quay.io/pusher/golang-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -1147,7 +1147,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/golang-builder:v20190730-3bc1149
+      image: quay.io/pusher/golang-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -1239,7 +1239,7 @@ data:
             preset-quay-credentials: "true"
           spec:
             containers:
-              - image: quay.io/pusher/builder:v20190730-3bc1149
+              - image: quay.io/pusher/builder:v20190801-3bf82c1
                 name: build-docker
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -1283,7 +1283,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder:v20190730-3bc1149
+              - image: quay.io/pusher/kubebuilder-builder:v20190801-3bf82c1
                 name: verify-config
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -1304,7 +1304,7 @@ data:
           decorate: true
           spec:
             containers:
-              - image: quay.io/pusher/kubebuilder-builder:v20190730-3bc1149
+              - image: quay.io/pusher/kubebuilder-builder:v20190801-3bf82c1
                 name: verify-image-tags
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -1328,7 +1328,7 @@ data:
             preset-quay-credentials: "true"
           spec:
             containers:
-              - image: quay.io/pusher/builder:v20190730-3bc1149
+              - image: quay.io/pusher/builder:v20190801-3bf82c1
                 name: build-docker
                 command: ["/usr/local/bin/runner"]
                 args:
@@ -1376,7 +1376,7 @@ data:
         - ^v?\d+\.\d+\.\d+(-rc\d+)?$
 
     container_template: &container_template
-      image: quay.io/pusher/kubebuilder-builder:v20190730-3bc1149
+      image: quay.io/pusher/kubebuilder-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -1417,7 +1417,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/kubebuilder-builder:v20190730-3bc1149
+      image: quay.io/pusher/kubebuilder-builder:v20190801-3bf82c1
       name: runner
       command: ["/usr/local/bin/runner"]
 
