@@ -37,7 +37,7 @@ postsubmits:
         containers:
           - <<: *container_template_large
             args:
-              - touch .env && make prepare-env-1.13 &&
+              - touch .env && make prepare-env-1.14 &&
               - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
               - PUSH_TAGS=${TAGS}
               - make docker-build docker-scan docker-tag docker-push
