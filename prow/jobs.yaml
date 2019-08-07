@@ -46,7 +46,7 @@ data:
             containers:
               - <<: *container_template_large
                 args:
-                  - touch .env && make prepare-env-1.13 &&
+                  - touch .env && make prepare-env-1.14 &&
                   - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
                   - PUSH_TAGS=${TAGS}
                   - make docker-build docker-scan docker-tag docker-push
@@ -94,7 +94,7 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - touch .env && make prepare-env-1.13 && make verify-generate
+                  - touch .env && make prepare-env-1.14 && make verify-generate
           trigger: "(?m)^/test (?:.*? )?(verify-generate|all)(?: .*?)?$"
           rerun_command: "/test verify-generate"
 
@@ -104,7 +104,7 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - touch .env && make prepare-env-1.13 && make verify-manifests
+                  - touch .env && make prepare-env-1.14 && make verify-manifests
           trigger: "(?m)^/test (?:.*? )?(verify-manifests|all)(?: .*?)?$"
           rerun_command: "/test verify-manifests"
 
@@ -114,7 +114,7 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - touch .env && make prepare-env-1.13 && make lint
+                  - touch .env && make prepare-env-1.14 && make lint
           trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
           rerun_command: "/test lint"
 
@@ -124,7 +124,7 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - touch .env && make prepare-env-1.13 && make build
+                  - touch .env && make prepare-env-1.14 && make build
           trigger: "(?m)^/test (?:.*? )?(build|all)(?:.*? )?$"
           rerun_command: "/test build"
 
@@ -136,9 +136,23 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - touch .env && make prepare-env-1.13 && make scan
+                  - touch .env && make prepare-env-1.14 && make scan
           trigger: "(?m)^/test (?:.*? )?(scan|all)(?:.*? )?$"
           rerun_command: "/test scan"
+
+        - name: pull-faros-test-1.14
+          <<: *job_template
+          spec:
+            containers:
+              - <<: *container_template_large
+                args:
+                  - touch .env && make prepare-env-1.14 && make test
+                resources:
+                  requests:
+                    cpu: 3
+                    memory: 2Gi
+          trigger: "(?m)^/test (?:.*? )?(1\\.14|all)(?: .*?)?$"
+          rerun_command: "/test 1.14"
 
         - name: pull-faros-test-1.13
           <<: *job_template
@@ -160,20 +174,6 @@ data:
           trigger: "(?m)^/test (?:.*? )?(1\\.12|all)(?: .*?)?$"
           rerun_command: "/test 1.12"
 
-        - name: pull-faros-test-1.11
-          <<: *job_template
-          spec:
-            containers:
-              - <<: *container_template_large
-                args:
-                  - touch .env && make prepare-env-1.11 && SKIP_DRY_RUN_TESTS=true make test
-                resources:
-                  requests:
-                    cpu: 3
-                    memory: 2Gi
-          trigger: "(?m)^/test (?:.*? )?(1\\.11|all)(?: .*?)?$"
-          rerun_command: "/test 1.11"
-
         - name: pull-faros-build-docker
           <<: *job_template
           always_run: false
@@ -185,7 +185,7 @@ data:
             containers:
               - <<: *container_template_large
                 args:
-                  - touch .env && make prepare-env-1.13 &&
+                  - touch .env && make prepare-env-1.14 &&
                   - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
                   - PUSH_TAGS=${TAGS}
                   - make docker-build docker-scan docker-tag docker-push
@@ -1449,7 +1449,7 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - touch .env && make prepare-env-1.13 && make verify-generate
+                  - touch .env && make prepare-env-1.14 && make verify-generate
           trigger: "(?m)^/test (?:.*? )?(verify-generate|all)(?: .*?)?$"
           rerun_command: "/test verify-generate"
 
@@ -1459,7 +1459,7 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - touch .env && make prepare-env-1.13 && make verify-manifests
+                  - touch .env && make prepare-env-1.14 && make verify-manifests
           trigger: "(?m)^/test (?:.*? )?(verify-manifests|all)(?: .*?)?$"
           rerun_command: "/test verify-manifests"
 
@@ -1469,7 +1469,7 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - touch .env && make prepare-env-1.13 && make lint
+                  - touch .env && make prepare-env-1.14 && make lint
           trigger: "(?m)^/test (?:.*? )?(lint|all)(?:.*? )?$"
           rerun_command: "/test lint"
 
@@ -1479,7 +1479,7 @@ data:
             containers:
               - <<: *container_template_small
                 args:
-                  - touch .env && make prepare-env-1.13 && make build
+                  - touch .env && make prepare-env-1.14 && make build
           trigger: "(?m)^/test (?:.*? )?(build|all)(?:.*? )?$"
           rerun_command: "/test build"
 
