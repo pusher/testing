@@ -49,13 +49,9 @@ fi
 # Check if the image is a multi stage build
 #
 ###########################################
-lines=$(cat ${build_root}/Dockerfile | grep 'FROM')
+lines=$(grep 'FROM .* AS' ${build_root}/Dockerfile)
 declare -a stages
 while read -r from; do
-  # Skip FROMs that aren't named
-  if [[ ! $from =~ "AS" ]]; then
-    continue
-  fi
   stage=$(echo $from | sed -E 's|FROM .* AS (.*)$|\1|')
   stages+=($stage)
 done <<< "$lines"
