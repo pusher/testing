@@ -58,7 +58,6 @@ done <<< "$lines"
 
 for stage in "${stages[@]}"; do
   echo -e "${CYAN}Building Docker pre-stage: ${build_root}:${stage}${NC}"
-  # silently pull the stages cache
   docker pull ${repository}/${build_root}:stage-${stage}
   img=$repository/${build_root}
   docker build --pull --build-arg IMAGE_ARG=${img}:${version} --build-arg VERSION=${version} --cache-from ${img}:stage-${stage} -t ${img}:stage-${stage} --target ${stage} ${build_root}
