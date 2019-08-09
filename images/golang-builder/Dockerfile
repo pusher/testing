@@ -25,6 +25,7 @@ COPY wrapper/* $GOPATH/src/wrapper/
 
 ENV GO111MODULE=on
 WORKDIR $GOPATH/src/wrapper
+RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 RUN dep ensure
 RUN go test
 RUN go build -o /wrapper $GOPATH/src/wrapper
