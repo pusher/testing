@@ -25,6 +25,7 @@ COPY wrapper/* $GOPATH/src/wrapper/
 
 ENV GO111MODULE=on
 WORKDIR $GOPATH/src/wrapper
+RUN dep ensure
 RUN go test
 RUN go build -o /wrapper $GOPATH/src/wrapper
 
