@@ -30,6 +30,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -43,6 +44,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -68,6 +70,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -81,6 +84,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -94,6 +98,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -108,6 +113,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -122,6 +128,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -137,6 +144,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -152,6 +160,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -167,6 +176,7 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -182,6 +192,7 @@ presubmits:
     max_concurrency: 5
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -195,6 +206,7 @@ presubmits:
     context: prow/istio-pilot-e2e-envoyv2-v1alpha3.sh
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -209,6 +221,7 @@ presubmits:
     context: prow/e2e-mixer-no_auth.sh
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -223,6 +236,7 @@ presubmits:
     context: prow/e2e-dashboard.sh
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -237,6 +251,7 @@ presubmits:
     context: prow/e2e-bookInfoTests-v1alpha3.sh
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -252,6 +267,7 @@ presubmits:
     optional: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -266,6 +282,7 @@ presubmits:
     context: prow/e2e-simpleTests.sh
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -280,6 +297,7 @@ presubmits:
     context: prow/e2e-simpleTests-minProfile.sh
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -295,6 +313,7 @@ presubmits:
     optional: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -310,6 +329,7 @@ presubmits:
     optional: true
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -324,6 +344,7 @@ presubmits:
     context: prow/e2e_pilotv2_auth_sds.sh
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -337,6 +358,7 @@ presubmits:
     context: prow/release-test.sh
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -373,6 +395,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -384,6 +407,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -396,6 +420,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -407,6 +432,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -418,6 +444,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -430,6 +457,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -441,6 +469,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -452,6 +481,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -463,6 +493,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -475,6 +506,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -486,6 +518,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -497,6 +530,7 @@ postsubmits:
     <<: *job_template
     labels:
       preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
