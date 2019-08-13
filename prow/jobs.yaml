@@ -401,8 +401,7 @@ data:
               command:
                 - entrypoint
                 - prow/integ-pilot-k8s-presubmit-tests.sh
-          nodeSelector:
-            testing: test-pool
+
       - name: integ-security-k8s-presubmit-tests-release-1.2
         <<: *job_template
         optional: true
@@ -417,8 +416,7 @@ data:
               command:
                 - entrypoint
                 - prow/integ-security-k8s-presubmit-tests.sh
-          nodeSelector:
-            testing: test-pool
+
       - name: test-e2e-mixer-no_auth-release-1.2
         <<: *job_template
         optional: true
@@ -715,8 +713,7 @@ data:
             command:
             - entrypoint
             - prow/e2e-bookInfoTests-envoyv2-v1alpha3-non-mcp.sh
-          nodeSelector:
-            testing: test-pool
+
       - name: e2e-mixer-no_auth-release-1.2
         <<: *job_template
         labels:
