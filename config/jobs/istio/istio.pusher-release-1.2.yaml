@@ -348,7 +348,7 @@ presubmits:
 
 postsubmits:
 
-  istio/istio:
+  pusher/istio:
   - name: istio-integ-local-tests-release-1.2
     <<: *job_template
     spec:
