@@ -1,0 +1,509 @@
+job_template: &job_template
+  branches:
+  - "^pusher-release-1.2.*$"
+  decorate: true
+  decoration_config:
+    utility_images:
+      clonerefs: "gcr.io/k8s-prow/clonerefs:v20181017-d31417a"
+  path_alias: istio.io/istio
+
+istio_container: &istio_container
+  image: gcr.io/istio-testing/istio-builder:v20181008-db31a9fd
+  # Docker in Docker
+  securityContext:
+    privileged: true
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "24Gi"
+      cpu: "3000m"
+
+presubmits:
+
+  pusher/istio:
+
+  - name: istio-unit-tests-release-1.2
+    <<: *job_template
+    context: prow/istio-unit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-unit-tests.sh
+
+  - name: integ-framework-local-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-framework-local-presubmit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-framework-local-presubmit-tests.sh
+
+  - name: integ-galley-local-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-galley-local-presubmit-tests.sh
+    always_run: true
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-galley-local-presubmit-tests.sh
+
+  - name: integ-mixer-local-presubmit-tests-release-1.2
+    <<: *job_template
+    optional: true
+    context: prow/integ-mixer-local-presubmit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-mixer-local-presubmit-tests.sh
+
+  - name: integ-pilot-local-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-pilot-local-presubmit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-pilot-local-presubmit-tests.sh
+
+  - name: integ-security-local-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-security-local-presubmit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-security-local-presubmit-tests.sh
+
+  - name: integ-framework-k8s-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-framework-k8s-presubmit-tests.sh
+    max_concurrency: 5
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-framework-k8s-presubmit-tests.sh
+
+  - name: integ-galley-k8s-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-galley-k8s-presubmit-tests.sh
+    max_concurrency: 5
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-galley-k8s-presubmit-tests.sh
+
+  - name: integ-mixer-k8s-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-mixer-k8s-presubmit-tests.sh
+    optional: true
+    max_concurrency: 5
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-mixer-k8s-presubmit-tests.sh
+
+  - name: integ-pilot-k8s-presubmit-tests-release-1.2
+    <<: *job_template
+    optional: true
+    context: prow/integ-pilot-k8s-presubmit-tests.sh
+    max_concurrency: 5
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-pilot-k8s-presubmit-tests.sh
+      nodeSelector:
+        testing: test-pool
+  - name: integ-security-k8s-presubmit-tests-release-1.2
+    <<: *job_template
+    optional: true
+    context: prow/integ-security-k8s-presubmit-tests.sh
+    max_concurrency: 5
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-security-k8s-presubmit-tests.sh
+      nodeSelector:
+        testing: test-pool
+  - name: test-e2e-mixer-no_auth-release-1.2
+    <<: *job_template
+    optional: true
+    skip_report: true
+    context: "prow: test-e2e-mixer-no_auth"
+    max_concurrency: 5
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/test-e2e-mixer-no_auth.sh
+
+  - name: istio-pilot-e2e-envoyv2-v1alpha3-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/istio-pilot-e2e-envoyv2-v1alpha3.sh
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-pilot-e2e-envoyv2-v1alpha3.sh
+
+  - name: e2e-mixer-no_auth-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/e2e-mixer-no_auth.sh
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-mixer-no_auth.sh
+
+  - name: e2e-dashboard-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/e2e-dashboard.sh
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-dashboard.sh
+
+  - name: e2e-bookInfoTests-envoyv2-v1alpha3-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/e2e-bookInfoTests-v1alpha3.sh
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-bookInfoTests-envoyv2-v1alpha3.sh
+
+  - name: e2e-bookInfoTests-trustdomain-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/e2e-bookInfoTests-trustdomain.sh
+    optional: true
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-bookInfoTests-trustdomain.sh
+
+  - name: e2e-simpleTests-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/e2e-simpleTests.sh
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-simpleTests.sh
+
+  - name: e2e-simpleTestsMinProfile-release-1.2
+    <<: *job_template
+    optional: true
+    context: prow/e2e-simpleTests-minProfile.sh
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-simpleTests-minProfile.sh
+
+  - name: istio-pilot-multicluster-e2e-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/istio-pilot-multicluster-e2e.sh
+    optional: true
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-pilot-multicluster-e2e.sh
+
+  - name: e2e-simpleTests-cni-release-1.2
+    <<: *job_template
+    always_run: false
+    context: prow/e2e-simpleTests-cni.sh
+    optional: true
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-simpleTests-cni.sh
+
+  - name: istio_auth_sds_e2e-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/e2e_pilotv2_auth_sds.sh
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e_pilotv2_auth_sds.sh
+  - name: release-test-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/release-test.sh
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/release-test.sh
+
+
+postsubmits:
+
+  istio/istio:
+  - name: istio-integ-local-tests-release-1.2
+    <<: *job_template
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-integ-local-tests.sh
+
+  - name: istio-unit-tests-postsubmit-release-1.2
+    <<: *job_template
+    context: prow/istio-unit-tests.sh
+    always_run: true
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-unit-tests.sh
+
+  - name: istio-integ-k8s-tests-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-integ-k8s-tests.sh
+
+  - name: e2e-simpleTestsMinProfile-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-simpleTests-minProfile.sh
+
+  - name: istio-integ-race-native-tests-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-integ-race-native-tests.sh
+
+  - name: e2e-simpleTests-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-simpleTests.sh
+
+  - name: e2e-simpleTests-non-mcp-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-simpleTests-non-mcp.sh
+
+  - name: e2e-bookInfoTests-envoyv2-v1alpha3-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-bookInfoTests-envoyv2-v1alpha3.sh
+
+  - name: istio-pilot-e2e-envoyv2-v1alpha3-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-pilot-e2e-envoyv2-v1alpha3.sh
+
+  - name: istio-pilot-e2e-envoyv2-v1alpha3-k8s-latest-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-pilot-e2e-envoyv2-v1alpha3-k8s-latest.sh
+
+  - name: e2e-bookInfoTests-envoyv2-v1alpha3-non-mcp-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-bookInfoTests-envoyv2-v1alpha3-non-mcp.sh
+      nodeSelector:
+        testing: test-pool
+  - name: e2e-mixer-no_auth-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-mixer-no_auth.sh
+
+  - name: e2e-dashboard-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e-dashboard.sh
+
+  - name: istio_auth_sds_e2e-release-1.2
+    <<: *job_template
+    labels:
+      preset-root-quay-credentials: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/e2e_pilotv2_auth_sds.sh
