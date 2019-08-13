@@ -243,7 +243,7 @@ data:
   istio_istio.pusher-release-1.2.yaml: |
     job_template: &job_template
       branches:
-      - "^pusher-release-1.2.*$"
+      - "^pusher-release.*$"
       decorate: true
       decoration_config:
         utility_images:
