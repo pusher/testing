@@ -671,7 +671,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/python-builder:v20190801-3bf82c1
+      image: quay.io/pusher/python-builder:pull-73 # test pull 73
       name: runner
       command: ["/usr/local/bin/runner"]
 
