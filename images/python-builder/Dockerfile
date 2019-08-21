@@ -43,6 +43,7 @@ RUN apt-get update && apt-get install -y \
 		python3-pip \
 		python-setuptools \
 		python3-setuptools \
+		python3-venv \
 	&& rm -rf /var/lib/apt/lists/*
 
 #####################################
