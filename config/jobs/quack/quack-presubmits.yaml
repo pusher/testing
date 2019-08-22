@@ -7,7 +7,7 @@ job_template: &job_template
   decorate: true
 
 container_template: &container_template
-  image: quay.io/pusher/golang-builder:v20190801-3bf82c1
+  image: quay.io/pusher/golang-builder:v20190821-328974b
   name: runner
   command: ["/usr/local/bin/runner"]
 
