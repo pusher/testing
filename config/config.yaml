@@ -61,6 +61,7 @@ deck:
       - sata
       - theobarberbany
       - topliceanu
+      - DanielMorsing
 
 prowjob_namespace: default
 pod_namespace: default
