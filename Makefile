@@ -23,7 +23,8 @@ verify-config: $(GOPATH)/bin/checkconfig
 
 $(GOPATH)/bin/checkconfig:
 	@ $(ECHO) "\033[36mInstalling checkconfig\033[0m"
-	GOPROXY=https://proxy.golang.org GOSUMDB=sum.golang.org GO111MODULE=on go get k8s.io/test-infra/prow/cmd/checkconfig
+	# Change away from code directory so as not to modify the Go Modules files
+	cd; GOPROXY=https://proxy.golang.org GOSUMDB=sum.golang.org GO111MODULE=on go install k8s.io/test-infra/prow/cmd/checkconfig
 	@ echo # Produce a new line at the end of each target to help readability
 
 .PHONY:
