@@ -60,12 +60,43 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.handleEvent(eventType, eventGUID, payload); err != nil {
+	sources, targets, ok := validateParams(w, r)
+	if !ok {
+		return
+	}
+
+	if err := s.handleEvent(eventType, eventGUID, payload, sources, targets); err != nil {
 		s.log.WithError(err).Error("Error parsing event.")
 	}
 }
 
-func (s *Server) handleEvent(eventType, eventGUID string, payload []byte) error {
+func validateParams(w http.ResponseWriter, r *http.Request) ([]string, []string, bool) {
+	params := r.URL.Query()
+
+	sources, ok := params["source"]
+	if !ok || len(sources) == 0 {
+		responseHTTPError(w, http.StatusBadRequest, "400 Bad Request: Missing source parameter")
+		return []string{}, []string{}, false
+	}
+
+	targets, ok := params["target"]
+	if !ok || len(targets) == 0 {
+		responseHTTPError(w, http.StatusBadRequest, "400 Bad Request: Missing target parameter")
+		return []string{}, []string{}, false
+	}
+
+	return sources, targets, true
+}
+
+func responseHTTPError(w http.ResponseWriter, statusCode int, response string) {
+	logrus.WithFields(logrus.Fields{
+		"response":    response,
+		"status-code": statusCode,
+	}).Debug(response)
+	http.Error(w, response, statusCode)
+}
+
+func (s *Server) handleEvent(eventType, eventGUID string, payload []byte, sources, targets []string) error {
 	l := s.log.WithFields(logrus.Fields{
 		"event-type":     eventType,
 		github.EventGUID: eventGUID,
@@ -77,7 +108,7 @@ func (s *Server) handleEvent(eventType, eventGUID string, payload []byte) error 
 			return err
 		}
 		go func() {
-			if err := s.handlePullRequest(l, pr); err != nil {
+			if err := s.handlePullRequest(l, pr, sources, targets); err != nil {
 				s.log.WithError(err).WithFields(l.Data).Info("Promote failed.")
 			}
 		}()
@@ -87,7 +118,7 @@ func (s *Server) handleEvent(eventType, eventGUID string, payload []byte) error 
 	return nil
 }
 
-func (s *Server) handlePullRequest(l *logrus.Entry, pre github.PullRequestEvent) error {
+func (s *Server) handlePullRequest(l *logrus.Entry, pre github.PullRequestEvent, sources, targets []string) error {
 	// Only consider newly merged PRs
 	if pre.Action != github.PullRequestActionClosed {
 		return nil
@@ -111,9 +142,23 @@ func (s *Server) handlePullRequest(l *logrus.Entry, pre github.PullRequestEvent)
 		github.PrLogField:   num,
 	})
 
+	if !contains(sources, baseBranch) {
+		l.Debugf("skipping PR %d as base branch (%s) is not one of %v", num, baseBranch, sources)
+		return nil
+	}
+
 	// Make sure it compiles before we implement the behaviour
 	l.Info(baseBranch, title, body)
 
 	//TODO: Implement handling logic
 	return nil
+}
+
+func contains(list []string, toFind string) bool {
+	for _, item := range list {
+		if item == toFind {
+			return true
+		}
+	}
+	return false
 }
