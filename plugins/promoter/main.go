@@ -18,8 +18,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"os"
+	"runtime"
 	"strconv"
 	"time"
 
@@ -35,8 +37,9 @@ import (
 type options struct {
 	port int
 
-	dryRun bool
-	github prowflagutil.GitHubOptions
+	dryRun      bool
+	github      prowflagutil.GitHubOptions
+	showVersion bool
 
 	webhookSecretFile string
 }
@@ -57,6 +60,7 @@ func gatherOptions() options {
 	fs.IntVar(&o.port, "port", 8888, "Port to listen on.")
 	fs.BoolVar(&o.dryRun, "dry-run", true, "Dry run for testing. Uses API tokens but does not mutate.")
 	fs.StringVar(&o.webhookSecretFile, "hmac-secret-file", "/etc/webhook/hmac", "Path to the file containing the GitHub HMAC secret.")
+	fs.BoolVar(&o.showVersion, "version", false, "Show version and exit.")
 	for _, group := range []flagutil.OptionGroup{&o.github} {
 		group.AddFlags(fs)
 	}
@@ -68,6 +72,12 @@ func main() {
 	o := gatherOptions()
 	if err := o.Validate(); err != nil {
 		logrus.Fatalf("Invalid options: %v", err)
+	}
+
+	// Handle version flag
+	if o.showVersion {
+		fmt.Printf("promoter %s (built with %s)\n", VERSION, runtime.Version())
+		return
 	}
 
 	logrus.SetFormatter(&logrus.JSONFormatter{})
