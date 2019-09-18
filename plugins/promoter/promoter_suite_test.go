@@ -24,6 +24,8 @@ import (
 	"github.com/onsi/ginkgo/reporters"
 	. "github.com/onsi/ginkgo/types"
 	. "github.com/onsi/gomega"
+	"k8s.io/test-infra/prow/github"
+	"k8s.io/test-infra/prow/github/fakegithub"
 )
 
 var (
@@ -67,3 +69,46 @@ func (NewlineReporter) SpecDidComplete(specSummary *SpecSummary) {}
 
 // SpecSuiteDidEnd Prints a newline between "35 Passed | 0 Failed | 0 Pending | 0 Skipped" and "--- PASS:"
 func (NewlineReporter) SpecSuiteDidEnd(summary *SuiteSummary) { fmt.Printf("\n") }
+
+// Ensure the fakeClient implements the required interface
+var _ githubClient = &fakeClient{}
+
+// fakeClient is a fake github client used for tests
+type fakeClient struct {
+	*fakegithub.FakeClient
+}
+
+// CreatePullRequest adds a pull requrest to the fake client
+func (f *fakeClient) CreatePullRequest(org, repo, title, body, head, base string, canModify bool) (int, error) {
+	r := github.Repo{
+		Owner: github.User{Login: org},
+		Name:  repo,
+	}
+	pr := &github.PullRequest{
+		Number: f.getNextPRNumber(),
+		Title:  title,
+		Body:   body,
+		Head: github.PullRequestBranch{
+			Ref:  head,
+			Repo: r,
+		},
+		Base: github.PullRequestBranch{
+			Ref:  base,
+			Repo: r,
+		},
+	}
+
+	f.FakeClient.PullRequests[pr.Number] = pr
+	return pr.Number, nil
+}
+
+func (f *fakeClient) getNextPRNumber() int {
+	i := 0
+	for {
+		if _, ok := f.FakeClient.PullRequests[i]; !ok {
+			return i
+		}
+		// PR number i already exists
+		i++
+	}
+}
