@@ -15,6 +15,7 @@ package main
 
 import (
 	"encoding/json"
+	"sync"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -92,6 +93,7 @@ var _ = Describe("Promoter suite", func() {
 			push: push,
 			ghc:  ghc,
 			log:  logrus.StandardLogger().WithField("client", "promoter"),
+			wg:   &sync.WaitGroup{},
 		}
 
 	})
@@ -128,6 +130,7 @@ var _ = Describe("Promoter suite", func() {
 			payload, err := json.Marshal(event)
 			Expect(err).ToNot(HaveOccurred())
 			handleErr = server.handleEvent(eventType, eventGUID, payload, sources, targets)
+			server.wg.Wait()
 		})
 
 		Context("when the eventType is not pull_request", func() {

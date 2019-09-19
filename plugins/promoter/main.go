@@ -23,6 +23,7 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -122,7 +123,11 @@ func main() {
 		gc:  gitClient,
 		ghc: githubClient,
 		log: log,
+		wg:  &sync.WaitGroup{},
 	}
+
+	// Ensure all in-progress events are handled
+	defer server.wg.Wait()
 
 	mux := http.NewServeMux()
 	mux.Handle("/", server)

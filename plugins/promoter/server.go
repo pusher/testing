@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -54,6 +55,7 @@ type Server struct {
 	push func(repo, newBranch string) error
 	ghc  githubClient
 	log  *logrus.Entry
+	wg   *sync.WaitGroup
 }
 
 // ServeHTTP validates an incoming webhook and puts it into the event channel.
@@ -110,7 +112,9 @@ func (s *Server) handleEvent(eventType, eventGUID string, payload []byte, source
 		if err := json.Unmarshal(payload, &pr); err != nil {
 			return err
 		}
+		s.wg.Add(1)
 		go func() {
+			defer s.wg.Done()
 			if err := s.handlePullRequest(l, pr, sources, targets); err != nil {
 				s.log.WithError(err).WithFields(l.Data).Info("Promote failed.")
 			}
