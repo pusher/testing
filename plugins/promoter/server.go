@@ -15,7 +15,9 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/sirupsen/logrus"
 
@@ -26,6 +28,7 @@ import (
 
 type githubClient interface {
 	CreatePullRequest(org, repo, title, body, head, base string, canModify bool) (int, error)
+	CreateComment(org, repo string, number int, comment string) error
 }
 
 // HelpProvider construct the pluginhelp.PluginHelp for this plugin.
@@ -147,11 +150,67 @@ func (s *Server) handlePullRequest(l *logrus.Entry, pre github.PullRequestEvent,
 		return nil
 	}
 
+	// Create a new branch at the head of the base branch and push it
+	err := s.createPromotionBranch(l, org, repo, baseBranch, num)
+	if err != nil {
+		return fmt.Errorf("error creating branch: %v", err)
+	}
+
 	// Make sure it compiles before we implement the behaviour
 	l.Info(baseBranch, title, body)
 
 	//TODO: Implement handling logic
 	return nil
+}
+
+func (s *Server) createPromotionBranch(l *logrus.Entry, org, repo, baseBranch string, prNumber int) error {
+	// Clone the repo, checkout the base branch.
+	startClone := time.Now()
+	r, err := s.gc.Clone(org + "/" + repo)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := r.Clean(); err != nil {
+			s.log.WithError(err).WithFields(l.Data).Error("Error cleaning up repo.")
+		}
+	}()
+
+	err = r.Checkout(baseBranch)
+	if err != nil {
+		resp := fmt.Sprintf("cannot checkout %s: %v", baseBranch, err)
+		s.log.WithFields(l.Data).Info(resp)
+		return s.createComment(org, repo, prNumber, resp)
+	}
+	s.log.WithFields(l.Data).WithField("duration", time.Since(startClone)).Info("Cloned and checked out source branch: ", baseBranch)
+
+	newBranch := fmt.Sprintf("pr-%d", prNumber)
+	err = r.CheckoutNewBranch(newBranch)
+	if err != nil {
+		resp := fmt.Sprintf("cannot create new branch %s: %v", newBranch, err)
+		s.log.WithFields(l.Data).Info(resp)
+		return s.createComment(org, repo, prNumber, resp)
+	}
+	s.log.WithFields(l.Data).Info("Checked out promotion branch: ", newBranch)
+
+	push := r.Push
+	if s.push != nil {
+		push = s.push
+	}
+
+	// Push the new branch back to the origin
+	if err := push(repo, newBranch); err != nil {
+		resp := fmt.Sprintf("failed to push promotion branch: %v", err)
+		s.log.WithFields(l.Data).Info(resp)
+		return s.createComment(org, repo, prNumber, resp)
+	}
+	s.log.WithFields(l.Data).Info("Pushed promotion branch to remote: ", newBranch)
+
+	return nil
+}
+
+func (s *Server) createComment(org, repo string, num int, resp string) error {
+	return s.ghc.CreateComment(org, repo, num, fmt.Sprintf("Error occurred promoting branch: %s", resp))
 }
 
 func contains(list []string, toFind string) bool {
