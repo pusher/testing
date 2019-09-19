@@ -177,6 +177,16 @@ var _ = Describe("Promoter suite", func() {
 
 			AssertDoesNotCreatePR()
 		})
+
+		Context("when the PR should be promoted", func() {
+			It("does not return an error", func() {
+				Expect(handleErr).ToNot(HaveOccurred())
+			})
+
+			It("pushes a new branch for the merged Pull Request", func() {
+				Expect(pushedBranches).Should(ContainElement(Equal("pr-123")))
+			})
+		})
 	})
 
 })
