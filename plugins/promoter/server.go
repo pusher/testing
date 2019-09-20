@@ -199,7 +199,11 @@ func (s *Server) createPromotionBranch(l *logrus.Entry, org, repo, baseBranch st
 	if err != nil {
 		resp := fmt.Sprintf("cannot checkout %s: %v", baseBranch, err)
 		s.log.WithFields(l.Data).Info(resp)
-		return s.createComment(org, repo, prNumber, resp)
+		cErr := s.createComment(org, repo, prNumber, resp)
+		if cErr != nil {
+			return cErr
+		}
+		return err
 	}
 	s.log.WithFields(l.Data).WithField("duration", time.Since(startClone)).Info("Cloned and checked out source branch: ", baseBranch)
 
@@ -208,7 +212,11 @@ func (s *Server) createPromotionBranch(l *logrus.Entry, org, repo, baseBranch st
 	if err != nil {
 		resp := fmt.Sprintf("cannot create new branch %s: %v", newBranch, err)
 		s.log.WithFields(l.Data).Info(resp)
-		return s.createComment(org, repo, prNumber, resp)
+		cErr := s.createComment(org, repo, prNumber, resp)
+		if cErr != nil {
+			return cErr
+		}
+		return err
 	}
 	s.log.WithFields(l.Data).Info("Checked out promotion branch: ", newBranch)
 
@@ -221,7 +229,11 @@ func (s *Server) createPromotionBranch(l *logrus.Entry, org, repo, baseBranch st
 	if err := push(org, repo, r.Dir, newBranch); err != nil {
 		resp := fmt.Sprintf("failed to push promotion branch: %v", err)
 		s.log.WithFields(l.Data).Info(resp)
-		return s.createComment(org, repo, prNumber, resp)
+		cErr := s.createComment(org, repo, prNumber, resp)
+		if cErr != nil {
+			return cErr
+		}
+		return err
 	}
 	s.log.WithFields(l.Data).Info("Pushed promotion branch to remote: ", newBranch)
 
@@ -243,7 +255,11 @@ func (s *Server) createPromotionPR(l *logrus.Entry, org, repo, targetBranch, prB
 	if err != nil {
 		resp := fmt.Sprintf("new pull request could not be created: %v", err)
 		s.log.WithFields(l.Data).Info(resp)
-		return s.createComment(org, repo, prNumber, resp)
+		cErr := s.createComment(org, repo, prNumber, resp)
+		if cErr != nil {
+			return cErr
+		}
+		return err
 	}
 
 	// Comment on the source PR that we have created a promotion PR
