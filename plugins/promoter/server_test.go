@@ -83,7 +83,7 @@ var _ = Describe("Promoter suite", func() {
 			MergeSHA: &mergeSHA,
 		}
 
-		push := func(repo, newBranch string) error {
+		push := func(org, repo, dir, newBranch string) error {
 			pushedBranches = append(pushedBranches, newBranch)
 			return nil
 		}

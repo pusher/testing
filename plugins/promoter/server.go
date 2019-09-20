@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os/exec"
 	"strings"
 	"sync"
 	"time"
@@ -47,14 +48,16 @@ func HelpProvider(enabledRepos []string) (*pluginhelp.PluginHelp, error) {
 // Server implements http.Handler. It validates incoming GitHub webhooks and
 // then dispatches them to the appropriate plugins.
 type Server struct {
-	tokenGenerator func() []byte
-	botName        string
-	email          string
+	tokenGenerator   func() []byte
+	botName          string
+	botPassGenerator func() []byte
+	email            string
 
 	gc *git.Client
 	// Used for unit testing
-	push func(repo, newBranch string) error
+	push func(org, repo, dir, branch string) error
 	ghc  githubClient
+	git  string
 	log  *logrus.Entry
 	wg   *sync.WaitGroup
 }
@@ -209,13 +212,13 @@ func (s *Server) createPromotionBranch(l *logrus.Entry, org, repo, baseBranch st
 	}
 	s.log.WithFields(l.Data).Info("Checked out promotion branch: ", newBranch)
 
-	push := r.Push
+	push := s.gitPush
 	if s.push != nil {
 		push = s.push
 	}
 
 	// Push the new branch back to the origin
-	if err := push(repo, newBranch); err != nil {
+	if err := push(org, repo, r.Dir, newBranch); err != nil {
 		resp := fmt.Sprintf("failed to push promotion branch: %v", err)
 		s.log.WithFields(l.Data).Info(resp)
 		return s.createComment(org, repo, prNumber, resp)
@@ -265,4 +268,26 @@ func contains(list []string, toFind string) bool {
 		}
 	}
 	return false
+}
+
+// Push pushes over https to the provided owner/repo#branch using a password
+// for basic auth.
+func (s *Server) gitPush(org, repo, dir, branch string) error {
+	if s.botName == "" || s.getBotPass() == "" {
+		return fmt.Errorf("cannot push without credentials - configure your git client")
+	}
+	s.log.Infof("Pushing to '%s/%s (branch: %s)'.", org, repo, branch)
+	remote := fmt.Sprintf("https://%s:%s@%s/%s/%s", s.botName, s.getBotPass(), "github.com", org, repo)
+	co := exec.Command(s.git, "push", remote, branch)
+	co.Dir = dir
+	out, err := co.CombinedOutput()
+	if err != nil {
+		s.log.Errorf("Pushing failed with error: %v and output: %q", err, string(out))
+		return fmt.Errorf("pushing failed with error: %v and output: %q", err, string(out))
+	}
+	return nil
+}
+
+func (s *Server) getBotPass() string {
+	return string(s.botPassGenerator())
 }

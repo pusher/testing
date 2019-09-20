@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 	"runtime"
 	"strconv"
 	"sync"
@@ -99,6 +100,10 @@ func main() {
 	if err != nil {
 		logrus.WithError(err).Fatal("Error getting Git client.")
 	}
+	g, err := exec.LookPath("git")
+	if err != nil {
+		logrus.WithError(err).Fatal("No git found.")
+	}
 	interrupts.OnInterrupt(func() {
 		if err := gitClient.Clean(); err != nil {
 			logrus.WithError(err).Error("Could not clean up git client cache.")
@@ -116,12 +121,14 @@ func main() {
 	}
 
 	server := &Server{
-		tokenGenerator: secretAgent.GetTokenGenerator(o.webhookSecretFile),
-		botName:        botName,
-		email:          email,
+		tokenGenerator:   secretAgent.GetTokenGenerator(o.webhookSecretFile),
+		botName:          botName,
+		botPassGenerator: secretAgent.GetTokenGenerator(o.github.TokenPath),
+		email:            email,
 
 		gc:  gitClient,
 		ghc: githubClient,
+		git: g,
 		log: log,
 		wg:  &sync.WaitGroup{},
 	}
