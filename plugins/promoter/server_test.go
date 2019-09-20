@@ -15,10 +15,14 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"reflect"
+	"strings"
 	"sync"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	gtypes "github.com/onsi/gomega/types"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/git"
 	"k8s.io/test-infra/prow/git/localgit"
@@ -95,7 +99,6 @@ var _ = Describe("Promoter suite", func() {
 			log:  logrus.StandardLogger().WithField("client", "promoter"),
 			wg:   &sync.WaitGroup{},
 		}
-
 	})
 
 	AfterEach(func() {
@@ -189,6 +192,37 @@ var _ = Describe("Promoter suite", func() {
 			It("pushes a new branch for the merged Pull Request", func() {
 				Expect(pushedBranches).Should(ContainElement(Equal("pr-123")))
 			})
+
+			It("creates a PR to promote the merged Pull Request", func() {
+				Expect(ghc.FakeClient.PullRequests).To(ContainElement(SatisfyAll(
+					withField("Title", Equal("Promote to target: PR Title")),
+					withField("Body", Equal(expectedPRBody)),
+					withField("Base", Equal(github.PullRequestBranch{
+						Ref: "target",
+						Repo: github.Repo{
+							Name: "bar",
+							Owner: github.User{
+								Login: "foo",
+							},
+						},
+					})),
+					withField("Head", Equal(github.PullRequestBranch{
+						Ref: "pr-123",
+						Repo: github.Repo{
+							Name: "bar",
+							Owner: github.User{
+								Login: "foo",
+							},
+						},
+					})),
+				)))
+			})
+
+			It("comments on the merged PR", func() {
+				Expect(ghc.FakeClient.IssueComments).To(HaveKeyWithValue(123, ContainElement(
+					withField("Body", Equal("Automated promotion PR created #0")),
+				)))
+			})
 		})
 	})
 
@@ -208,4 +242,31 @@ func Foo(wow int) int {
 	return 42 + wow
 }
 `),
+}
+
+var expectedPRBody = `This is an automated promotion of PR #123
+
+---
+PR Body
+
+---
+/assign @baz
+/cc @baz`
+
+// withField gets the value of the named field from the object
+func withField(field string, matcher gtypes.GomegaMatcher) gtypes.GomegaMatcher {
+	// Addressing Field by <struct>.<field> can be recursed
+	fields := strings.SplitN(field, ".", 2)
+	if len(fields) == 2 {
+		matcher = withField(fields[1], matcher)
+	}
+
+	return WithTransform(func(obj interface{}) interface{} {
+		r := reflect.ValueOf(obj)
+		f := reflect.Indirect(r).FieldByName(fields[0])
+		if !f.IsValid() {
+			panic(fmt.Sprintf("Object '%s' does not have a field '%s'", reflect.TypeOf(obj), fields[0]))
+		}
+		return f.Interface()
+	}, matcher)
 }
