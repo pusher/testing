@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -142,6 +143,7 @@ func (s *Server) handlePullRequest(l *logrus.Entry, pre github.PullRequestEvent,
 	num := pr.Number
 	title := pr.Title
 	body := pr.Body
+	author := pr.User.Login
 
 	l = l.WithFields(logrus.Fields{
 		github.OrgLogField:  org,
@@ -160,10 +162,20 @@ func (s *Server) handlePullRequest(l *logrus.Entry, pre github.PullRequestEvent,
 		return fmt.Errorf("error creating branch: %v", err)
 	}
 
-	// Make sure it compiles before we implement the behaviour
-	l.Info(baseBranch, title, body)
+	var errs []string
+	// Create a new PR for each target branch
+	for _, target := range targets {
+		err = s.createPromotionPR(l, org, repo, target, body, author, title, num)
+		if err != nil {
+			errs = append(errs, err.Error())
+		}
+	}
 
-	//TODO: Implement handling logic
+	if len(errs) > 0 {
+		errors := strings.Join(errs, ", ")
+		return fmt.Errorf("error(s) encountered creating promotion PR: %s", errors)
+	}
+
 	return nil
 }
 
@@ -209,6 +221,35 @@ func (s *Server) createPromotionBranch(l *logrus.Entry, org, repo, baseBranch st
 		return s.createComment(org, repo, prNumber, resp)
 	}
 	s.log.WithFields(l.Data).Info("Pushed promotion branch to remote: ", newBranch)
+
+	return nil
+}
+
+func (s *Server) createPromotionPR(l *logrus.Entry, org, repo, targetBranch, prBody, prAuthor, prTitle string, prNumber int) error {
+	promotionTitle := fmt.Sprintf("Promote to %s: %s", targetBranch, prTitle)
+	// Construct PR Body
+	promotionBody := fmt.Sprintf("This is an automated promotion of PR #%d", prNumber)
+	// Append original PR body to PR description
+	promotionBody = fmt.Sprintf("%s\n\n---\n%s", promotionBody, prBody)
+	// Assign original author and request their review
+	promotionBody = fmt.Sprintf("%s\n\n---\n/assign @%s\n/cc @%s", promotionBody, prAuthor, prAuthor)
+
+	// Create the promotion PR
+	promotionBranch := fmt.Sprintf("pr-%d", prNumber)
+	createdNum, err := s.ghc.CreatePullRequest(org, repo, promotionTitle, promotionBody, promotionBranch, targetBranch, true)
+	if err != nil {
+		resp := fmt.Sprintf("new pull request could not be created: %v", err)
+		s.log.WithFields(l.Data).Info(resp)
+		return s.createComment(org, repo, prNumber, resp)
+	}
+
+	// Comment on the source PR that we have created a promotion PR
+	resp := fmt.Sprintf("new pull request created: #%d", createdNum)
+	s.log.WithFields(l.Data).Info(resp)
+	err = s.ghc.CreateComment(org, repo, prNumber, fmt.Sprintf("Automated promotion PR created #%d", createdNum))
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
