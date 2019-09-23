@@ -91,7 +91,6 @@ var _ = Describe("Promoter suite", func() {
 		server = &Server{
 			tokenGenerator: getSecret,
 			botName:        "ci-bot",
-			email:          "ci-bot@foo",
 
 			gc:   c,
 			push: push,

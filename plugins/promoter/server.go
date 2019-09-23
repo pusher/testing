@@ -51,7 +51,6 @@ type Server struct {
 	tokenGenerator   func() []byte
 	botName          string
 	botPassGenerator func() []byte
-	email            string
 
 	gc *git.Client
 	// Used for unit testing

@@ -110,11 +110,6 @@ func main() {
 		}
 	})
 
-	email, err := githubClient.Email()
-	if err != nil {
-		log.WithError(err).Fatal("Error getting bot e-mail.")
-	}
-
 	botName, err := githubClient.BotName()
 	if err != nil {
 		logrus.WithError(err).Fatal("Error getting bot name.")
@@ -124,7 +119,6 @@ func main() {
 		tokenGenerator:   secretAgent.GetTokenGenerator(o.webhookSecretFile),
 		botName:          botName,
 		botPassGenerator: secretAgent.GetTokenGenerator(o.github.TokenPath),
-		email:            email,
 
 		gc:  gitClient,
 		ghc: githubClient,
