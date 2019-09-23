@@ -1271,7 +1271,65 @@ data:
                   name: PROW_IMPLICIT_GIT_REF
           trigger: "(?m)^/build docker-pipeline,?(\\s+|$)"
           rerun_command: "/build docker-pipeline"
+
+        - name: post-testing-promoter-build-docker
+          max_concurrency: 10
+          path_alias: github.com/pusher/testing
+          agent: kubernetes
+          branches:
+            - master
+          always_run: true
+          decorate: true
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - image: quay.io/pusher/builder:v20190821-328974b
+                name: build-docker
+                command: ["/usr/local/bin/runner"]
+                args:
+                  - make --directory=plugins/promoter docker-build docker-tag docker-push
+                resources:
+                  requests:
+                    cpu: 1
+                    memory: 1Gi
+                securityContext:
+                  privileged: true
   testing_testing-presubmits.yaml: |
+    job_template: &job_template
+      max_concurrency: 10
+      path_alias: github.com/pusher/testing
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+
+    container_template: &container_template
+      image: quay.io/pusher/golang-builder:v20190821-328974b
+      name: runner
+      command: ["/usr/local/bin/runner"]
+
+    container_template_small: &container_template_small
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 1
+          memory: 1Gi
+        limits:
+          cpu: 2
+          memory: 2Gi
+
+    container_template_large: &container_template_large
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 4
+          memory: 4Gi
+        limits:
+          cpu: 8
+          memory: 8Gi
+
     presubmits:
       pusher/testing:
         - name: pull-testing-verify-config
@@ -1362,6 +1420,61 @@ data:
                   name: PROW_IMPLICIT_GIT_REF
           trigger: "(?m)^/build docker-pipeline,?(\\s+|$)"
           rerun_command: "/build docker-pipeline"
+
+
+        - name: pull-testing-promoter-lint
+          <<: *job_template
+          always_run: false
+          run_if_changed: "^(plugins/promoter/.*)"
+          spec:
+            containers:
+              - <<: *container_template_small
+                args:
+                  - make --directory=plugins/promoter lint
+          trigger: "(?m)^/test (?:.*? )?(promoter-lint|all)(?:.*? )?$"
+          rerun_command: "/test promoter-lint"
+
+        - name: pull-testing-promoter-build
+          <<: *job_template
+          always_run: false
+          run_if_changed: "^(plugins/promoter/.*)"
+          spec:
+            containers:
+              - <<: *container_template_small
+                args:
+                  - make --directory=plugins/promoter build
+          trigger: "(?m)^/test (?:.*? )?(promoter-build|all)(?:.*? )?$"
+          rerun_command: "/test promoter-build"
+
+        - name: pull-testing-promoter-test
+          <<: *job_template
+          always_run: false
+          run_if_changed: "^(plugins/promoter/.*)"
+          spec:
+            containers:
+              - <<: *container_template_large
+                args:
+                  - make --directory=plugins/promoter test
+          trigger: "(?m)^/test (?:.*? )?(promoter-test|all)(?: .*?)?$"
+          rerun_command: "/test promoter-test"
+
+        - name: pull-testing-promoter-build-docker
+          <<: *job_template
+          always_run: false
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - <<: *container_template_large
+                args:
+                  - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
+                  - PUSH_TAGS=${TAGS}
+                  - make --directory=plugins/promoter docker-build docker-tag docker-push
+                securityContext:
+                  privileged: true
+          trigger: "(?m)^/build (?:.*? )?(promoter-docker|all)(?: .*?)?$"
+          rerun_command: "/build promoter-docker"
   wave_wave-postsubmits.yaml: |
     job_template: &job_template
       max_concurrency: 10
