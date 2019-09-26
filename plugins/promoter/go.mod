@@ -15,12 +15,14 @@ require (
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mattbaird/jsonpatch v0.0.0-20171005235357-81af80346b1a // indirect
-	github.com/onsi/ginkgo v1.7.0
-	github.com/onsi/gomega v1.4.3
-	github.com/pborman/uuid v1.2.0 // indirect
+	github.com/onsi/ginkgo v1.8.0
+	github.com/onsi/gomega v1.5.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0 // indirect
 	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
-	k8s.io/klog v0.4.0
+	k8s.io/apiserver v0.0.0-20190918200908-1e17798da8c1
+	k8s.io/klog v1.0.0
 	k8s.io/test-infra v0.0.0-20190918113529-2f64091d118a
 )
+
+replace k8s.io/client-go => k8s.io/client-go v0.0.0-20190918200256-06eb1244587a

@@ -30,6 +30,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/interrupts"
 
+	"k8s.io/apiserver/pkg/server/healthz"
 	"k8s.io/test-infra/pkg/flagutil"
 	"k8s.io/test-infra/prow/config/secret"
 	prowflagutil "k8s.io/test-infra/prow/flagutil"
@@ -132,6 +133,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.Handle("/", server)
+	healthz.InstallHandler(mux)
 	externalplugins.ServeExternalPluginHelp(mux, log, HelpProvider)
 	httpServer := &http.Server{Addr: ":" + strconv.Itoa(o.port), Handler: mux}
 	defer interrupts.WaitForGracefulShutdown()
