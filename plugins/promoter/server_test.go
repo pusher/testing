@@ -279,7 +279,7 @@ var _ = Describe("Promoter suite", func() {
 
 		Context("with a source, but without a target paramenter", func() {
 			BeforeEach(func() {
-				r.URL.RawQuery = "source=foo"
+				r.URL.RawQuery = "source=source"
 			})
 
 			It("should return a 400 status code", func() {
@@ -294,7 +294,7 @@ var _ = Describe("Promoter suite", func() {
 
 		Context("with both a source and target parameter", func() {
 			BeforeEach(func() {
-				r.URL.RawQuery = "source=foo&target=bar"
+				r.URL.RawQuery = "source=source&target=target"
 			})
 
 			It("should return a 200 status code", func() {
@@ -304,6 +304,35 @@ var _ = Describe("Promoter suite", func() {
 			It("should return an empty response body", func() {
 				body, _ := ioutil.ReadAll(w.Result().Body)
 				Expect(body).To(BeEmpty())
+			})
+
+			Context("with a non pull_request event", func() {
+				JustBeforeEach(func() {
+					server.wg.Wait()
+				})
+
+				It("should not create a promotion PR", func() {
+					Expect(ghc.FakeClient.PullRequests).To(SatisfyAll(
+						HaveLen(1),
+						HaveKey(123),
+					))
+				})
+			})
+
+			Context("with a pull_request event", func() {
+				BeforeEach(func() {
+					r.Header.Set("X-GitHub-Event", "pull_request")
+				})
+
+				JustBeforeEach(func() {
+					server.wg.Wait()
+				})
+
+				It("should create a promotion PR", func() {
+					Expect(ghc.FakeClient.PullRequests).To(ContainElement(
+						withField("Title", Equal("Promote to target: PR Title")),
+					))
+				})
 			})
 		})
 	})
