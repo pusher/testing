@@ -14,8 +14,12 @@ limitations under the License.
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"strings"
 	"sync"
@@ -225,6 +229,113 @@ var _ = Describe("Promoter suite", func() {
 		})
 	})
 
+	Context("ServeHTTP", func() {
+		var w *httptest.ResponseRecorder
+		var r *http.Request
+		var event *github.PullRequestEvent
+
+		BeforeEach(func() {
+			event = &github.PullRequestEvent{
+				Action:      github.PullRequestActionClosed,
+				Number:      123,
+				PullRequest: *ghc.FakeClient.PullRequests[123],
+				Repo: github.Repo{
+					Owner: github.User{Login: "foo"},
+					Name:  "bar",
+				},
+			}
+
+			payload, err := json.Marshal(event)
+			Expect(err).ToNot(HaveOccurred())
+
+			buf := &bytes.Buffer{}
+			buf.Write(payload)
+
+			w = httptest.NewRecorder()
+			r = httptest.NewRequest("POST", "/", buf)
+
+			// Add "hook" required headers
+			// Use `push` so we don't actually create the PRs
+			r.Header.Add("X-GitHub-Event", "push")
+			r.Header.Add("X-GitHub-Delivery", "abcdef")
+			r.Header.Add("X-Hub-Signature", github.PayloadSignature(payload, server.tokenGenerator()))
+			r.Header.Add("content-type", "application/json")
+		})
+
+		JustBeforeEach(func() {
+			server.ServeHTTP(w, r)
+		})
+
+		Context("without a source or target paramenter", func() {
+			It("should return a 400 status code", func() {
+				Expect(w.Result().StatusCode).To(Equal(400))
+			})
+
+			It("should return an error in the response body", func() {
+				body, _ := ioutil.ReadAll(w.Result().Body)
+				Expect(string(body)).To(Equal("400 Bad Request: Missing source parameter\n"))
+			})
+		})
+
+		Context("with a source, but without a target paramenter", func() {
+			BeforeEach(func() {
+				r.URL.RawQuery = "source=source"
+			})
+
+			It("should return a 400 status code", func() {
+				Expect(w.Result().StatusCode).To(Equal(400))
+			})
+
+			It("should return an error in the response body", func() {
+				body, _ := ioutil.ReadAll(w.Result().Body)
+				Expect(string(body)).To(Equal("400 Bad Request: Missing target parameter\n"))
+			})
+		})
+
+		Context("with both a source and target parameter", func() {
+			BeforeEach(func() {
+				r.URL.RawQuery = "source=source&target=target"
+			})
+
+			It("should return a 200 status code", func() {
+				Expect(w.Result().StatusCode).To(Equal(200))
+			})
+
+			It("should return an empty response body", func() {
+				body, _ := ioutil.ReadAll(w.Result().Body)
+				Expect(body).To(BeEmpty())
+			})
+
+			Context("with a non pull_request event", func() {
+				JustBeforeEach(func() {
+					server.wg.Wait()
+				})
+
+				It("should not create a promotion PR", func() {
+					Expect(ghc.FakeClient.PullRequests).To(SatisfyAll(
+						HaveLen(1),
+						HaveKey(123),
+					))
+				})
+			})
+
+			Context("with a pull_request event", func() {
+				BeforeEach(func() {
+					r.Header.Set("X-GitHub-Event", "pull_request")
+				})
+
+				JustBeforeEach(func() {
+					server.wg.Wait()
+				})
+
+				It("should create a promotion PR", func() {
+					Expect(ghc.FakeClient.PullRequests).To(ContainElement(
+						withField("Title", Equal("Promote to target: PR Title")),
+					))
+				})
+			})
+		})
+	})
 })
 
 func setupFakeRepo(lg *localgit.LocalGit) {
