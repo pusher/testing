@@ -251,7 +251,7 @@ data:
       path_alias: istio.io/istio
 
     istio_container: &istio_container
-      image: gcr.io/istio-testing/istio-builder:v20181008-db31a9fd
+      image: gcr.io/istio-testing/istio-builder:v20190823-25f7c637
       # Docker in Docker
       securityContext:
         privileged: true
