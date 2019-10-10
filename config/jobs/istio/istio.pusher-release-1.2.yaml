@@ -1,6 +1,6 @@
 job_template: &job_template
   branches:
-  - "^pusher-release.*$"
+  - "^pusher-release-1.2.*$"
   decorate: true
   decoration_config:
     utility_images:
