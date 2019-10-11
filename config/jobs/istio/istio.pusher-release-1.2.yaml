@@ -1,0 +1,158 @@
+job_template: &job_template
+  branches:
+  - "^pusher-release-1.2.*$"
+  decorate: true
+  decoration_config:
+    utility_images:
+      clonerefs: "gcr.io/k8s-prow/clonerefs:v20181017-d31417a"
+  path_alias: istio.io/istio
+
+istio_container: &istio_container
+  image: gcr.io/istio-testing/istio-builder:v20190823-25f7c637
+  # Docker in Docker
+  securityContext:
+    privileged: true
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "3000m"
+    limits:
+      memory: "24Gi"
+      cpu: "3000m"
+
+presubmits:
+
+  pusher/istio:
+
+  - name: istio-unit-tests-release-1.2
+    <<: *job_template
+    context: prow/istio-unit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-unit-tests.sh
+
+  - name: integ-framework-local-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-framework-local-presubmit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-framework-local-presubmit-tests.sh
+
+  - name: integ-galley-local-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-galley-local-presubmit-tests.sh
+    always_run: true
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-galley-local-presubmit-tests.sh
+
+  - name: integ-mixer-local-presubmit-tests-release-1.2
+    <<: *job_template
+    optional: true
+    context: prow/integ-mixer-local-presubmit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-mixer-local-presubmit-tests.sh
+
+  - name: integ-pilot-local-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-pilot-local-presubmit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-pilot-local-presubmit-tests.sh
+
+  - name: integ-security-local-presubmit-tests-release-1.2
+    <<: *job_template
+    context: prow/integ-security-local-presubmit-tests.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
+    spec:
+      containers:
+        - <<: *istio_container
+          command:
+            - entrypoint
+            - prow/integ-security-local-presubmit-tests.sh
+
+  - name: release-test-release-1.2
+    <<: *job_template
+    always_run: true
+    context: prow/release-test.sh
+    labels:
+      preset-root-quay-credentials: "true"
+      preset-ci-env: "true"
+    max_concurrency: 5
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/release-test.sh
+
+  - name: istio-presubmit
+    <<: *job_template
+    context: prow/istio-presubmit.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-presubmit.sh
+
+postsubmits:
+
+  pusher/istio:
+  - name: istio-integ-local-tests-release-1.2
+    <<: *job_template
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-integ-local-tests.sh
+
+  - name: istio-unit-tests-postsubmit-release-1.2
+    <<: *job_template
+    context: prow/istio-unit-tests.sh
+    always_run: true
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-unit-tests.sh
