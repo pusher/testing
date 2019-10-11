@@ -121,6 +121,18 @@ presubmits:
         - entrypoint
         - prow/release-test.sh
 
+  - name: istio-presubmit
+    <<: *job_template
+    context: prow/istio-presubmit.sh
+    always_run: true
+    labels:
+      preset-root-quay-credentials: "true"
+    spec:
+      containers:
+      - <<: *istio_container
+        command:
+        - entrypoint
+        - prow/istio-presubmit.sh
 
 postsubmits:
 
