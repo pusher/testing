@@ -1184,7 +1184,7 @@ data:
     &container_template_small\n  <<: *container_template\n  resources:\n    requests:\n
     \     cpu: 1\n      memory: 1Gi\n    limits:\n      cpu: 2\n      memory: 2Gi\n\ncontainer_template_large:
     &container_template_large\n  <<: *container_template\n  resources:\n    requests:\n
-    \     cpu: 2\n      memory: 4Gi\n    limits:\n      cpu: 4\n      memory: 8Gi\n\nsecurity_context:
+    \     cpu: 2\n      memory: 4Gi\n    limits:\n      cpu: 4\n      memory: 6Gi\n\nsecurity_context:
     &security_context\n  securityContext:\n    runAsUser: 0\n    runAsGroup: 0\n\npresubmits:\n
     \ pusher/navarchos:\n    - name: pull-navarchos-verify-generate\n      <<: *job_template\n
     \     labels:\n        preset-github-ssh-keys: \"true\"\n      spec:\n        <<:
