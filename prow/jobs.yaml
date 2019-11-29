@@ -1121,6 +1121,116 @@ data:
                   privileged: true
           trigger: "(?m)^/build (?:.*? )?(docker|all)(?: .*?)?$"
           rerun_command: "/build docker"
+  navarchos_navarchos-postsubmits.yaml: |
+    job_template: &job_template
+      max_concurrency: 10
+      path_alias: github.com/pusher/navarchos
+      clone_uri: git@github.com:pusher/navarchos
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+      branches:
+        - master
+        # Abuse Prow to make it run on tag pushes like v1.2.3 and v1.2.3-rc1
+        - ^v?\d+\.\d+\.\d+(-rc\d+)?$
+
+    container_template: &container_template
+      image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
+      name: runner
+      command: ["/usr/local/bin/runner"]
+
+    container_template_large: &container_template_large
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 2
+          memory: 4Gi
+        limits:
+          cpu: 4
+          memory: 8Gi
+
+    security_context: &security_context
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+
+    postsubmits:
+      pusher/navarchos:
+        - name: post-navarchos-build-docker
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
+            preset-default-aws: "true"
+            preset-ecr-login: "true"
+            preset-github-ssh-keys: "true"
+          spec:
+            <<: *security_context
+            containers:
+              - <<: *container_template_large
+                args:
+                  - touch .env; # No config necessary
+                  - IMG=112622444253.dkr.ecr.us-east-1.amazonaws.com/pusher/navarchos
+                  - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
+                  - PUSH_TAGS=${TAGS}
+                  - make docker-build docker-tag docker-push
+                securityContext:
+                  privileged: true
+  navarchos_navarchos-presubmits.yaml: "job_template: &job_template\n  max_concurrency:
+    10\n  path_alias: github.com/pusher/navarchos\n  clone_uri: git@github.com:pusher/navarchos\n
+    \ agent: kubernetes\n  always_run: true\n  skip_report: false\n  decorate: true\n\ncontainer_template:
+    &container_template\n  image: quay.io/pusher/kubebuilder-builder:v20190821-328974b\n
+    \ name: runner\n  command: [\"/usr/local/bin/runner\"]\n\ncontainer_template_small:
+    &container_template_small\n  <<: *container_template\n  resources:\n    requests:\n
+    \     cpu: 1\n      memory: 1Gi\n    limits:\n      cpu: 2\n      memory: 2Gi\n\ncontainer_template_large:
+    &container_template_large\n  <<: *container_template\n  resources:\n    requests:\n
+    \     cpu: 2\n      memory: 4Gi\n    limits:\n      cpu: 4\n      memory: 8Gi\n\nsecurity_context:
+    &security_context\n  securityContext:\n    runAsUser: 0\n    runAsGroup: 0\n\npresubmits:\n
+    \ pusher/navarchos:\n    - name: pull-navarchos-verify-generate\n      <<: *job_template\n
+    \     labels:\n        preset-github-ssh-keys: \"true\"\n      spec:\n        <<:
+    *security_context\n        containers:\n          - <<: *container_template_small\n
+    \           args:\n              - touch .env && make prepare-env-1.14 && make
+    verify-generate\n      trigger: \"(?m)^/test (?:.*? )?(verify-generate|all)(?:
+    .*?)?$\"\n      rerun_command: \"/test verify-generate\"\n\n    - name: pull-navarchos-verify-manifests\n
+    \     <<: *job_template\n      labels:\n        preset-github-ssh-keys: \"true\"\n
+    \     spec:\n        <<: *security_context\n        containers:\n          - <<:
+    *container_template_small\n            args:\n              - touch .env && make
+    prepare-env-1.14 && make verify-manifests\n      trigger: \"(?m)^/test (?:.*?
+    )?(verify-manifests|all)(?: .*?)?$\"\n      rerun_command: \"/test verify-manifests\"\n\n
+    \   - name: pull-navarchos-lint\n      <<: *job_template\n      labels:\n        preset-github-ssh-keys:
+    \"true\"\n      spec:\n        <<: *security_context\n        containers:\n          -
+    <<: *container_template_small\n            args:\n              - touch .env &&
+    make prepare-env-1.14 && make lint\n      trigger: \"(?m)^/test (?:.*? )?(lint|all)(?:.*?
+    )?$\"\n      rerun_command: \"/test lint\"\n\n    - name: pull-navarchos-build\n
+    \     <<: *job_template\n      labels:\n        preset-github-ssh-keys: \"true\"\n
+    \     spec:\n        <<: *security_context\n        containers:\n          - <<:
+    *container_template_small\n            args:\n              - touch .env && make
+    prepare-env-1.14 && make build\n      trigger: \"(?m)^/test (?:.*? )?(build|all)(?:.*?
+    )?$\"\n      rerun_command: \"/test build\"\n\n    - name: pull-navarchos-test-1.14\n
+    \     <<: *job_template\n      labels:\n        preset-github-ssh-keys: \"true\"\n
+    \     spec:\n        <<: *security_context\n        containers:\n          - <<:
+    *container_template_large\n            args:\n              - touch .env && make
+    prepare-env-1.14 && make test\n      trigger: \"(?m)^/test (?:.*? )?(1\\\\.14|all)(?:
+    .*?)?$\"\n      rerun_command: \"/test 1.14\"\n    \n    - name: pull-navarchos-test-1.13\n
+    \     <<: *job_template\n      labels:\n        preset-github-ssh-keys: \"true\"\n
+    \     spec:\n        <<: *security_context\n        containers:\n          - <<:
+    *container_template_large\n            args:\n              - touch .env && make
+    prepare-env-1.13 && make test\n      trigger: \"(?m)^/test (?:.*? )?(1\\\\.13|all)(?:
+    .*?)?$\"\n      rerun_command: \"/test 1.13\"\n\n    - name: pull-navarchos-test-1.12\n
+    \     <<: *job_template\n      labels:\n        preset-github-ssh-keys: \"true\"\n
+    \     spec:\n        <<: *security_context\n        containers:\n          - <<:
+    *container_template_large\n            args:\n              - touch .env && make
+    prepare-env-1.12 && make test\n      trigger: \"(?m)^/test (?:.*? )?(1\\\\.12|all)(?:
+    .*?)?$\"\n      rerun_command: \"/test 1.12\"\n\n    - name: pull-navarchos-build-docker\n
+    \     <<: *job_template\n      always_run: false\n      labels:\n        preset-dind-enabled:
+    \"true\"\n        preset-default-aws: \"true\"\n        preset-ecr-login: \"true\"\n
+    \       preset-github-ssh-keys: \"true\"\n      spec:\n        <<: *security_context\n
+    \       containers:\n          - <<: *container_template_large\n            args:\n
+    \             - touch .env; # No config necessary\n              - IMG=112622444253.dkr.ecr.us-east-1.amazonaws.com/pusher/navarchos\n
+    \             - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}\n              - PUSH_TAGS=${TAGS}\n
+    \             - make docker-build docker-tag docker-push\n            securityContext:\n
+    \             privileged: true\n      trigger: \"(?m)^/build (?:.*? )?(docker|all)(?:
+    .*?)?$\"\n      rerun_command: \"/build docker\"\n"
   prom-rule-reloader_prom-rule-reloader-postsubmits.yaml: |
     job_template: &job_template
       max_concurrency: 10

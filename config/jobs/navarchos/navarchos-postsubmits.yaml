@@ -1,0 +1,54 @@
+job_template: &job_template
+  max_concurrency: 10
+  path_alias: github.com/pusher/navarchos
+  clone_uri: git@github.com:pusher/navarchos
+  agent: kubernetes
+  always_run: true
+  skip_report: false
+  decorate: true
+  branches:
+    - master
+    # Abuse Prow to make it run on tag pushes like v1.2.3 and v1.2.3-rc1
+    - ^v?\d+\.\d+\.\d+(-rc\d+)?$
+
+container_template: &container_template
+  image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
+  name: runner
+  command: ["/usr/local/bin/runner"]
+
+container_template_large: &container_template_large
+  <<: *container_template
+  resources:
+    requests:
+      cpu: 2
+      memory: 4Gi
+    limits:
+      cpu: 4
+      memory: 8Gi
+
+security_context: &security_context
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+
+postsubmits:
+  pusher/navarchos:
+    - name: post-navarchos-build-docker
+      <<: *job_template
+      labels:
+        preset-dind-enabled: "true"
+        preset-default-aws: "true"
+        preset-ecr-login: "true"
+        preset-github-ssh-keys: "true"
+      spec:
+        <<: *security_context
+        containers:
+          - <<: *container_template_large
+            args:
+              - touch .env; # No config necessary
+              - IMG=112622444253.dkr.ecr.us-east-1.amazonaws.com/pusher/navarchos
+              - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
+              - PUSH_TAGS=${TAGS}
+              - make docker-build docker-tag docker-push
+            securityContext:
+              privileged: true

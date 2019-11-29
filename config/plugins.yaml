@@ -10,6 +10,7 @@ triggers:
       - pusher/quack
       - pusher/testing
       - pusher/wave
+      - pusher/navarchos
     trusted_org: pusher
     only_org_members: true
   - repos:
@@ -47,6 +48,7 @@ plugins:
   pusher/quack: *default_plugins
   pusher/testing: *default_plugins
   pusher/wave: *default_plugins
+  pusher/navarchos: *default_plugins
 
 external_plugins:
   pusher/faros: *default_external_plugins
@@ -59,3 +61,4 @@ external_plugins:
   pusher/quack: *default_external_plugins
   pusher/testing: *default_external_plugins
   pusher/wave: *default_external_plugins
+  pusher/navarchos: *default_external_plugins
