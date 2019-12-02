@@ -46,7 +46,6 @@ postsubmits:
           - <<: *container_template_large
             args:
               - touch .env; # No config necessary
-              - IMG=112622444253.dkr.ecr.us-east-1.amazonaws.com/pusher/navarchos
               - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
               - PUSH_TAGS=${TAGS}
               - make docker-build docker-tag docker-push
