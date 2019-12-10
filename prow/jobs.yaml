@@ -1125,7 +1125,6 @@ data:
     job_template: &job_template
       max_concurrency: 10
       path_alias: github.com/pusher/navarchos
-      clone_uri: git@github.com:pusher/navarchos
       agent: kubernetes
       always_run: true
       skip_report: false
@@ -1176,12 +1175,12 @@ data:
                 securityContext:
                   privileged: true
   navarchos_navarchos-presubmits.yaml: "job_template: &job_template\n  max_concurrency:
-    10\n  path_alias: github.com/pusher/navarchos\n  clone_uri: git@github.com:pusher/navarchos\n
-    \ agent: kubernetes\n  always_run: true\n  skip_report: false\n  decorate: true\n\ncontainer_template:
-    &container_template\n  image: quay.io/pusher/kubebuilder-builder:v20190821-328974b\n
-    \ name: runner\n  command: [\"/usr/local/bin/runner\"]\n\ncontainer_template_small:
-    &container_template_small\n  <<: *container_template\n  resources:\n    requests:\n
-    \     cpu: 1\n      memory: 1Gi\n    limits:\n      cpu: 2\n      memory: 2Gi\n\ncontainer_template_large:
+    10\n  path_alias: github.com/pusher/navarchos\n  agent: kubernetes\n  always_run:
+    true\n  skip_report: false\n  decorate: true\n\ncontainer_template: &container_template\n
+    \ image: quay.io/pusher/kubebuilder-builder:v20190821-328974b\n  name: runner\n
+    \ command: [\"/usr/local/bin/runner\"]\n\ncontainer_template_small: &container_template_small\n
+    \ <<: *container_template\n  resources:\n    requests:\n      cpu: 1\n      memory:
+    1Gi\n    limits:\n      cpu: 2\n      memory: 2Gi\n\ncontainer_template_large:
     &container_template_large\n  <<: *container_template\n  resources:\n    requests:\n
     \     cpu: 2\n      memory: 4Gi\n    limits:\n      cpu: 4\n      memory: 6Gi\n\nsecurity_context:
     &security_context\n  securityContext:\n    runAsUser: 0\n    runAsGroup: 0\n\npresubmits:\n
