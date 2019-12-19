@@ -48,7 +48,8 @@ cleanup_dind() {
 
 # Check if the job has opted-in to docker-in-docker availability.
 export DOCKER_IN_DOCKER_ENABLED=${DOCKER_IN_DOCKER_ENABLED:-false}
-if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
+export KUBERNETES_IN_DOCKER_ENABLED=${KUBERNETES_IN_DOCKER_ENABLED:-false}
+if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]] || [[ "${KUBERNETES_IN_DOCKER_ENABLED}" == "true" ]]; then
     echo "Docker in Docker enabled, initializing..."
     printf '=%.0s' {1..80}; echo
     # If we have opted in to docker in docker, start the docker daemon,
@@ -71,6 +72,13 @@ if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
     cleanup_dind
     printf '=%.0s' {1..80}; echo
     echo "Done setting up docker in docker."
+fi
+
+# Run Kubernetes In Docker setup if required
+if [[ "${KUBERNETES_IN_DOCKER_ENABLED}" == "true" ]]; then
+  echo "Kubernetes in Docker enabled, initializing..."
+  kind create cluster
+  kubectl config use-context kind-kind
 fi
 
 # Authenticate docker with GCP if a service account file is provided
@@ -122,8 +130,14 @@ set -o xtrace
 EXIT_VALUE=$?
 set +o xtrace
 
+# Cleanup after Kubernetes In Docker job
+if [[ "${KUBERNETES_IN_DOCKER_ENABLED}" == "true" ]]; then
+  echo "Cleaning up after Kubernetes In Docker."
+  kind delete cluster
+fi
+
 # cleanup after job
-if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
+if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]] || [[ "${KUBERNETES_IN_DOCKER_ENABLED}" == "true" ]]; then
     echo "Cleaning up after docker in docker."
     printf '=%.0s' {1..80}; echo
     cleanup_dind
