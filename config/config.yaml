@@ -144,11 +144,3 @@ presets:
     env:
       - name: GOLANG_JUNIT
         value: "true"
-
-  # Istio set this inside their CI builder image and their scripts rely on this
-  # We must add it to all jobs for Istio
-  - labels:
-      preset-ci-env: "true"
-    env:
-      - name: CI
-        value: prow
