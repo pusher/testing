@@ -30,7 +30,6 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
-      preset-ci-env: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -44,7 +43,6 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
-      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -70,7 +68,6 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
-      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -84,7 +81,6 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
-      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -98,7 +94,6 @@ presubmits:
     always_run: true
     labels:
       preset-root-quay-credentials: "true"
-      preset-ci-env: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -112,7 +107,6 @@ presubmits:
     context: prow/release-test.sh
     labels:
       preset-root-quay-credentials: "true"
-      preset-ci-env: "true"
     max_concurrency: 5
     spec:
       containers:
