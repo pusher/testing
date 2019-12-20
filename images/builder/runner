@@ -133,7 +133,9 @@ set +o xtrace
 # Cleanup after Kubernetes In Docker job
 if [[ "${KUBERNETES_IN_DOCKER_ENABLED}" == "true" ]]; then
   echo "Cleaning up after Kubernetes In Docker."
-  kind delete cluster
+  for cluster in $(kind get clusters); do
+    kind delete cluster --name $cluster;
+  done
 fi
 
 # cleanup after job
