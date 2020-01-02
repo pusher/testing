@@ -26,6 +26,7 @@ spec:
         args:
         - --dry-run=false
         - --job-config-path=/etc/jobs
+        - --config-path=/etc/config/config.yaml
         ports:
           - name: http
             containerPort: 8888
