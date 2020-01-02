@@ -11,3 +11,5 @@ rules:
     verbs:
       - create
       - list
+      - get
+      - watch

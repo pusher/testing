@@ -16,4 +16,6 @@ rules:
     resources:
       - configmaps
     verbs:
+      - create
+      - get
       - update
