@@ -56,6 +56,7 @@ spec:
             - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
             - --rerun-creates-job=true
             - --oauth-url=/github-login
+            - --cookie-secret=/etc/cookie/secret
           ports:
             - name: http
               containerPort: 8080
