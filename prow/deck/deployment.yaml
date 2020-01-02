@@ -52,10 +52,12 @@ spec:
             - --tide-url=http://tide.default.svc.cluster.local/
             - --hook-url=http://hook.default.svc.cluster.local:8888/plugin-help
             - --job-config-path=/etc/jobs
+            - --config-path=/etc/config/config.yaml
             - --spyglass=true
             - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
             - --rerun-creates-job=true
             - --oauth-url=/github-login
+            - --cookie-secret=/etc/cookie/secret
           ports:
             - name: http
               containerPort: 8080

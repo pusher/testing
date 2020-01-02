@@ -20,8 +20,8 @@ for f in $(ls config/jobs/*/*.yaml); do
     repository=$(echo -e $image | sed -E "s|$image_regex|\2/\3|")
     tag=$(echo -e $image | sed -E "s|$image_regex|\4|")
     echo -e "  Checking tag '$tag' for image '$registry/$repository'..."
-    curl --location --fail --silent --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
-    "http://$registry/v2/$repository/manifests/$tag" &> /dev/null
+    curl --location --fail --show-error --silent --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+    "https://$registry/v2/$repository/manifests/$tag" > /dev/null
     if [ $? != 0 ]; then
       echo -e "  ${RED}Tag '$tag' for image '$registry/$repository' not found!${NC}"
       failed=true

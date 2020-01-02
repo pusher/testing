@@ -26,6 +26,8 @@ $(GOPATH)/bin/checkconfig:
 	mkdir -p $$GOPATH/src/k8s.io
 	# Clone the test-infra source so that we can use the proper go.mod
 	cd $$GOPATH/src/k8s.io; git clone https://github.com/kubernetes/test-infra
+	# This is the same Git SHA that the images we use are tagged with
+	cd $$GOPATH/src/k8s.io/test-infra; git checkout 3b3e19a133321bb9e451f1c7ce11ed8d8561705f
 	cd $$GOPATH/src/k8s.io/test-infra; GOPROXY=https://proxy.golang.org GOSUMDB=sum.golang.org GO111MODULE=on go install k8s.io/test-infra/prow/cmd/checkconfig
 	@ echo # Produce a new line at the end of each target to help readability
 
