@@ -34,8 +34,8 @@ done
 # Use build cache from the given version if it exists, else use the latest tag
 #
 ##############################################################################
-curl --location --fail --silent --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
-"http://quay.io/v2/pusher/$build_root/manifests/$version" &> /dev/null
+curl --location --fail --show-error --silent --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+"https://quay.io/v2/pusher/$build_root/manifests/$version" > /dev/null
 if [ $? != 0 ]; then
   # Tag does not exist, cache from latest
   cache_tag="latest"
