@@ -20,7 +20,7 @@ ARG VERSION=latest
 ###
 #######################################################################
 
-FROM golang:1.12 AS builder
+FROM golang:1.13 AS builder
 COPY wrapper/* $GOPATH/src/wrapper/
 
 ENV GO111MODULE=on
@@ -54,12 +54,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		pkg-config \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GOLANG_VERSION 1.12.8
+ENV GOLANG_VERSION 1.13.5
 
 RUN set -eux; \
 	\
-  # this came from the golang dockerfile
-  goRelArch='linux-amd64'; goRelSha256='bd26cd4962a362ed3c11835bca32c2e131c2ae050304f2c4df9fa6ded8db85d2' ;\
+  # Copy-paste the relevant SHA256 checksum for the image from here:
+  # https://golang.org/dl/
+  # this is currently the go1.13.5.linux-amd64.tar.gz SHA
+  goRelArch='linux-amd64'; goRelSha256='512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569' ;\
 	\
 	url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz"; \
 	wget -q -O go.tgz "$url"; \
