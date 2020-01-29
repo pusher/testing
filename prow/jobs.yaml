@@ -6,6 +6,120 @@
 
 apiVersion: v1
 data:
+  elasticsearch-docker_elasticsearch-docker-postsubmits.yaml: |
+    job_template: &job_template
+      max_concurrency: 10
+      path_alias: github.com/pusher/elasticsearch-docker
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+      branches:
+        - master
+        # Abuse Prow to make it run on tag pushes like v1.2.3 and v1.2.3-rc1
+        - ^v?\d+\.\d+\.\d+(-rc\d+)?$
+
+    container_template: &container_template
+      image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
+      name: runner
+      command: ["/usr/local/bin/runner"]
+
+    container_template_large: &container_template_large
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 4
+          memory: 4Gi
+        limits:
+          cpu: 8
+          memory: 8Gi
+
+    postsubmits:
+      pusher/elasticsearch-docker:
+        - name: post-elasticsearch-docker-build-docker
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - <<: *container_template_large
+                args:
+                  - echo "PULL_BASE_REF=[${PULL_BASE_REF}], PULL_BASE_SHA=[${PULL_BASE_SHA}]" ;
+                  - TAGS=${PULL_BASE_REF},${PULL_BASE_SHA},latest
+                  - PUSH_TAGS=${TAGS}
+                  - make docker-build docker-tag docker-push
+                securityContext:
+                  privileged: true
+  elasticsearch-docker_elasticsearch-docker-presubmits.yaml: |
+    job_template: &job_template
+      max_concurrency: 10
+      path_alias: github.com/pusher/elasticsearch-docker
+      agent: kubernetes
+      always_run: true
+      skip_report: false
+      decorate: true
+
+    container_template: &container_template
+      image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
+      name: runner
+      command: ["/usr/local/bin/runner"]
+
+    container_template_small: &container_template_small
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 1
+          memory: 1Gi
+        limits:
+          cpu: 2
+          memory: 2Gi
+
+    container_template_large: &container_template_large
+      <<: *container_template
+      resources:
+        requests:
+          cpu: 4
+          memory: 4Gi
+        limits:
+          cpu: 8
+          memory: 8Gi
+
+    presubmits:
+      pusher/elasticsearch-docker:
+
+        - name: pull-elasticsearch-docker-build
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
+          spec:
+            containers:
+              - <<: *container_template_small
+                args:
+                  - make docker-build
+                securityContext:
+                  privileged: true
+          trigger: "(?m)^/test (?:.*? )?(build|all)(?:.*? )?$"
+          rerun_command: "/test build"
+
+        - name: pull-elasticsearch-docker-build-docker
+          <<: *job_template
+          always_run: false
+          labels:
+            preset-dind-enabled: "true"
+            preset-quay-credentials: "true"
+          spec:
+            containers:
+              - <<: *container_template_large
+                args:
+                  - echo "PULL_BASE_REF=[${PULL_BASE_REF}], PULL_BASE_SHA=[${PULL_BASE_SHA}]" ;
+                  - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
+                  - PUSH_TAGS=${TAGS}
+                  - make docker-build
+                securityContext:
+                  privileged: true
+          trigger: "(?m)^/build (?:.*? )?(docker|all)(?: .*?)?$"
+          rerun_command: "/build docker"
   faros_faros-postsubmits.yaml: |
     job_template: &job_template
       max_concurrency: 10
