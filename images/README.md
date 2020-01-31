@@ -58,3 +58,12 @@ The Python builder contains the following:
 - python 2.7.13 (under `python2`)
 - Python 3.7.3 (under `python`)
 - Pip 19.1
+
+## Ruby Builder
+
+The Ruby builder (`quay.io/pusher/ruby-builder`) is for testing Ruby based
+projects within Prow.
+
+The Ruby builder contains the following:
+- Everything in the base builder image
+- ruby 2.6.5
