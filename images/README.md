@@ -3,6 +3,9 @@
 This folder contains Dockerfiles for building "builder" images to be used within
 ProwJobs to execute CI tasks.
 
+If none of the existing images suite your needs see "How to add a new builder image"
+for how to create a new one.
+
 ## Builder (base image)
 
 The builder image (`quay.io/pusher/builder`) acts as a base image for all other
@@ -67,3 +70,21 @@ projects within Prow.
 The Ruby builder contains the following:
 - Everything in the base builder image
 - ruby 2.6.5
+
+## How to add a new \*-builder image
+
+1. Run `make docker-new-$NAME`.
+2. Add your new targets to the Makefile to build/tag/push your new image, following
+   the existing conventions.
+3. Add your modifications to the Dockerfile that the previous command generated.
+4. Build the (base) builder image and push it to `quay.io`:
+```
+$ docker login --username <USERNAME> quay.io
+# docker-push-* implicitly builds, tags and pushes
+$ make docker-push-builder`.
+```
+5. Build your image `make docker-build-$NAME`.
+6. When you're happy with the result, commit your changes, push to Github and open a PR.
+> Note: due to how caching works in the build process you will need to rebuild and push
+> the `builder` image after each commit, so (for now) it's recommended to make commits
+> _after_ you're done with your modifications.

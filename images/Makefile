@@ -59,9 +59,14 @@ clonerefs: docker-build-clonerefs
 #
 ###
 
+docker-new-%:
+	@mkdir -p $*
+	@sed 's|%NAME%|$*|g' Dockerfile.boilerplate > $*/Dockerfile
+	@echo -e "\033[36mA boilerplate Dockerfile has been generated at images/$*/Dockerfile\033[0m"
+
 docker-build-%:
 	./docker-build.sh --version=$(VERSION) --build-root=$*
-	@echo "\033[36mBuilt $(REPO)/$*:$(VERSION)\033[0m"
+	@echo -e "\033[36mBuilt $(REPO)/$*:$(VERSION)\033[0m"
 
 # Set the tags parameter if it is unset or empty
 ifeq ($(TAGS),)
@@ -69,8 +74,8 @@ TAGS := ${VERSION},latest
 endif
 docker-push-%: docker-build-% docker-tag-%
 	./push-stages.sh --build-root=$*
-	@echo "\033[36mPushing $(REPO)/$*:$(VERSION)\033[0m"
-	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker push $(REPO)/$*:$${tag} && echo "\033[36mPushed $(REPO)/$*:$${tag}\033[0m"; done
+	@echo -e "\033[36mPushing $(REPO)/$*:$(VERSION)\033[0m"
+	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker push $(REPO)/$*:$${tag} && echo -e "\033[36mPushed $(REPO)/$*:$${tag}\033[0m"; done
 
 docker-tag-%: docker-build-%
-	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker tag  $(REPO)/$*:$(VERSION) $(REPO)/$*:$${tag} && echo "\033[36mTagged $(REPO)/$*:$(VERSION) as $${tag}\033[0m"; done
+	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker tag  $(REPO)/$*:$(VERSION) $(REPO)/$*:$${tag} && echo -e "\033[36mTagged $(REPO)/$*:$(VERSION) as $${tag}\033[0m"; done
