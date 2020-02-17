@@ -27,6 +27,7 @@ ENV IMAGE=${IMAGE_ARG}
 RUN mv /clonerefs /prow-clonerefs
 COPY clonerefs /clonerefs
 RUN chmod +x /clonerefs
+RUN mkdir -p /root/.ssh
 
 RUN adduser -S -h /home/prow -s /bin/bash -g root -u 1000 prow
 USER prow
