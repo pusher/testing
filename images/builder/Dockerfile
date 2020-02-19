@@ -77,6 +77,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Install dependencies required for testkit
+RUN pip3 install sh pyyaml pycolors
+
 #
 # BEGIN: DOCKER IN DOCKER SETUP
 #
