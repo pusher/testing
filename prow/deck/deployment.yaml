@@ -47,7 +47,7 @@ spec:
               topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
         - name: deck
-          image: gcr.io/k8s-prow/deck:v20191219-ecbeba384
+          image: gcr.io/k8s-prow/deck:v20200228-31c76444e
           args:
             - --tide-url=http://tide.default.svc.cluster.local/
             - --hook-url=http://hook.default.svc.cluster.local:8888/plugin-help
