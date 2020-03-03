@@ -1,9 +1,12 @@
 ECHO := echo -e
 
-all: verify-config verify-image-tags
+all: verify-config
 
 .PHONY: config
-config:
+config: verify-config run-config verify-config
+
+.PHONY: run-config
+run-config:
 	@ $(ECHO) "\033[36mGenerating Config\033[0m"
 	kubectl create configmap config --from-file=config.yaml=config/config.yaml -n default --dry-run -o yaml > prow/config.yaml
 	kubectl create configmap plugins --from-file=plugins.yaml=config/plugins.yaml -n default --dry-run -o yaml > prow/plugins.yaml
@@ -12,23 +15,13 @@ config:
 	@ echo # Produce a new line at the end of each target to help readability
 
 .PHONY: verify-config
-verify-config: $(GOPATH)/bin/checkconfig
+verify-config:
 	@ $(ECHO) "\033[36mVerifying Config\033[0m"
-	${GOPATH}/bin/checkconfig --config-path=config/config.yaml --job-config-path=config/jobs --plugin-config=config/plugins.yaml
+	docker run --rm -v $(shell pwd)/config:/config gcr.io/k8s-prow/checkconfig:v20200220-18fae0a00 --config-path=/config/config.yaml --job-config-path=/config/jobs --plugin-config=/config/plugins.yaml
 	@ echo # Spacer between output
-	make config
+	make run-config
 	@ $(ECHO) "\033[36mVerifying Git Status\033[0m"
 	@ if [ "$$(git status -s)" != "" ]; then git diff --color; $(ECHO) "\033[31;1mERROR: Git Diff found. Please run \`make config\` and commit the result.\033[0m"; exit 1; else $(ECHO) "\033[32mValid config found\033[0m";fi
-	@ echo # Produce a new line at the end of each target to help readability
-
-$(GOPATH)/bin/checkconfig:
-	@ $(ECHO) "\033[36mInstalling checkconfig\033[0m"
-	mkdir -p $$GOPATH/src/k8s.io
-	# Clone the test-infra source so that we can use the proper go.mod
-	cd $$GOPATH/src/k8s.io; git clone https://github.com/kubernetes/test-infra
-	# This is the same Git SHA that the images we use are tagged with
-	cd $$GOPATH/src/k8s.io/test-infra; git checkout 3b3e19a133321bb9e451f1c7ce11ed8d8561705f
-	cd $$GOPATH/src/k8s.io/test-infra; GOPROXY=https://proxy.golang.org GOSUMDB=sum.golang.org GO111MODULE=on go install k8s.io/test-infra/prow/cmd/checkconfig
 	@ echo # Produce a new line at the end of each target to help readability
 
 .PHONY:
