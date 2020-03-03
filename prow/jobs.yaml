@@ -1681,7 +1681,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/kubebuilder-builder:v20200107-aeae089
+      image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -1859,7 +1859,7 @@ data:
         extra_refs:
           - org: pusher
             repo: testing
-            base_ref: master
+            base_ref: autoupdate-periodic
             path_alias: github.com/pusher/testing
         spec:
           securityContext:
@@ -1903,7 +1903,7 @@ data:
                   value: prow/jobs.yaml
                 # The branch that the PR should merge into. Defaults to master if not set.
                 - name: PR_BRANCH
-                  value: master
+                  value: autoupdate-periodic
           volumes:
             - name: github
               secret:
