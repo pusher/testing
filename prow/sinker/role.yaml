@@ -12,9 +12,27 @@ rules:
       - delete
       - list
   - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    resourceNames:
+      - prow-sinker-leaderlock
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - events
+    verbs:
+      - create
+  - apiGroups:
       - "prow.k8s.io"
     resources:
       - prowjobs
     verbs:
       - delete
       - list
+      - watch
+      - get
