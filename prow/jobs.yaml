@@ -1681,7 +1681,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/golang-builder:v20190821-328974b
+      image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -1689,11 +1689,11 @@ data:
       <<: *container_template
       resources:
         requests:
-          cpu: 1
-          memory: 1Gi
-        limits:
           cpu: 2
           memory: 2Gi
+        limits:
+          cpu: 4
+          memory: 4Gi
 
     container_template_large: &container_template_large
       <<: *container_template
@@ -1705,47 +1705,40 @@ data:
           cpu: 8
           memory: 8Gi
 
+    security_context: &security_context
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+
     presubmits:
       pusher/testing:
         - name: pull-testing-verify-config
-          max_concurrency: 10
-          path_alias: github.com/pusher/testing
-          agent: kubernetes
-          always_run: true
-          skip_report: false
-          decorate: true
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
           spec:
+            <<: *security_context
             containers:
-              - image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
-                name: verify-config
-                command: ["/usr/local/bin/runner"]
+              - <<: *container_template_small
                 args:
                   - make verify-config
-                resources:
-                  requests:
-                    cpu: 1
-                    memory: 1Gi
+                securityContext:
+                  privileged: true
           trigger: "(?m)^/verify config,?(\\s+|$)"
           rerun_command: "/verify config"
 
         - name: pull-testing-verify-image-tags
-          max_concurrency: 10
-          path_alias: github.com/pusher/testing
-          agent: kubernetes
-          always_run: true
-          skip_report: false
-          decorate: true
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
           spec:
+            <<: *security_context
             containers:
-              - image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
-                name: verify-image-tags
-                command: ["/usr/local/bin/runner"]
+              - <<: *container_template_small
                 args:
                   - make verify-image-tags
-                resources:
-                  requests:
-                    cpu: 1
-                    memory: 1Gi
+                securityContext:
+                  privileged: true
           trigger: "(?m)^/verify image-tags,?(\\s+|$)"
           rerun_command: "/verify image-tags"
 
