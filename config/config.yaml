@@ -1,6 +1,6 @@
 plank:
-  allow_cancellations: true
-  job_url_prefix: "https://prow.pusher.com/view/gcs"
+  job_url_prefix_config:
+    "*": "https://prow.pusher.com/view/gcs"
   job_url_template: "https://prow.pusher.com/view/gcs/pusher-ci-cluster-35535/pr-logs/pull/{{.Spec.Refs.Repo}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}"
   report_template: "[Full PR test history](https://prow.pusher.com/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}})"
 
@@ -52,7 +52,7 @@ deck:
       required_files:
       - artifacts/junit.*\.xml
   rerun_auth_config:
-    authorized_users:
+    github_users:
       - BenPope
       - gargath
       - JoelSpeed
