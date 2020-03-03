@@ -4,7 +4,7 @@ periodics:
   # updates to the bump PR do NOT trigger notifications so long as the repo's
   # presubmits are not flaky. Updating the PR more frequently then the actual bump
   # frequency is not a problem and can be convenient.
-  - cron: "05 15-23 * * 1-5"  # Run at 7:05-15:05 PST (15:05 UTC) Mon-Fri
+  - cron: "*/5 * * * *"  # Run at 7:05-15:05 PST (15:05 UTC) Mon-Fri
     name: ci-prow-autobump
     # Only run this in a build cluster where you feel comfortable storing your GH
     # bot token.
