@@ -59,6 +59,7 @@ data:
       pusher/quack: *default_plugins
       pusher/testing: *default_plugins
       pusher/wave: *default_plugins
+      pusher/faros: *default_plugins
 
     external_plugins:
       pusher/elasticsearch-docker: *default_external_plugins
