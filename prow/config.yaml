@@ -8,23 +8,24 @@ apiVersion: v1
 data:
   config.yaml: |
     plank:
-      allow_cancellations: true
-      job_url_prefix: "https://prow.pusher.com/view/gcs"
+      job_url_prefix_config:
+        "*": "https://prow.pusher.com/view/gcs"
       job_url_template: "https://prow.pusher.com/view/gcs/pusher-ci-cluster-35535/pr-logs/pull/{{.Spec.Refs.Repo}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}"
       report_template: "[Full PR test history](https://prow.pusher.com/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}})"
 
-      default_decoration_config:
-        timeout: 7200000000000 # 2h
-        grace_period: 15000000000 # 15s
-        utility_images:
-          clonerefs: "quay.io/pusher/clonerefs:v20190401-6a7e3ff"
-          initupload: "gcr.io/k8s-prow/initupload:v20191219-ecbeba384"
-          entrypoint: "gcr.io/k8s-prow/entrypoint:v20191219-ecbeba384"
-          sidecar: "gcr.io/k8s-prow/sidecar:v20191219-ecbeba384"
-        gcs_configuration:
-          bucket: "pusher-ci-cluster-35535"
-          path_strategy: "explicit"
-        gcs_credentials_secret: "prow-gcs"
+      default_decoration_configs:
+        "*":
+          timeout: 7200000000000 # 2h
+          grace_period: 15000000000 # 15s
+          utility_images:
+            clonerefs: "quay.io/pusher/clonerefs:v20190401-6a7e3ff"
+            initupload: "gcr.io/k8s-prow/initupload:v20191219-ecbeba384"
+            entrypoint: "gcr.io/k8s-prow/entrypoint:v20191219-ecbeba384"
+            sidecar: "gcr.io/k8s-prow/sidecar:v20191219-ecbeba384"
+          gcs_configuration:
+            bucket: "pusher-ci-cluster-35535"
+            path_strategy: "explicit"
+          gcs_credentials_secret: "prow-gcs"
 
     sinker:
       resync_period: 1h
@@ -61,10 +62,8 @@ data:
           required_files:
           - artifacts/junit.*\.xml
       rerun_auth_config:
-        authorized_users:
+        github_users:
           - BenPope
-          - gargath
-          - JoelSpeed
           - mthssdrbrg
           - samuelyallop-pusher
           - sata

@@ -21,12 +21,8 @@ data:
           - pusher/quack
           - pusher/testing
           - pusher/wave
-        trusted_org: pusher
-        only_org_members: true
       - repos:
           - pusher/oauth2_proxy
-        trusted_org: oauth2_proxy
-        only_org_members: true
 
     default_plugins: &default_plugins
     - assign
