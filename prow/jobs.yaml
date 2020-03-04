@@ -1681,7 +1681,7 @@ data:
       decorate: true
 
     container_template: &container_template
-      image: quay.io/pusher/golang-builder:v20190821-328974b
+      image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
       name: runner
       command: ["/usr/local/bin/runner"]
 
@@ -1689,11 +1689,11 @@ data:
       <<: *container_template
       resources:
         requests:
-          cpu: 1
-          memory: 1Gi
-        limits:
           cpu: 2
           memory: 2Gi
+        limits:
+          cpu: 4
+          memory: 4Gi
 
     container_template_large: &container_template_large
       <<: *container_template
@@ -1705,47 +1705,40 @@ data:
           cpu: 8
           memory: 8Gi
 
+    security_context: &security_context
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+
     presubmits:
       pusher/testing:
         - name: pull-testing-verify-config
-          max_concurrency: 10
-          path_alias: github.com/pusher/testing
-          agent: kubernetes
-          always_run: true
-          skip_report: false
-          decorate: true
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
           spec:
+            <<: *security_context
             containers:
-              - image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
-                name: verify-config
-                command: ["/usr/local/bin/runner"]
+              - <<: *container_template_small
                 args:
                   - make verify-config
-                resources:
-                  requests:
-                    cpu: 1
-                    memory: 1Gi
+                securityContext:
+                  privileged: true
           trigger: "(?m)^/verify config,?(\\s+|$)"
           rerun_command: "/verify config"
 
         - name: pull-testing-verify-image-tags
-          max_concurrency: 10
-          path_alias: github.com/pusher/testing
-          agent: kubernetes
-          always_run: true
-          skip_report: false
-          decorate: true
+          <<: *job_template
+          labels:
+            preset-dind-enabled: "true"
           spec:
+            <<: *security_context
             containers:
-              - image: quay.io/pusher/kubebuilder-builder:v20190821-328974b
-                name: verify-image-tags
-                command: ["/usr/local/bin/runner"]
+              - <<: *container_template_small
                 args:
                   - make verify-image-tags
-                resources:
-                  requests:
-                    cpu: 1
-                    memory: 1Gi
+                securityContext:
+                  privileged: true
           trigger: "(?m)^/verify image-tags,?(\\s+|$)"
           rerun_command: "/verify image-tags"
 
@@ -1850,6 +1843,72 @@ data:
                   privileged: true
           trigger: "(?m)^/build (?:.*? )?(promoter-docker|all)(?: .*?)?$"
           rerun_command: "/build promoter-docker"
+  testing_testing-update-prow-periodic.yaml: |
+    ---
+    periodics:
+      # Change the cron string to the update frequency/schedule you prefer. Note that
+      # updates to the bump PR do NOT trigger notifications so long as the repo's
+      # presubmits are not flaky. Updating the PR more frequently then the actual bump
+      # frequency is not a problem and can be convenient.
+      - cron: "05 15-23 * * 1-5"  # Run at 7:05-15:05 PST (15:05 UTC) Mon-Fri
+        name: ci-prow-autobump
+        # Only run this in a build cluster where you feel comfortable storing your GH
+        # bot token.
+        decorate: true
+        # Check out the repo containing the config and deployment files for your Prow instance.
+        extra_refs:
+          - org: pusher
+            repo: testing
+            base_ref: master
+            path_alias: github.com/pusher/testing
+        spec:
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          containers:
+            - image: quay.io/pusher/autobump:20200303-37e629a6a # TODO: add a tag once we've push this the first time.
+              command:
+                - /autobump.sh
+              args:
+                - /etc/github-token/oauth
+                # Make the bot name and email match the user data of the provided token's user.
+                - "pusher-ci"
+                - services@pusher.com
+              volumeMounts:
+                - name: github
+                  mountPath: /etc/github-token
+                  readOnly: true
+              env:
+                # autobump.sh args
+                # GitHub org containing the repo where the Prow config and component files live.
+                - name: GH_ORG
+                  value: pusher
+                # GitHub repo where the Prow config and component deployment files live.
+                - name: GH_REPO
+                  value: testing
+                # Repo relative path of the `plank` component k8s deployment file.
+                - name: PLANK_DEPLOYMENT_FILE
+                  value: prow/plank/deployment.yaml
+                # bump.sh args
+                # Directory (or comma-delimited list of directories) containing k8s deployment YAMLs for Prow components.
+                - name: COMPONENT_FILE_DIR
+                  value: "prow,prow/deck,prow/hook,prow/horologium,prow/plank,prow/needs-rebase,prow/promoter,prow/sinker,prow/tide"
+                  # value: prow/cluster,prow/config/jobs
+                # Repo relative path of the core Prow config file (config.yaml).
+                - name: CONFIG_PATH
+                  value: prow/config.yaml
+                # Repo relative path of the ProwJob config file or directory.
+                # Omit this if ProwJobs are only defined in config.yaml (or are not configured at all).
+                - name: JOB_CONFIG_PATH
+                  value: prow/jobs.yaml
+                # The branch that the PR should merge into. Defaults to master if not set.
+                - name: PR_BRANCH
+                  value: master
+          volumes:
+            - name: github
+              secret:
+                # Secret containing a GitHub user access token with `repo` scope for creating PRs.
+                secretName: oauth-token
   wave_wave-postsubmits.yaml: |
     job_template: &job_template
       max_concurrency: 10
