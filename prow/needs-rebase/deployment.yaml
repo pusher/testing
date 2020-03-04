@@ -46,7 +46,7 @@ spec:
               topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
       - name: needs-rebase
-        image: gcr.io/k8s-prow/needs-rebase:v20191219-ecbeba384
+        image: gcr.io/k8s-prow/needs-rebase:v20200302-c921a880e
         imagePullPolicy: Always
         args:
         - --dry-run=false
