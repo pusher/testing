@@ -17,7 +17,10 @@ run-config:
 .PHONY: verify-config
 verify-config:
 	@ $(ECHO) "\033[36mVerifying Config\033[0m"
-	docker run --rm -v $(shell pwd)/config:/config gcr.io/k8s-prow/checkconfig:v20200220-18fae0a00 --config-path=/config/config.yaml --job-config-path=/config/jobs --plugin-config=/config/plugins.yaml
+	docker run --rm -v $(shell pwd)/config:/config gcr.io/k8s-prow/checkconfig:v20200220-18fae0a00 \
+		--config-path=/config/config.yaml \
+		--job-config-path=/config/jobs \
+		--plugin-config=/config/plugins.yaml
 	@ $(ECHO) # Spacer between output
 	make run-config
 	@ $(ECHO) "\033[36mVerifying Git Status\033[0m"
