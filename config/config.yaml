@@ -54,13 +54,9 @@ deck:
       - artifacts/junit.*\.xml
   rerun_auth_config:
     github_users:
-      - BenPope
       - mthssdrbrg
-      - samuelyallop-pusher
-      - sata
-      - theobarberbany
-      - topliceanu
-      - DanielMorsing
+      - starkers
+      - damdo
 
 prowjob_namespace: default
 pod_namespace: default
