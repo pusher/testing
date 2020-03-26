@@ -77,8 +77,6 @@ fi
 # Run Kubernetes In Docker setup if required
 if [[ "${KUBERNETES_IN_DOCKER_ENABLED}" == "true" ]]; then
   echo "Kubernetes in Docker enabled, initializing..."
-  kind create cluster
-  kubectl config use-context kind-kind
 fi
 
 # Authenticate docker with GCP if a service account file is provided
