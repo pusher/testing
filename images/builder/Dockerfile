@@ -35,7 +35,7 @@ RUN go get -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/dock
 ###
 ##################################################
 
-FROM debian:stretch
+FROM debian:buster
 
 WORKDIR /workspace
 RUN mkdir -p /workspace
@@ -45,9 +45,6 @@ ENV WORKSPACE=/workspace \
 # add env we can debug with the image name:tag
 ARG IMAGE_ARG
 ENV IMAGE=${IMAGE_ARG}
-
-# Add the testing repository so we can get newer Python versions (> 3.5)
-RUN echo 'deb http://ftp.de.debian.org/debian testing main' >> /etc/apt/sources.list
 
 # common util tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
