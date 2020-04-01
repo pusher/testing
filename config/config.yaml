@@ -153,12 +153,11 @@ presets:
     volumeMounts:
       - name: docker-graph
         mountPath: /docker-graph
-
-      - mountPath: /lib/modules
-        name: modules
+      - name: modules
+        mountPath: /lib/modules
         readOnly: true
-      - mountPath: /sys/fs/cgroup
-        name: cgroup
+      - name: cgroup
+        mountPath: /sys/fs/cgroup
       - name: dind-storage
         mountPath: /var/lib/docker
 
