@@ -125,6 +125,42 @@ presets:
       - name: docker-graph
         mountPath: /docker-graph
 
+  # kubernetes-in-docker (with images/bootstrap) preset
+  # NOTE: using this also requires using that image,
+  # ensuring you run your test under either the ENTRYPOINT or:
+  # /usr/local/bin/runner my-test-command --foo --bar
+  # AND setting the following on your PodSpec:
+  # securityContext:
+  #   privileged: true
+  - labels:
+      preset-kind-enabled: "true"
+    env:
+      - name: KUBERNETES_IN_DOCKER_ENABLED
+        value: "true"
+    volumes:
+      - name: docker-graph
+        emptyDir: {}
+      - name: modules
+        hostPath:
+          path: /lib/modules
+          type: Directory
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup
+          type: Directory
+      - name: dind-storage
+        emptyDir: {}
+    volumeMounts:
+      - name: docker-graph
+        mountPath: /docker-graph
+      - name: modules
+        mountPath: /lib/modules
+        readOnly: true
+      - name: cgroup
+        mountPath: /sys/fs/cgroup
+      - name: dind-storage
+        mountPath: /var/lib/docker
+
   - labels:
       preset-snyk-token: "true"
     env:

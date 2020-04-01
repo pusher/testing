@@ -14,8 +14,8 @@
 
 #############################################################################
 ###
-### RUBY BUILDER - From quay.io/pusher/builder with Rubyg tooling for
-###                  building Ruby based projects
+### RUBY BUILDER - From quay.io/pusher/builder with Ruby tooling for
+###                building Ruby based projects
 ###
 #############################################################################
 
@@ -35,7 +35,8 @@ USER root
 ###
 #################
 
-# Taken from docker-library/buildpack-deps:stretch-curl docker image
+# Taken from docker-library/buildpack-deps:buster-curl docker image
+
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -54,11 +55,10 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*; \
   fi
 
-# Taken from docker-library/buildpack-deps:stretch-scm docker image
+# Taken from docker-library/buildpack-deps:buster-scm docker image
 
 # procps is very common in build systems, and is a reasonably small package
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    bzr \
     git \
     mercurial \
     openssh-client \
@@ -67,7 +67,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
   && rm -rf /var/lib/apt/lists/*
 
-# Taken from docker-library/buildpack-deps:stretch docker image
+# Taken from docker-library/buildpack-deps:buster docker image
 
 RUN set -ex; \
   apt-get update; \
