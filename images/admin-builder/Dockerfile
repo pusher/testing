@@ -14,13 +14,14 @@
 
 #############################################################################
 ###
-### ADMIN BUILDER - From quay.io/pusher/builder with Kubectl, AWS, GCLOUD and
+### ADMIN BUILDER - FROM pusher/builder with Kubectl, AWS, GCLOUD and
 ###                 Terraform CLIs
 ###
 #############################################################################
 
 ARG VERSION=latest
-FROM quay.io/pusher/builder:${VERSION}
+ARG REPOSITORY=docker.io/pusher
+FROM ${REPOSITORY}/builder:${VERSION}
 
 # add env we can debug with the image name:tag
 ARG IMAGE_ARG

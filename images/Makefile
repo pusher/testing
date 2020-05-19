@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-REPO := quay.io/pusher
+ifeq ($(REPOSITORY),)
+REPOSITORY := docker.io/pusher
+endif
 
 # Set the version parameter if it is unset or empty
 ifeq ($(VERSION),)
@@ -65,17 +67,17 @@ docker-new-%:
 	@echo -e "\033[36mA boilerplate Dockerfile has been generated at images/$*/Dockerfile\033[0m"
 
 docker-build-%:
-	./docker-build.sh --version=$(VERSION) --build-root=$*
-	@echo -e "\033[36mBuilt $(REPO)/$*:$(VERSION)\033[0m"
+	./docker-build.sh --repository=$(REPOSITORY) --version=$(VERSION) --build-root=$*
+	@echo -e "\033[36mBuilt $(REPOSITORY)/$*:$(VERSION)\033[0m"
 
 # Set the tags parameter if it is unset or empty
 ifeq ($(TAGS),)
 TAGS := ${VERSION},latest
 endif
 docker-push-%: docker-build-% docker-tag-%
-	./push-stages.sh --build-root=$*
-	@echo -e "\033[36mPushing $(REPO)/$*:$(VERSION)\033[0m"
-	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker push $(REPO)/$*:$${tag} && echo -e "\033[36mPushed $(REPO)/$*:$${tag}\033[0m"; done
+	./push-stages.sh --repository=$(REPOSITORY) --build-root=$*
+	@echo -e "\033[36mPushing $(REPOSITORY)/$*:$(VERSION)\033[0m"
+	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker push $(REPOSITORY)/$*:$${tag} && echo -e "\033[36mPushed $(REPOSITORY)/$*:$${tag}\033[0m"; done
 
 docker-tag-%: docker-build-%
-	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker tag  $(REPO)/$*:$(VERSION) $(REPO)/$*:$${tag} && echo -e "\033[36mTagged $(REPO)/$*:$(VERSION) as $${tag}\033[0m"; done
+	@IFS=","; tags=${TAGS}; for tag in $${tags}; do docker tag  $(REPOSITORY)/$*:$(VERSION) $(REPOSITORY)/$*:$${tag} && echo -e "\033[36mTagged $(REPOSITORY)/$*:$(VERSION) as $${tag}\033[0m"; done

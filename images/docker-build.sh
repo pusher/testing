@@ -5,12 +5,15 @@ GREEN='\033[0;32m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-repository="quay.io/pusher"
+repository="docker.io/pusher"
 
 for arg in "$@"; do
   case ${arg%%=*} in
     "--version")
       version="${arg##*=}"
+      ;;
+    "--repository")
+      repository="${arg##*=}"
       ;;
    "--build-root")
       build_root="${arg##*=}"
@@ -60,7 +63,7 @@ for stage in "${stages[@]}"; do
   echo -e "${CYAN}Building Docker pre-stage: ${build_root}:${stage}${NC}"
   docker pull ${repository}/${build_root}:stage-${stage}
   img=$repository/${build_root}
-  docker build --pull --build-arg IMAGE_ARG=${img}:${version} --build-arg VERSION=${version} --cache-from ${img}:stage-${stage} -t ${img}:stage-${stage} --target ${stage} ${build_root}
+  docker build --pull --build-arg IMAGE_ARG=${img}:${version} --build-arg VERSION=${version} --build-arg REPOSITORY=${repository} --cache-from ${img}:stage-${stage} -t ${img}:stage-${stage} --target ${stage} ${build_root}
   stage_cache_from+="--cache-from $img:stage-$stage "
 done
 

@@ -14,13 +14,14 @@
 
 #############################################################################
 ###
-### Kubebuilder BUILDER - From quay.io/pusher/golang-builder with Kubebuilder
+### Kubebuilder BUILDER - FROM pusher/golang-builder with Kubebuilder
 ###                       tooling for building kubebuilder projects
 ###
 #############################################################################
 
 ARG VERSION=latest
-FROM quay.io/pusher/golang-builder:${VERSION}
+ARG REPOSITORY=docker.io/pusher
+FROM ${REPOSITORY}/golang-builder:${VERSION}
 
 # add env we can debug with the image name:tag
 ARG IMAGE_ARG

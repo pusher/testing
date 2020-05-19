@@ -13,6 +13,7 @@
 # limitations under the License.
 
 ARG VERSION=latest
+ARG REPOSITORY=docker.io/pusher
 
 #######################################################################
 ###
@@ -31,12 +32,12 @@ RUN go build -o /wrapper $GOPATH/src/wrapper
 
 #############################################################################
 ###
-### GOLANG BUILDER - From quay.io/pusher/builder with Go tooling for building
+### GOLANG BUILDER - From pusher/builder with Go tooling for building
 ###                  Golang based projects
 ###
 #############################################################################
 
-FROM quay.io/pusher/builder:${VERSION}
+FROM ${REPOSITORY}/builder:${VERSION}
 
 # add env we can debug with the image name:tag
 ARG IMAGE_ARG

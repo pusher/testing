@@ -14,12 +14,13 @@
 
 #############################################################################
 ###
-### %NAME% BUILDER - From quay.io/pusher/builder with %NAME% tooling
+### %NAME% BUILDER - FROM pusher/builder with %NAME% tooling
 ###
 #############################################################################
 
 ARG VERSION=latest
-FROM quay.io/pusher/builder:${VERSION}
+ARG REPOSITORY=docker.io/pusher
+FROM ${REPOSITORY}/builder:${VERSION}
 
 # add env we can debug with the image name:tag
 ARG IMAGE_ARG

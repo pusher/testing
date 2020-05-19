@@ -5,12 +5,15 @@ GREEN='\033[0;32m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-repository="quay.io/pusher"
+repository="docker.io/pusher"
 
 for arg in "$@"; do
   case ${arg%%=*} in
    "--build-root")
       build_root="${arg##*=}"
+      ;;
+   "--repository")
+      repository="${arg##*=}"
       ;;
     "--help")
       printf "${GREEN}$0${NC}\n"
@@ -24,7 +27,6 @@ for arg in "$@"; do
       ;;
     esac
 done
-
 
 ###########################################
 #
