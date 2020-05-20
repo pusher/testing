@@ -124,7 +124,7 @@ presubmits:
       always_run: false
       labels:
         preset-dind-enabled: "true"
-        preset-quay-credentials: "true"
+        preset-docker-credentials: "true"
         preset-snyk-token: "true"
       spec:
         containers:

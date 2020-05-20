@@ -217,7 +217,7 @@ presubmits:
       always_run: false # Override the value in the job_template
       labels:
         preset-dind-enabled: "true"      # Enable Docker-In-Docker
-        preset-quay-credentials: "true"  # Inject credentials to push to Quay
+        preset-docker-credentials: "true"  # Inject credentials to push to Quay
       spec:
         containers:
           - <<: *container_template_large

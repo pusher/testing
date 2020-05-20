@@ -29,7 +29,7 @@ presubmits:
     context: prow/istio-unit-tests.sh
     always_run: true
     labels:
-      preset-root-quay-credentials: "true"
+      preset-root-docker-credentials: "true"
     spec:
       containers:
       - <<: *istio_container
@@ -42,7 +42,7 @@ presubmits:
     context: prow/integ-framework-local-presubmit-tests.sh
     always_run: true
     labels:
-      preset-root-quay-credentials: "true"
+      preset-root-docker-credentials: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -67,7 +67,7 @@ presubmits:
     context: prow/integ-mixer-local-presubmit-tests.sh
     always_run: true
     labels:
-      preset-root-quay-credentials: "true"
+      preset-root-docker-credentials: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -80,7 +80,7 @@ presubmits:
     context: prow/integ-pilot-local-presubmit-tests.sh
     always_run: true
     labels:
-      preset-root-quay-credentials: "true"
+      preset-root-docker-credentials: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -93,7 +93,7 @@ presubmits:
     context: prow/integ-security-local-presubmit-tests.sh
     always_run: true
     labels:
-      preset-root-quay-credentials: "true"
+      preset-root-docker-credentials: "true"
     spec:
       containers:
         - <<: *istio_container
@@ -106,7 +106,7 @@ presubmits:
     always_run: true
     context: prow/release-test.sh
     labels:
-      preset-root-quay-credentials: "true"
+      preset-root-docker-credentials: "true"
     max_concurrency: 5
     spec:
       containers:
@@ -120,7 +120,7 @@ presubmits:
     context: prow/istio-presubmit.sh
     always_run: true
     labels:
-      preset-root-quay-credentials: "true"
+      preset-root-docker-credentials: "true"
     spec:
       containers:
       - <<: *istio_container

@@ -40,7 +40,7 @@ data:
           <<: *job_template
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -107,7 +107,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -154,7 +154,7 @@ data:
           <<: *job_template
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
             preset-snyk-token: "true"
           spec:
             containers:
@@ -293,7 +293,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
             preset-snyk-token: "true"
           spec:
             containers:
@@ -386,7 +386,7 @@ data:
         context: prow/istio-unit-tests.sh
         always_run: true
         labels:
-          preset-root-quay-credentials: "true"
+          preset-root-docker-credentials: "true"
         spec:
           containers:
           - <<: *istio_container
@@ -399,7 +399,7 @@ data:
         context: prow/integ-framework-local-presubmit-tests.sh
         always_run: true
         labels:
-          preset-root-quay-credentials: "true"
+          preset-root-docker-credentials: "true"
         spec:
           containers:
             - <<: *istio_container
@@ -424,7 +424,7 @@ data:
         context: prow/integ-mixer-local-presubmit-tests.sh
         always_run: true
         labels:
-          preset-root-quay-credentials: "true"
+          preset-root-docker-credentials: "true"
         spec:
           containers:
             - <<: *istio_container
@@ -437,7 +437,7 @@ data:
         context: prow/integ-pilot-local-presubmit-tests.sh
         always_run: true
         labels:
-          preset-root-quay-credentials: "true"
+          preset-root-docker-credentials: "true"
         spec:
           containers:
             - <<: *istio_container
@@ -450,7 +450,7 @@ data:
         context: prow/integ-security-local-presubmit-tests.sh
         always_run: true
         labels:
-          preset-root-quay-credentials: "true"
+          preset-root-docker-credentials: "true"
         spec:
           containers:
             - <<: *istio_container
@@ -463,7 +463,7 @@ data:
         always_run: true
         context: prow/release-test.sh
         labels:
-          preset-root-quay-credentials: "true"
+          preset-root-docker-credentials: "true"
         max_concurrency: 5
         spec:
           containers:
@@ -477,7 +477,7 @@ data:
         context: prow/istio-presubmit.sh
         always_run: true
         labels:
-          preset-root-quay-credentials: "true"
+          preset-root-docker-credentials: "true"
         spec:
           containers:
           - <<: *istio_container
@@ -563,7 +563,7 @@ data:
         context: prow/istio-presubmit.sh
         always_run: true
         labels:
-          preset-root-quay-credentials: "true"
+          preset-root-docker-credentials: "true"
         spec:
           containers:
           - <<: *istio_container
@@ -580,7 +580,7 @@ data:
           always_run: true
           optional: true
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           spec:
             containers:
             - <<: *istio_container
@@ -595,7 +595,7 @@ data:
           context: "prow: test-e2e-mixer-no_auth"
           max_concurrency: 5
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           spec:
             containers:
             - <<: *istio_container
@@ -608,7 +608,7 @@ data:
           always_run: true
           context: prow/istio-pilot-e2e-envoyv2-v1alpha3.sh
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -622,7 +622,7 @@ data:
           always_run: true
           context: prow/e2e-mixer-no_auth.sh
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -636,7 +636,7 @@ data:
           always_run: true
           context: prow/e2e-dashboard.sh
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -650,7 +650,7 @@ data:
           always_run: true
           context: prow/e2e-bookInfoTests-v1alpha3.sh
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -665,7 +665,7 @@ data:
           context: prow/e2e-bookInfoTests-trustdomain.sh
           optional: true
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -679,7 +679,7 @@ data:
           always_run: true
           context: prow/e2e-simpleTests.sh
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -694,7 +694,7 @@ data:
           context: prow/istio-pilot-multicluster-e2e.sh
           optional: true
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -709,7 +709,7 @@ data:
           context: prow/e2e-simpleTests-cni.sh
           optional: true
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -723,7 +723,7 @@ data:
           always_run: true
           context: prow/e2e_pilotv2_auth_sds.sh
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -737,7 +737,7 @@ data:
           always_run: true
           context: prow/release-test.sh
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -763,7 +763,7 @@ data:
       - name: istio-postsubmit
         <<: *job_template
         labels:
-          preset-root-quay-credentials: "true"
+          preset-root-docker-credentials: "true"
         spec:
           containers:
           - <<: *istio_container
@@ -775,7 +775,7 @@ data:
         - name: istio-integ-k8s-tests
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           spec:
             containers:
             - <<: *istio_container
@@ -786,7 +786,7 @@ data:
         - name: e2e-simpleTests
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           spec:
             containers:
             - <<: *istio_container
@@ -797,7 +797,7 @@ data:
         - name: e2e-simpleTests-non-mcp
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -809,7 +809,7 @@ data:
         - name: e2e-bookInfoTests-envoyv2-v1alpha3
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           spec:
             containers:
             - <<: *istio_container
@@ -820,7 +820,7 @@ data:
         - name: istio-pilot-e2e-envoyv2-v1alpha3
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           spec:
             containers:
             - <<: *istio_container
@@ -831,7 +831,7 @@ data:
         - name: istio-pilot-e2e-envoyv2-v1alpha3-k8s-latest
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           spec:
             containers:
             - <<: *istio_container
@@ -842,7 +842,7 @@ data:
         - name: e2e-bookInfoTests-envoyv2-v1alpha3-non-mcp
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -854,7 +854,7 @@ data:
         - name: e2e-mixer-no_auth
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           spec:
             containers:
             - <<: *istio_container
@@ -865,7 +865,7 @@ data:
         - name: e2e-dashboard
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           spec:
             containers:
             - <<: *istio_container
@@ -876,7 +876,7 @@ data:
         - name: istio_auth_sds_e2e
           <<: *job_template
           labels:
-            preset-root-quay-credentials: "true"
+            preset-root-docker-credentials: "true"
           max_concurrency: 5
           spec:
             containers:
@@ -918,7 +918,7 @@ data:
           <<: *job_template
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -979,7 +979,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1025,7 +1025,7 @@ data:
           <<: *job_template
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1109,7 +1109,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1156,7 +1156,7 @@ data:
           <<: *job_template
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1217,7 +1217,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1371,7 +1371,7 @@ data:
           <<: *job_template
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1455,7 +1455,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1502,7 +1502,7 @@ data:
           <<: *job_template
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1585,7 +1585,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1611,7 +1611,7 @@ data:
           decorate: true
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - image: quay.io/pusher/builder:v20190821-328974b
@@ -1636,7 +1636,7 @@ data:
           skip_report: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           pipeline_run_spec:
               pipelineRef:
                 name: testing-post-builder-images
@@ -1657,7 +1657,7 @@ data:
           decorate: true
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - image: quay.io/pusher/builder:v20190821-328974b
@@ -1751,7 +1751,7 @@ data:
           decorate: true
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - image: quay.io/pusher/builder:v20190821-328974b
@@ -1778,7 +1778,7 @@ data:
           skip_report: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           pipeline_run_spec:
               pipelineRef:
                 name: testing-pull-builder-images
@@ -1831,7 +1831,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -1943,7 +1943,7 @@ data:
           <<: *job_template
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large
@@ -2065,7 +2065,7 @@ data:
           always_run: false
           labels:
             preset-dind-enabled: "true"
-            preset-quay-credentials: "true"
+            preset-docker-credentials: "true"
           spec:
             containers:
               - <<: *container_template_large

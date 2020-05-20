@@ -31,7 +31,7 @@ postsubmits:
       <<: *job_template
       labels:
         preset-dind-enabled: "true"
-        preset-quay-credentials: "true"
+        preset-docker-credentials: "true"
       spec:
         containers:
           - <<: *container_template_large

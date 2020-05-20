@@ -17,8 +17,8 @@ within the cluster.
 | Label | Description |
 | ----- | ----------- |
 | preset-service-account: "true" | Add Google application credentials to the environment of the ProwJob container. |
-| preset-root-quay-credentials: "true" | Add Quay credentials to allow the `root` user of the container push images to the Pusher Quay organisation. **Note**: This is used by the Istio ProwJobs as they have been copied from the upstream repository and run their builds as `root`. This should not be used for any Pusher ProwJob as these should be run as the `prow` user. |
-| preset-quay-credentials: "true" | Add Quay credentials to allow the `prow` user of the container push images to the Pusher Quay organisation. |
+| preset-root-docker-credentials: "true" | Add Quay credentials to allow the `root` user of the container push images to the Pusher Quay organisation. **Note**: This is used by the Istio ProwJobs as they have been copied from the upstream repository and run their builds as `root`. This should not be used for any Pusher ProwJob as these should be run as the `prow` user. |
+| preset-docker-credentials: "true" | Add Quay credentials to allow the `prow` user of the container push images to the Pusher Quay organisation. |
 | preset-dind-enabled: "true" | Starts a Docker daemon within the ProwJob container to allow `docker`commands to be executed. Used for building `Dockerfiles` and pushing images. |
 | preset-golang-junit: "true" | Intercept calls to `go test` and generate a JUnit XML file for nicer test output within Prow's UI |
 

@@ -10,7 +10,7 @@ postsubmits:
       decorate: true
       labels:
         preset-dind-enabled: "true"
-        preset-quay-credentials: "true"
+        preset-docker-credentials: "true"
       spec:
         containers:
           - image: quay.io/pusher/builder:v20190821-328974b
@@ -35,7 +35,7 @@ postsubmits:
       skip_report: false
       labels:
         preset-dind-enabled: "true"
-        preset-quay-credentials: "true"
+        preset-docker-credentials: "true"
       pipeline_run_spec:
           pipelineRef:
             name: testing-post-builder-images
@@ -56,7 +56,7 @@ postsubmits:
       decorate: true
       labels:
         preset-dind-enabled: "true"
-        preset-quay-credentials: "true"
+        preset-docker-credentials: "true"
       spec:
         containers:
           - image: quay.io/pusher/builder:v20190821-328974b
