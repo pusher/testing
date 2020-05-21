@@ -14,13 +14,14 @@
 
 #############################################################################
 ###
-### PYTHON BUILDER - From quay.io/pusher/builder with Pythong tooling for
+### PYTHON BUILDER - From pusher/builder with Pythong tooling for
 ###                  building Python based projects
 ###
 #############################################################################
 
 ARG VERSION=latest
-FROM quay.io/pusher/builder:${VERSION}
+ARG REPOSITORY=docker.io/pusher
+FROM ${REPOSITORY}/builder:${VERSION}
 
 # add env we can debug with the image name:tag
 ARG IMAGE_ARG

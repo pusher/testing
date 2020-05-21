@@ -85,22 +85,22 @@ presets:
           secretName: prow-gcs
 
   - labels:
-      preset-root-quay-credentials: "true"
+      preset-root-docker-credentials: "true"
     volumes:
       - name: credentials
         secret:
-          secretName: quay-docker-config
+          secretName: docker-config
     volumeMounts:
       - name: credentials
         mountPath: /root/.docker
         readOnly: true
 
   - labels:
-      preset-quay-credentials: "true"
+      preset-docker-credentials: "true"
     volumes:
       - name: credentials
         secret:
-          secretName: quay-docker-config
+          secretName: docker-config
     volumeMounts:
       - name: credentials
         mountPath: /home/prow/.docker

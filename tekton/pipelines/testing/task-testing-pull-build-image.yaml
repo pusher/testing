@@ -50,4 +50,4 @@ spec:
       emptyDir: {}
     - name: credentials
       secret:
-        secretName: quay-docker-config
+        secretName: docker-config

@@ -77,7 +77,7 @@ presubmits:
       decorate: true
       labels:
         preset-dind-enabled: "true"
-        preset-quay-credentials: "true"
+        preset-docker-credentials: "true"
       spec:
         containers:
           - image: quay.io/pusher/builder:v20190821-328974b
@@ -104,7 +104,7 @@ presubmits:
       skip_report: false
       labels:
         preset-dind-enabled: "true"
-        preset-quay-credentials: "true"
+        preset-docker-credentials: "true"
       pipeline_run_spec:
           pipelineRef:
             name: testing-pull-builder-images
@@ -157,7 +157,7 @@ presubmits:
       always_run: false
       labels:
         preset-dind-enabled: "true"
-        preset-quay-credentials: "true"
+        preset-docker-credentials: "true"
       spec:
         containers:
           - <<: *container_template_large
