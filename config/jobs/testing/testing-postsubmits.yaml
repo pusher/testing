@@ -17,7 +17,7 @@ postsubmits:
             name: build-docker
             command: ["/usr/local/bin/runner"]
             args:
-              - make --directory=images push
+              - REPOSITORY=quay.io/pusher make --directory=images push && REPOSITORY=docker.io/pusher make --directory=images push
             resources:
               requests:
                 cpu: 1

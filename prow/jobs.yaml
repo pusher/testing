@@ -1618,7 +1618,7 @@ data:
                 name: build-docker
                 command: ["/usr/local/bin/runner"]
                 args:
-                  - make --directory=images push
+                  - REPOSITORY=quay.io/pusher make --directory=images push && REPOSITORY=docker.io/pusher make --directory=images push
                 resources:
                   requests:
                     cpu: 1
@@ -1760,7 +1760,7 @@ data:
                 args:
                   - VERSION=pull-${PULL_NUMBER}
                   - TAGS=pull-${PULL_NUMBER},${PULL_PULL_SHA}
-                  - make --directory=images push
+                  - REPOSITORY=quay.io/pusher make --directory=images push && REPOSITORY=docker.io/pusher make --directory=images push
                 resources:
                   requests:
                     cpu: 1
