@@ -48,30 +48,30 @@ USER root
 
 # gcc for cgo
 RUN apt-get update && apt-get install -y --no-install-recommends \
-		g++ \
-		gcc \
-		libc6-dev \
-		make \
-		pkg-config \
-	&& rm -rf /var/lib/apt/lists/*
+  g++ \
+  gcc \
+  libc6-dev \
+  make \
+  pkg-config \
+  && rm -rf /var/lib/apt/lists/*
 
 ENV GOLANG_VERSION 1.13.5
 
 RUN set -eux; \
-	\
+  \
   # Copy-paste the relevant SHA256 checksum for the image from here:
   # https://golang.org/dl/
   # this is currently the go1.13.5.linux-amd64.tar.gz SHA
   goRelArch='linux-amd64'; goRelSha256='512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569' ;\
-	\
-	url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz"; \
-	wget -q -O go.tgz "$url"; \
-	echo "${goRelSha256} *go.tgz" | sha256sum -c -; \
-	tar -C /usr/local -xzf go.tgz; \
-	rm go.tgz; \
-	\
-	export PATH="/usr/local/go/bin:$PATH"; \
-	go version
+  \
+  url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz"; \
+  wget -q -O go.tgz "$url"; \
+  echo "${goRelSha256} *go.tgz" | sha256sum -c -; \
+  tar -C /usr/local -xzf go.tgz; \
+  rm go.tgz; \
+  \
+  export PATH="/usr/local/go/bin:$PATH"; \
+  go version
 
 # Switch back to prow user for publish
 USER prow

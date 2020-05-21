@@ -38,14 +38,14 @@ USER root
 
 # Install Python
 RUN apt-get update && apt-get install -y \
-		python \
-		python3 \
-		python-pip \
-		python3-pip \
-		python-setuptools \
-		python3-setuptools \
-		python3-venv \
-	&& rm -rf /var/lib/apt/lists/*
+    python \
+    python3 \
+    python-pip \
+    python3-pip \
+    python-setuptools \
+    python3-setuptools \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
 
 #####################################
 ###
