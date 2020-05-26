@@ -79,4 +79,4 @@ docker pull $repository/${build_root}:$cache_tag
 ########################
 echo -e "${CYAN}Building Docker image: ${build_root}${NC}"
 img=${repository}/${build_root}
-docker build --pull --build-arg IMAGE_ARG=${img}:${version} --build-arg VERSION=${version} --cache-from ${img}:${version} ${stage_cache_from} -t ${img}:${version} ${build_root}
+docker build --pull --build-arg IMAGE_ARG=${img}:${version} --build-arg VERSION=${version} --build-arg REPOSITORY=${repository} --cache-from ${img}:${version} ${stage_cache_from} -t ${img}:${version} ${build_root}

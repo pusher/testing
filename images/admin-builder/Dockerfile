@@ -32,8 +32,8 @@ USER root
 
 # Install Kubectl
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
-		&& chmod +x ./kubectl \
-		&& mv ./kubectl /usr/local/bin/kubectl
+    && chmod +x ./kubectl \
+    && mv ./kubectl /usr/local/bin/kubectl
 
 # Install AWS CLI & check it was installed
 RUN pip3 install awscli --upgrade \
@@ -42,15 +42,15 @@ RUN pip3 install awscli --upgrade \
 # Install GCLOUD CLI & check it was installed
 RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-250.0.0-linux-x86_64.tar.gz \
     && tar -zxvf google-cloud-sdk-250.0.0-linux-x86_64.tar.gz google-cloud-sdk \
-		&& google-cloud-sdk/install.sh
+    && google-cloud-sdk/install.sh
 ENV PATH=/workspace/google-cloud-sdk/bin:${PATH}
 RUN gcloud --version
 
 # Install Terraform CLI & check it was installed
 ARG TF_VERSION="0.11.14"
 RUN curl https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip -o terraform_${TF_VERSION}_linux_amd64.zip \
- && unzip terraform_${TF_VERSION}_linux_amd64.zip -d /usr/local/bin \
- && terraform --version
+    && unzip terraform_${TF_VERSION}_linux_amd64.zip -d /usr/local/bin \
+    && terraform --version
 
 # Switch back to prow user for publish
 USER prow
