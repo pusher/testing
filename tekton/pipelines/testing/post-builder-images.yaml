@@ -100,3 +100,18 @@ spec:
       value: "true"
     - name: VERSION
     - name: TAGS
+
+  - name: build-yamllint
+    taskRef:
+      name: testing-build-image
+    resources:
+      inputs:
+      - name: testing
+        resource: testing
+    params:
+    - name: image
+      value: yamllint
+    - name: DOCKER_IN_DOCKER_ENABLED
+      value: "true"
+    - name: VERSION
+    - name: TAGS
