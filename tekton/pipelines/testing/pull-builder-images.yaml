@@ -117,3 +117,20 @@ spec:
       value: pull-${params.PULL_NUMBER}
     - name: TAGS
       value: pull-${params.PULL_NUMBER},${params.PULL_PULL_SHA}
+
+  - name: build-yamllint
+    taskRef:
+      name: testing-build-image
+    resources:
+      inputs:
+      - name: testing
+        resource: testing
+    params:
+    - name: image
+      value: yamllint
+    - name: DOCKER_IN_DOCKER_ENABLED
+      value: "true"
+    - name: VERSION
+      value: pull-${params.PULL_NUMBER}
+    - name: TAGS
+      value: pull-${params.PULL_NUMBER},${params.PULL_PULL_SHA}
