@@ -55,7 +55,7 @@ deck:
   rerun_auth_config:
     github_users:
       - mthssdrbrg
-      - starkers
+      - mdpye
       - damdo
 
 prowjob_namespace: default
