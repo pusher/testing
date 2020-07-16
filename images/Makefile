@@ -29,11 +29,11 @@ all: build
 #
 ####
 
-build: builder golang-builder kubebuilder-builder clonerefs python-builder ruby-builder admin-builder yamllint
+build: builder golang-builder kubebuilder-builder clonerefs python-builder ruby-builder dhall-builder admin-builder yamllint
 
-tag: docker-tag-builder docker-tag-golang-builder docker-tag-kubebuilder-builder docker-tag-clonerefs docker-tag-python-builder docker-tag-ruby-builder docker-tag-admin-builder docker-tag-yamllint
+tag: docker-tag-builder docker-tag-golang-builder docker-tag-kubebuilder-builder docker-tag-clonerefs docker-tag-python-builder docker-tag-ruby-builder docker-tag-dhall-builder docker-tag-admin-builder docker-tag-yamllint
 
-push: docker-push-builder docker-push-golang-builder docker-push-kubebuilder-builder docker-push-clonerefs docker-push-python-builder docker-push-ruby-builder docker-push-admin-builder docker-push-yamllint
+push: docker-push-builder docker-push-golang-builder docker-push-kubebuilder-builder docker-push-clonerefs docker-push-python-builder docker-push-ruby-builder docker-push-dhall-builder docker-push-admin-builder docker-push-yamllint
 
 ####
 #
@@ -50,6 +50,8 @@ kubebuilder-builder: golang-builder docker-build-kubebuilder-builder
 python-builder: builder docker-build-python-builder
 
 ruby-builder: builder docker-build-ruby-builder
+
+dhall-builder: builder docker-build-dhall-builder
 
 admin-builder: builder docker-build-admin-builder
 
