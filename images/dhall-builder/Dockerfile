@@ -14,7 +14,7 @@
 
 #############################################################################
 ###
-### %NAME% BUILDER - FROM pusher/builder with %NAME% tooling
+### DHALL BUILDER - FROM pusher/builder with Dhall tooling
 ###
 #############################################################################
 
