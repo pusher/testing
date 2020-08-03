@@ -47,7 +47,7 @@ spec:
               topologyKey: failure-domain.beta.kubernetes.io/zone
       containers:
       - name: hook
-        image: gcr.io/k8s-prow/hook:v20200305-e8ef9758b
+        image: gcr.io/k8s-prow/hook:v20200501-e6124e633
         imagePullPolicy: Always
         args:
         - --dry-run=false
