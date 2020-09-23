@@ -37,5 +37,10 @@ RUN curl -sL https://api.github.com/repos/dhall-lang/dhall-haskell/releases/tags
     && ls -1 dhall-*-x86_64-linux.tar.bz2 | xargs -n1 tar --extract --bzip2 -C /usr/local/bin --strip-components=2 -f \
     && rm -rf *.tar.bz2 *.zip
 
+# Pre-cache commonly used Dhall packages
+COPY ["pre-cache", "/usr/local/bin/dhall-pre-cache"]
+
+RUN /usr/local/bin/dhall-pre-cache
+
 # Switch back to prow user
 USER prow

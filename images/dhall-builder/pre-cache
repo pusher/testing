@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+
+urls=(
+  https://prelude.dhall-lang.org/v17.0.0/package.dhall
+  https://prelude.dhall-lang.org/v17.1.0/package.dhall
+  https://prelude.dhall-lang.org/v18.0.0/package.dhall
+  https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/v4.0.0/package.dhall
+  https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/f4bf4b9ddf669f7149ec32150863a93d6c4b3ef1/package.dhall
+)
+
+for url in "${urls[@]}"; do
+  echo "caching '$url'" >&2
+  dhall hash <<< "$url"
+done
