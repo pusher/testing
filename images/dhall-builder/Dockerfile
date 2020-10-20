@@ -26,7 +26,7 @@ FROM ${REPOSITORY}/builder:${VERSION}
 ARG IMAGE_ARG
 ENV IMAGE=${IMAGE_ARG}
 
-ARG DHALL_VERSION=1.34.0
+ARG DHALL_VERSION=1.35.0
 
 # Switch to root user to perform installation
 USER root
