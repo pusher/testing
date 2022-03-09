@@ -100,14 +100,14 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 # Install golangci-lint for linting
 RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.22.2
 # Install ginkgo for running tests
-RUN go get github.com/onsi/ginkgo/ginkgo
+RUN GO111MODULE=on go get github.com/onsi/ginkgo/ginkgo@v1.14.0
 
 # Install more lint and code generation tools
 RUN go get golang.org/x/tools/cmd/goimports \
     && go get github.com/kisielk/errcheck \
     && go get github.com/gordonklaus/ineffassign \
-    && go get github.com/fzipp/gocyclo \
-    && go get honnef.co/go/tools/... \
+    && GO111MODULE=on go get github.com/fzipp/gocyclo@v0.3.0 \
+    && GO111MODULE=on go get honnef.co/go/tools/...@2020.1.6 \
     && go get golang.org/x/lint/golint \
     && go get gopkg.in/golang/mock.v1/gomock \
     && go get gopkg.in/golang/mock.v1/mockgen
