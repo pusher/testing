@@ -7,6 +7,10 @@ metadata:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
     certmanager.k8s.io/cluster-issuer: letsencrypt-production
+    nginx.org/server-snippets: |
+      location /config {
+        return 404;
+      }
 spec:
   rules:
     - host: prow.pusher.com
