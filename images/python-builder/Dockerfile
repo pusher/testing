@@ -54,7 +54,8 @@ RUN apt-get update && apt-get install -y \
 #####################################
 
 # Tools for linting
-RUN pip install flake8 pylint
+RUN pip install flake8
+RUN pip install pylint==1.9.5 lazy-object-proxy==1.4.1
 RUN pip3 install flake8 pylint
 
 
