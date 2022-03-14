@@ -29,8 +29,16 @@ All other images should inherit from this base image.
 
 The [prow](prow) folder contains the Kubernetes deployment resources for
 the Prow cluster.
-These resources are automatically deployed by a [Faros](https://github.com/pusher/faros)
-instance running within the Prow cluster.
+
+Deployment is performed by applying resources to the cluster using `kubectl`
+To access the cluster you need to have persmission in GCP. Speak to a member
+of the team to grant this.
+When you have access run the following to configure the cluster with `kubectl`
+
+```
+gcloud auth login
+gcloud container clusters get-credentials prow --region europe-west2 --project elements-175813
+```
 
 ### scripts
 
